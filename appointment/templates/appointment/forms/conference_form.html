@@ -1,0 +1,57 @@
+<form method="POST" action="{% url 'appointment:new_conference' %}">{% csrf_token %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <section class="panel panel-primary" id="panel-6" data-portlet-item>
+                <header class="panel-heading portlet-handler">
+                    <h2 class="panel-title">Konferenz anlegen</h2>
+                </header>
+                <div class="panel-body">
+                    <div class="row">
+                        {{ conference_form.non_field_errors }}
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label">{{ conference_form.start_date.label }}</label>
+                                {{ conference_form.start_date }}
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label">{{ conference_form.end_date.label }}</label>
+                                {{ conference_form.end_date }}
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label">{{ conference_form.place.label }}</label>
+                                {{ conference_form.place }}
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label">{{ conference_form.topic.label }}</label>
+                                {{ conference_form.topic }}
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label">{{ conference_form.description.label }}</label>
+                                {{ conference_form.description }}
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-12" style="padding-top:25px;">
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="submit">Speichern</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</form>

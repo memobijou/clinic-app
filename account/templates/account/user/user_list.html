@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Benutzer Übersicht</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span>Benutzer Übersicht</span></li>
+{% endblock %}
+
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="text-right">
+                <a href="{% url 'account:create_user' %}" class="btn btn-info">Neuen Benutzer anlegen</a>
+            </div>
+        </div>
+    </div>
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="panel-actions">
+                <a href="#" class="fa fa-caret-down"></a>
+                <a href="#" class="fa fa-times"></a>
+            </div>
+            <h2 class="panel-title">Benutzer Übersicht</h2>
+        </header>
+
+        <div class="panel-body">
+            <table class="table table-bordered table-striped mb-none" id="datatable-default">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Benuzter</th>
+                        <th>Vorname</th>
+                        <th>Nachname</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in object_list %}
+                        <tr>
+                            <td>
+                                <p><a href="{% url 'account:user_profile' pk=object.pk %}">Anzeigen</a></p>
+                            </td>
+                            <td>{{ object.username }}</td>
+                            <td>{{ object.first_name }}</td>
+                            <td>{{ object.last_name }}</td>
+                            <td>{{ object.email }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+<!-- end: page -->
+{% endblock %}
+
+{% block specific_page_vendor_css %}
+    <!-- Specific Page Vendor CSS -->
+    <link rel="stylesheet" href="{% static 'octopus/assets/vendor/select2/select2.css' %}" />
+    <link rel="stylesheet" href="{% static 'octopus/assets/vendor/jquery-datatables-bs3/assets/css/datatables.css' %}" />
+{% endblock %}
+
+
+{% block specific_page_vendor_js %}
+    <!-- Specific Page Vendor -->
+    <script src="{% static 'octopus/assets/vendor/select2/select2.js' %}"></script>
+    <script src="{% static 'octopus/assets/vendor/jquery-datatables/media/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'octopus/assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.min.js' %}"></script>
+    <script src="{% static 'octopus/assets/vendor/jquery-datatables-bs3/assets/js/datatables.js'  %}"></script>
+{% endblock %}
+
+{% block examples %}
+    <script src="{% static 'octopus/assets/javascripts/tables/examples.datatables.default.js' %}"></script>
+    {# Diese Dateien initialisieren die Tabellen und dort muss die Tabelle von DataTables konfiguriert werden #}
+    <script src="{% static 'octopus/assets/javascripts/tables/examples.datatables.row.with.details.js' %}"></script>
+    <script src="{% static 'octopus/assets/javascripts/tables/examples.datatables.tabletools.js' %}"></script>
+{% endblock %}

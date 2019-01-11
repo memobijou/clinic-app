@@ -1,0 +1,9 @@
+<form method="POST">{% csrf_token %}
+    <br/>
+    {{ directory_form.errors }}
+    {{ directory_form.name }}
+    <br/>
+    <div class="text-right">
+        <button class="btn btn-primary">Verzeichnis anlegen</button>
+    </div>
+</form>

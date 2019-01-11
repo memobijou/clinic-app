@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Benutzerprofil</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span><a href="{% url 'account:user_list' %}">Benutzer Übersicht</a></span></li>
+    <li><span>Benutzerprofil</span></li>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4 col-lg-3">
+            <section class="panel">
+                <div class="panel-body">
+                    <div class="thumb-info mb-md">
+                        <img src="assets/images/!logged-user.jpg" class="rounded img-responsive" alt="John Doe">
+                        <div class="thumb-info-title">
+                            <span class="thumb-info-inner">{{ object.first_name }} {{ object.last_name }}</span>
+                            <span class="thumb-info-type">Dr.</span>
+                        </div>
+                    </div>
+
+
+                    <hr class="dotted short">
+
+                    <h6 class="text-muted">Über mich</h6>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam quis vulputate quam. Interdum et malesuada</p>
+                    <div class="clearfix">
+                        <a class="text-uppercase text-muted pull-right" href="#">(View All)</a>
+                    </div>
+
+                    <hr class="dotted short">
+
+                    <div class="social-icons-list">
+                        <a rel="tooltip" data-placement="bottom" target="_blank" href="http://www.facebook.com" data-original-title="Facebook"><i class="fa fa-facebook"></i><span>Facebook</span></a>
+                        <a rel="tooltip" data-placement="bottom" href="http://www.twitter.com" data-original-title="Twitter"><i class="fa fa-twitter"></i><span>Twitter</span></a>
+                        <a rel="tooltip" data-placement="bottom" href="http://www.linkedin.com" data-original-title="Linkedin"><i class="fa fa-linkedin"></i><span>Linkedin</span></a>
+                    </div>
+
+                </div>
+            </section>
+
+
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions">
+                        <a href="#" class="fa fa-caret-down"></a>
+                        <a href="#" class="fa fa-times"></a>
+                    </div>
+
+                    <h2 class="panel-title">
+                        <span class="label label-primary label-sm text-normal va-middle mr-sm">198</span>
+                        <span class="va-middle">Gruppe</span>
+                    </h2>
+                </header>
+                <div class="panel-body">
+                    <div class="content">
+                        <ul class="simple-user-list">
+                            <li>
+                                <figure class="image rounded">
+                                    <img src="assets/images/!sample-user.jpg" alt="Joseph Doe Junior" class="img-circle">
+                                </figure>
+                                <span class="title">Joseph Doe Junior</span>
+                                <span class="message truncate">Lorem ipsum dolor sit.</span>
+                            </li>
+                            <li>
+                                <figure class="image rounded">
+                                    <img src="assets/images/!sample-user.jpg" alt="Joseph Junior" class="img-circle">
+                                </figure>
+                                <span class="title">Joseph Junior</span>
+                                <span class="message truncate">Lorem ipsum dolor sit.</span>
+                            </li>
+                            <li>
+                                <figure class="image rounded">
+                                    <img src="assets/images/!sample-user.jpg" alt="Joe Junior" class="img-circle">
+                                </figure>
+                                <span class="title">Joe Junior</span>
+                                <span class="message truncate">Lorem ipsum dolor sit.</span>
+                            </li>
+                            <li>
+                                <figure class="image rounded">
+                                    <img src="assets/images/!sample-user.jpg" alt="Joseph Doe Junior" class="img-circle">
+                                </figure>
+                                <span class="title">Joseph Doe Junior</span>
+                                <span class="message truncate">Lorem ipsum dolor sit.</span>
+                            </li>
+                        </ul>
+                        <hr class="dotted short">
+                        <div class="text-right">
+                            <a class="text-uppercase text-muted" href="#">(View All)</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="input-group input-search">
+                        <input type="text" class="form-control" name="q" id="q" placeholder="Search...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions">
+                        <a href="#" class="fa fa-caret-down"></a>
+                        <a href="#" class="fa fa-times"></a>
+                    </div>
+
+                    <h2 class="panel-title">Popular Posts</h2>
+                </header>
+                <div class="panel-body">
+                    <ul class="simple-post-list">
+                        <li>
+                            <div class="post-image">
+                                <div class="img-thumbnail">
+                                    <a href="#">
+                                        <img src="assets/images/post-thumb-1.jpg" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="post-info">
+                                <a href="#">Nullam Vitae Nibh Un Odiosters</a>
+                                <div class="post-meta">
+                                     Jan 10, 2013
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="post-image">
+                                <div class="img-thumbnail">
+                                    <a href="#">
+                                        <img src="assets/images/post-thumb-2.jpg" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="post-info">
+                                <a href="#">Vitae Nibh Un Odiosters</a>
+                                <div class="post-meta">
+                                     Jan 10, 2013
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="post-image">
+                                <div class="img-thumbnail">
+                                    <a href="#">
+                                        <img src="assets/images/post-thumb-3.jpg" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="post-info">
+                                <a href="#">Odiosters Nullam Vitae</a>
+                                <div class="post-meta">
+                                     Jan 10, 2013
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-md-9 col-lg-9">
+            <div class="tabs">
+                <ul class="nav nav-tabs tabs-primary">
+                    <li class="active tab-item">
+                        <a href="#overview" data-toggle="tab">Ansicht</a>
+                    </li>
+                    <li class="tab-item">
+                        <a href="#edit" data-toggle="tab">Bearbeiten</a>
+                    </li>
+                    <li class="tab-item"><a href="#reset_password" data-toggle="tab">Passwort zurücksetzen</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div id="overview" class="tab-pane active">
+                        <form class="form-horizontal" method="get">
+                            <h4 class="mb-xlg">Persönliche Informationen</h4>
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Vorname</label>
+                                    <div class="col-md-8">
+                                        <label class="control-label">{{ object.first_name }}</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Nachname</label>
+                                    <div class="col-md-8">
+                                        <label class="control-label">{{ object.last_name }}</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Benutzername</label>
+                                    <div class="col-md-8">
+                                        <label class="control-label">{{ object.username }}</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label" for="profileCompany">Email</label>
+                                    <div class="col-md-8">
+                                        <label class="control-label">{{ object.email }}</label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <hr class="dotted tall">
+                            <h4 class="mb-xlg">Über dich</h4>
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label" for="profileBio">Biografie</label>
+                                    <div class="col-md-8">
+                                        <label class="control-label">Keine Angaben</label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <hr class="dotted tall">
+                            <h4 class="mb-xlg">Rechte und Privilegien</h4>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="profileCompany">Administrator-Status</label>
+                                <div class="col-md-8">
+                                    {% if object.is_superuser is True %}
+                                        <label class="control-label">Ja</label>
+                                    {% else %}
+                                        <label class="control-label">Nein</label>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="edit" class="tab-pane">
+                        {% include "account/user/profile/forms/form.html" %}
+                    </div>
+
+                    <div id="reset_password" class="tab-pane">
+                        {% include 'account/user/profile/forms/reset_password_form.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block specific_page_vendor_css %}
+    <style>
+        .errorlist {
+            padding-left:0px;
+        }
+    </style>
+{% endblock %}
+
+
+{% block specific_page_vendor_js %}
+		<script src="{% static 'octopus/assets/vendor/jquery-autosize/jquery.autosize.js' %}"></script>
+        <script>
+            var tab_items = document.getElementsByClassName("tab-item");
+            var tab_panes = document.getElementsByClassName("tab-pane");
+
+            var unactivate_tab_items = function(ignore_tab_item, ignore_tab_pane){
+                for(var i = 0; i<tab_items.length;i++){
+                    var tab_item = tab_items[i];
+                    if(tab_item != ignore_tab_item){
+                        tab_item.className = tab_item.className.replace("active", "");
+                    }
+                }
+
+                for(i = 0; i<tab_panes.length;i++){
+                    var tab_pane = tab_panes[i];
+                    if(tab_pane != ignore_tab_pane){
+                        tab_pane.className = tab_pane.className.replace("active", "");
+                    }
+                }
+            };
+
+            for(var i=0; i<tab_items.length; i++){
+                var tab_item = tab_items[i];
+                var a_tag = tab_item.getElementsByTagName("a")[0];
+                var href = a_tag.href;
+                var tab_panel_id = href.split("#")[1];
+                var tab_panel = document.getElementById(tab_panel_id);
+                var error_el = tab_panel.getElementsByClassName("errorlist")[0];
+
+                if(error_el != null){
+                    tab_item.className += " active";
+                    tab_panel.className += " active";
+                    unactivate_tab_items(tab_item, tab_panel);
+                    error_el.scrollIntoView(false);
+                    break;
+                }
+            }
+
+        </script>
+{% endblock %}
+
+{% block examples %}
+{% endblock %}
