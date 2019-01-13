@@ -1,5 +1,7 @@
+from django.core.paginator import InvalidPage
 from django.db.models import F
 from django.urls import path, include
+from rest_framework.exceptions import NotFound
 from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 from rest_framework.decorators import action
 from account.views import CreateUserView, UserListView, UserProfileView, ChangeUserPasswordView
@@ -10,6 +12,7 @@ from django.contrib.auth import views as auth_views
 from rest_framework import mixins
 from rest_framework import generics
 from collections import OrderedDict
+from django.utils import six
 
 
 # Serializers define the API representation.
@@ -32,14 +35,35 @@ class UserViewSet(viewsets.ModelViewSet):
 class Pagination(PageNumberPagination):
     def get_paginated_response(self, data):
         return Response(OrderedDict([
-            ('count', self.page.paginator.count),
-            ('next', self.get_next_link()),
-            ('previous', self.get_previous_link()),
             ('data', data.get("results")),
             ("recordsTotal", data.get("records_total")),
             ("recordsFiltered", data.get("records_total")),
 
         ]))
+
+    def paginate_queryset_datatables(self, queryset, page_number, page_size):
+        """
+        Paginate a queryset if required, either returning a
+        page object, or `None` if pagination is not configured for this view.
+        """
+
+        paginator = self.django_paginator_class(queryset, page_size)
+
+        if page_number in self.last_page_strings:
+            page_number = paginator.num_pages
+
+        try:
+            page = paginator.page(page_number)
+        except InvalidPage as exc:
+            msg = self.invalid_page_message.format(
+                page_number=page_number, message=six.text_type(exc)
+            )
+            raise NotFound(msg)
+
+        if paginator.num_pages > 1 and self.template is not None:
+            # The browsable API should display pagination controls.
+            self.display_page_controls = True
+        return list(page)
 
 
 class UserList(mixins.ListModelMixin, generics.GenericAPIView):
@@ -50,13 +74,34 @@ class UserList(mixins.ListModelMixin, generics.GenericAPIView):
     def __init__(self):
         super().__init__()
         self.records_total = None
+        self.page_number = None
+        self.page_size = None
+
+    def paginate_queryset(self, queryset):
+        """
+        Return a single page of results, or `None` if pagination is disabled.
+        """
+        if self.paginator is None:
+            return None
+        return self.paginator.paginate_queryset_datatables(queryset,  self.page_number, self.page_size)
 
     def list(self, request, *args, **kwargs):
         print(request.GET.get("start"))
         print(request.GET.get("length"))
         print(self.queryset.count())
-        
+        start = int(request.GET.get("start"))
+        length = int(request.GET.get("length"))
+        page_number = 1
+        while start > 0:
+            start -= length
+            page_number += 1
+            if start == 0:
+                break
 
+        self.page_number = page_number
+        self.page_size = length
+
+        print(f"Page: {page_number}")
         queryset = self.filter_queryset(self.queryset)
         page = self.paginate_queryset(queryset)
         print(f"haack: {page}")
