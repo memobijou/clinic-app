@@ -46,17 +46,16 @@ $(document).ready(function(){
 
 	var dt = $('#datatable-default').DataTable( {
 	  responsive: true,
-    columnDefs: [
-      {targets: 0, title: "Benutzername", name: "username"},
-      {targets: 1, title: "Vorname", name: "first_name"},
-      {targets: 2, title: "Nachname", name: "last_name"},
-      {targets: 3, title: "Email", name: "email"}
-    ],
+      columnDefs: [
+        {targets: 0, title: "Benutzername", name: "username"},
+        {targets: 1, title: "Vorname", name: "first_name"},
+        {targets: 2, title: "Nachname", name: "last_name"},
+        {targets: 3, title: "Email", name: "email"}
+      ],
 
        // Mit ajax funktioniert muss nur angepasst werden auf REST API
        // Also filtern nach Querystring Parameter die man von Datatables bekommt
        // Und Datensätze anzeigen wie es Datatables erwartet
-       processing: true,
        serverSide: true,
        ajax: "datatables",
        lengthMenu: [[2, 5, 10, 25, 50], [2, 5, 10, 25, 50]]

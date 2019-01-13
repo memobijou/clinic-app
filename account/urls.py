@@ -1,5 +1,6 @@
 from django.core.paginator import InvalidPage
 from django.db.models import F
+from django.db.models import Q
 from django.urls import path, include
 from rest_framework.exceptions import NotFound
 from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
@@ -32,7 +33,7 @@ class UserViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
 
 
-class Pagination(PageNumberPagination):
+class DatatablesPagination(PageNumberPagination):
     def get_paginated_response(self, data):
         return Response(OrderedDict([
             ('data', data.get("results")),
@@ -69,7 +70,7 @@ class Pagination(PageNumberPagination):
 class UserList(mixins.ListModelMixin, generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    pagination_class = Pagination
+    pagination_class = DatatablesPagination
 
     def __init__(self):
         super().__init__()
@@ -103,6 +104,7 @@ class UserList(mixins.ListModelMixin, generics.GenericAPIView):
 
         print(f"Page: {page_number}")
         queryset = self.filter_queryset(self.queryset)
+        queryset = self.get_filtered_queryset()
         page = self.paginate_queryset(queryset)
         print(f"haack: {page}")
         if page is not None:
@@ -114,6 +116,14 @@ class UserList(mixins.ListModelMixin, generics.GenericAPIView):
         serializer = self.get_serializer(queryset, many=True)
         print(f"???: {serializer.data}")
         return Response(serializer.data)
+
+    def get_filtered_queryset(self):
+        search_value = self.request.GET.get("search[value]")
+        if search_value != "" and search_value is not None:
+            self.queryset = self.queryset.filter(
+                Q(Q(username__icontains=search_value) | Q(first_name__icontains=search_value) |
+                  Q(last_name__icontains=search_value) | Q(email__icontains=search_value)))
+        return self.queryset
 
     def get(self, request, *args, **kwargs):
         response = self.list(request, *args, **kwargs)
