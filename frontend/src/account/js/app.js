@@ -48,24 +48,24 @@ $(document).ready(function(){
 	  responsive: true,
     data: data,
     columnDefs: [
-      {targets: 0, title: "Name"},
-      {targets: 1, title: "Position"},
-      {targets: 2, title: "Salary"},
-      {targets: 3, title: "Office"}
+      {targets: 0, title: "Benutzername", name: "username"},
+      {targets: 1, title: "Vorname", name: "first_name"},
+      {targets: 2, title: "Nachname", name: "last_name"},
+      {targets: 3, title: "Email", name: "email"}
     ],
-    columns: [
-        { data: 'name' },
-        { data: 'position' },
-        { data: 'salary' },
-        { data: 'office' },
-    ]
+    // columns: [
+    //     { name: 'username' },
+    //     { name: 'first_name' },
+    //     { name: 'last_name' },
+    //     { name: 'email' }
+    // ],
 
        // Mit ajax funktioniert muss nur angepasst werden auf REST API
        // Also filtern nach Querystring Parameter die man von Datatables bekommt
        // Und Datensätze anzeigen wie es Datatables erwartet
-       // processing: true,
-       // serverSide: true,
-       // ajax: "api"
-	} );
+       processing: true,
+       serverSide: true,
+       ajax: "datatables"
+	} )
 	 
 })
