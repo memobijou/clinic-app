@@ -105,6 +105,7 @@ class UserList(mixins.ListModelMixin, generics.GenericAPIView):
         print(f"Page: {page_number}")
         queryset = self.filter_queryset(self.queryset)
         queryset = self.get_filtered_queryset()
+        queryset = self.get_ordered_queryset()
         page = self.paginate_queryset(queryset)
         print(f"haack: {page}")
         if page is not None:
@@ -123,6 +124,34 @@ class UserList(mixins.ListModelMixin, generics.GenericAPIView):
             self.queryset = self.queryset.filter(
                 Q(Q(username__icontains=search_value) | Q(first_name__icontains=search_value) |
                   Q(last_name__icontains=search_value) | Q(email__icontains=search_value)))
+        return self.queryset
+
+    def get_ordered_queryset(self):
+        from django.db.models.functions import Lower
+        order_column_index = self.request.GET.get("order[0][column]")
+        asc_or_desc = self.request.GET.get("order[0][dir]")
+        if order_column_index == "0":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by(Lower("username"))
+            else:
+                self.queryset = self.queryset.annotate(lower_username=Lower('username')).order_by("-lower_username")
+
+        elif order_column_index == "1":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by(Lower("first_name"))
+            else:
+                self.queryset = self.queryset.annotate(
+                    lower_first_name=Lower("first_name")).order_by("-lower_first_name")
+        elif order_column_index == "2":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by(Lower("last_name"))
+            else:
+                self.queryset = self.queryset.annotate(lower_last_name=Lower("last_name")).order_by("-lower_last_name")
+        elif order_column_index == "3":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by(Lower("email"))
+            else:
+                self.queryset = self.queryset.annotate(lower_email=Lower("email")).order_by("-lower_email")
         return self.queryset
 
     def get(self, request, *args, **kwargs):

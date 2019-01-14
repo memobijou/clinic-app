@@ -27,30 +27,11 @@
         </header>
 
         <div class="panel-body">
-            <table class="table table-bordered" id="datatable-default">
-                <thead>
-<!--                     <tr>
-                        <th></th>
-                        <th>Benuzter</th>
-                        <th>Vorname</th>
-                        <th>Nachname</th>
-                        <th>Email</th>
-                    </tr> -->
-                </thead>
-                <tbody>
-<!--                     {% for object in object_list %}
-                        <tr>
-                            <td>
-                                <p><a href="{% url 'account:user_profile' pk=object.pk %}">Anzeigen</a></p>
-                            </td>
-                            <td>{{ object.username }}</td>
-                            <td>{{ object.first_name }}</td>
-                            <td>{{ object.last_name }}</td>
-                            <td>{{ object.email }}</td>
-                        </tr>
-                    {% endfor %} -->
-                </tbody>
-            </table>
+            <div class="col-md-12">
+                <table class="table table-bordered table-striped table-hover" id="datatable-default">
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </section>
 <!-- end: page -->
