@@ -86,17 +86,28 @@ WSGI_APPLICATION = 'uniklinik.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.environ.get("PG_DB"),
+#         'USER': os.environ.get("PG_USER"),
+#         'PASSWORD': os.environ.get("PG_PASSWORD"),
+#         'HOST': os.environ.get("PG_HOST"),
+#         'PORT': os.environ.get("PG_PORT"),
+#     }
+# }
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get("PG_DB"),
-        'USER': os.environ.get("PG_USER"),
-        'PASSWORD': os.environ.get("PG_PASSWORD"),
-        'HOST': os.environ.get("PG_HOST"),
-        'PORT': os.environ.get("PG_PORT"),
+        'NAME': "postgres",
+        'USER': "postgres",
+        'PASSWORD': "postgres",
+        'HOST': "db",
+        'PORT': 5432,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
