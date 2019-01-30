@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block js %}
+    <!-- Specific Page Vendor -->
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <script src="http://localhost:8080/build/account/user_list/bundle.js"></script>
+    {% else %}
+        <script src="{% static 'dist/account/user_list/bundle.js' %}"></script>
+    {% endif %}
+{% endblock %}

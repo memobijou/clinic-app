@@ -1,5 +1,16 @@
 version: '3'
 services:
+  webpack:
+    image: "node:10.15.0"
+    build:
+      context: .
+      dockerfile: Dockerfile.webpack
+    tty: true
+    command: bash -c "ls && npm run build --prefix root/clinic-app/frontend/"
+    volumes:
+      - .:/clinic-app/frontend
+    ports:
+      - "8080:8080"
   db:
     image: postgres
 #  redis:
@@ -7,7 +18,9 @@ services:
 #    ports:
 #      - '6379:6379'
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.web
     tty: true
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:

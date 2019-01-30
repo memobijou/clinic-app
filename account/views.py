@@ -25,12 +25,12 @@ class CustomUserCreationForm(UserCreationForm):
 
 class CreateUserView(LoginRequiredMixin, generic.CreateView):
     form_class = CustomUserCreationForm
-    template_name = "account/user/new_user.html"
+    template_name = "account/user/new_user/new_user.html"
     success_url = reverse_lazy("account:user_list")
 
 
 class UserListView(LoginRequiredMixin, generic.ListView):
-    template_name = "account/user/user_list.html"
+    template_name = "account/user/user_list/user_list.html"
     paginate_by = 15
     queryset = User.objects.all()
 

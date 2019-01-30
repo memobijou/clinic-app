@@ -10,21 +10,11 @@ var extractPlugin = new ExtractTextPlugin({
 
 const config = {
 	// Common Configuration
-	module: {},
-};
-
-const accountConfig = Object.assign({}, config, {
-	entry: "./src/account/js/app.js",
-	output: {
-		path: path.resolve(__dirname, "../static/dist/account/"),
-		filename: "bundle.js"
-		// publicPath: "/dist"
-	},
 	module: {
 	    rules: [
 	        {
 		        test:/\.css$/,
-	            use: 
+	            use:
 	            	[
 	            		'style-loader',
           				MiniCssExtractPlugin.loader, // evtl sinnlos ? funktioniert auch ohne
@@ -89,9 +79,37 @@ const accountConfig = Object.assign({}, config, {
     	  chunkFilename: "[id].css"
     	})
 		//, new CleanWebpackPlugin(["dist"])
-	]
+	],
+	resolve: {
+		extensions: [".js"],
+		alias: {
+			"~": path.resolve(__dirname, "./src")
+		}
+	},
+
+};
+
+const baseConfig = Object.assign({}, config, {
+	entry: "./src/base/js/app.js",
+	output: {
+		path: path.resolve(__dirname, "../static/dist/base/"),
+		filename: "bundle.js",
+		publicPath: "/build/base/"
+	},
 })
 
+
+const accountUserListConfig = Object.assign({}, config, {
+	entry: "./src/account/user_list/js/app.js",
+	output: {
+		path: path.resolve(__dirname, "../static/dist/account/user_list/"),
+		filename: "bundle.js",
+		publicPath: "/build/account/user_list/"
+	},
+})
+
+
 module.exports = [
-	accountConfig
+	baseConfig,
+	accountUserListConfig
 ]

@@ -1,0 +1,15 @@
+# Use an official Python runtime as a parent image
+FROM node:10.15.0
+
+# Set the working directory to /clinic-app/frontend
+WORKDIR /clinic-app/frontend
+
+# Copy the current directory contents into the container at /clinic-app/frontend
+COPY ./frontend/package.json /clinic-app/frontend/
+RUN npm install
+
+COPY ./frontend/. /clinic-app/frontend/
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+CMD ["npm", "run", "build"]

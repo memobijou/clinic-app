@@ -363,8 +363,14 @@
 				</div>
 			</aside>
 		</section>
-        {% include 'base/js/js.html' %}
 
+        {% block js %}
+            {% if settings.WEBPACK_DEV_SERVER is True %}
+                <script src="http://localhost:8080/build/base/bundle.js"></script>
+            {% else %}
+                <script src="{% static 'dist/base/bundle.js' %}"></script>
+            {% endif %}
+        {% endblock %}
 
         {% block specific_page_vendor_js %}
 

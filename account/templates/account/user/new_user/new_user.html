@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block horizontal_nav_title %}
+    <h2>Neuen Benutzer anlegen</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li>
+        <span><a href="{% url 'account:user_list' %}">Benutzer Übersicht</a></span>
+    </li>
+    <li><span>Benutzeranlage</span></li>
+{% endblock %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <form method="POST">{% csrf_token %}
+            {% include 'account/user/new_user/new_user_form.html' %}
+        </form>
+    </div>
+{% endblock %}

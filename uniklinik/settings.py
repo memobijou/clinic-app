@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'uniklinik.context_processor.settings_context'
             ],
         },
     },
@@ -75,6 +76,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'uniklinik.wsgi.application'
 
+WEBPACK_DEV_SERVER = True
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
