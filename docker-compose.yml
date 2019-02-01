@@ -6,9 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile.webpack
     tty: true
-    command: bash -c "ls && npm run build --prefix root/clinic-app/frontend/"
+    command: bash -c "ls && npm run build"
+
     volumes:
-      - .:/clinic-app/frontend
+      - .:/clinic-app
     ports:
       - "8080:8080"
   db:

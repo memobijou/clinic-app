@@ -5,10 +5,9 @@ FROM node:10.15.0
 WORKDIR /clinic-app/frontend
 
 # Copy the current directory contents into the container at /clinic-app/frontend
-COPY ./frontend/package.json /clinic-app/frontend/
-RUN npm install
 
-COPY ./frontend/. /clinic-app/frontend/
+COPY frontend/. /clinic-app/frontend
+RUN npm install
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
