@@ -16,7 +16,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
 
-        {% include "base/css/css.html" %}
         {% block specific_page_vendor_css %}
         {% endblock %}
         {% include "base/css/extra_css.html" %}
@@ -366,7 +365,7 @@
 
         {% block js %}
             {% if settings.WEBPACK_DEV_SERVER is True %}
-                <script src="http://localhost:8080/build/base/bundle.js"></script>
+                <script src="http://{{ settings.PUBLIC_IP }}:8080/build/base/bundle.js"></script>
             {% else %}
                 <script src="{% static 'dist/base/bundle.js' %}"></script>
             {% endif %}

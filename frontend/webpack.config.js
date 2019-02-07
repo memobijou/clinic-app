@@ -61,6 +61,9 @@ const config = {
 	        		}
 	        	]
 	        },
+			{
+				test: /modernizr/,
+				loader: 'imports-loader?this=>window!exports-loader?window.Modernizr'}
 		]
 	},
 	plugins: [
@@ -96,6 +99,13 @@ const baseConfig = Object.assign({}, config, {
 		filename: "bundle.js",
 		publicPath: "/build/base/"
 	},
+    devServer: {
+		headers: {
+			"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+			"Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization",
+			"Access-Control-Allow-Origin": "*"
+		}
+  	}
 })
 
 
@@ -113,3 +123,5 @@ module.exports = [
 	baseConfig,
 	accountUserListConfig
 ]
+
+

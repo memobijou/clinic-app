@@ -65,7 +65,6 @@ const german_translation =
   }
 
 $(document).ready(function(){
-
 	var dt = $('#datatable-default').DataTable( {
 	  language: german_translation,
 	  responsive: true,
