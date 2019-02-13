@@ -16,43 +16,20 @@
             <section class="panel">
                 <header class="panel-heading">
                     <div class="panel-actions">
-                        <a href="#" class="fa fa-caret-down"></a>
+                        <a href="#"></a>
                     </div>
 
                     <h2 class="panel-title">Ordnerstruktur</h2>
                     {% include "filestorage/tree/forms/form.html" %}
                 </header>
-                <div class="panel-body">
-                    {% if not tree %}
-                        <h3 class="text-center">Kein Ordner wurde angelegt</h3>
-                    {% endif %}
-
-                    <div id="treeBasic">
-                        <ul>
-                            {% for directory in tree %}
-                            <li>
-                                <ul>
-                                    <li class="colored-icon" data-jstree='{ "icon" : "fa fa-file-pdf-o" }'>
-                                         weiterbildung.pdf
-                                    </li>
-
-                                </ul>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
             </section>
         </div>
     </div>
 
     <style>
         .dz-message {
-{#            text-align: center;#}
-{#            position: absolute;#}
-{#            top: 50%;#}
-{#            left: 50%;#}
-{#            transform: translate(-50%, -50%);#}
+            text-align: center;
+
         }
     </style>
 
@@ -98,7 +75,7 @@
     Dropzone.autoDiscover = false;
 
     var options_in_german = {
-      'dictDefaultMessage': '<h3>Legen Sie Dateien hier ab um Sie hochzuladen</h3><br/>(oder hier klicken)',
+      'dictDefaultMessage': '<h3>Legen Sie Dateien hier ab um Sie hochzuladen</h3><br/>(oder hier klicken)<br/><br/>',
       'dictFallbackMessage': 'Ihr Browser unterstützt Drag&Drop Dateiuploads nicht',
       'dictFallbackText': 'Benutzen Sie das Formular um Ihre Dateien hochzuladen',
       'dictFileTooBig': 'Die Datei ist zu groß. Die maximale Dateigröße beträgt {{maxFileSize}}MB',
@@ -166,11 +143,10 @@
 
 {% endblock %}
 
-{% block specific_page_vendor_css %}
-    <!-- Specific Page Vendor CSS -->
-    <link rel="stylesheet" href="{% static 'octopus/assets/vendor/jstree/themes/default/style.css' %}" />
-    <link rel="stylesheet" href="{% static 'octopus/assets/stylesheets/theme-custom.css' %}">
-{#    <link rel="stylesheet" href="{% static 'octopus/assets/vendor/dropzone/css/dropzone.css' %}" />#}
-    <link rel="stylesheet" href="{% static 'dropzone/dist/basic.css' %}" />
-    <link rel="stylesheet" href="{% static 'dropzone/dist/dropzone.css' %}" />
+{% block css %}
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/filestorage/bundle.css" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'dist/filestorage/bundle.css' %}" />
+    {% endif %}
 {% endblock %}

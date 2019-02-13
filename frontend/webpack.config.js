@@ -1,12 +1,7 @@
 var path = require("path");
 var webpack = require("webpack");
-var HtmlWebpackPlugin = require("html-webpack-plugin")
-var CleanWebpackPlugin = require("clean-webpack-plugin")
-var ExtractTextPlugin = require("extract-text-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-var extractPlugin = new ExtractTextPlugin({
-	filename: "main.css"
-})
+
 
 const config = {
 	// Common Configuration
@@ -22,7 +17,7 @@ const config = {
 	            	]
 	        },
 	        {
-	        	test: /\.(jpg|png)$/,
+	        	test: /\.(jpg|png|gif)$/,
 	        	use: [
 	        		{
 	        			loader: "file-loader",
@@ -52,6 +47,7 @@ const config = {
 	        },
 	        {
 	        	test: /\.js$/,
+			    exclude: /(node_modules|bower_components)/,
 	        	use: [
 	        		{
 	        			loader: "babel-loader",
@@ -63,20 +59,19 @@ const config = {
 	        },
 			{
 				test: /modernizr/,
-				loader: 'imports-loader?this=>window!exports-loader?window.Modernizr'}
+				loader: 'imports-loader?this=>window!exports-loader?window.Modernizr'
+			}
 		]
 	},
 	plugins: [
+		// ~/vendor/fullcalendar/3.10.0/lib/jquery.min.js
 		new webpack.ProvidePlugin({
-			$: "jquery",
-			jQuery: "jquery"
+			//$: path.resolve(__dirname, "~/vendor/jquery/jquery.min.js"),
+			//jQuery: path.resolve(__dirname, "~/vendor/jquery/jquery.min.js")
+			//moment: path.resolve(__dirname, "src/vendor/moment/moment.min.js")
+			// $: "jquery",
+			// jQuery: "jquery"
 		}),
-		// new webpack.ProvidePlugin({
-		// 	dt: "datatables.net"
-		// }),
-		// new HtmlWebpackPlugin({
-		// 	template: "src/index.html"
-		// }),
 	    new MiniCssExtractPlugin({  // Evtl sinnlos ? funktioniert auch ohne
 	      filename: "[name].css",
     	  chunkFilename: "[id].css"
@@ -93,10 +88,12 @@ const config = {
 };
 
 const baseConfig = Object.assign({}, config, {
-	entry: "./src/base/js/app.js",
+	entry: {
+		"bundle": "./src/base/js/app.js"
+	},
 	output: {
 		path: path.resolve(__dirname, "../static/dist/base/"),
-		filename: "bundle.js",
+		filename: "[name].js",
 		publicPath: "/build/base/"
 	},
     devServer: {
@@ -110,18 +107,62 @@ const baseConfig = Object.assign({}, config, {
 
 
 const accountUserListConfig = Object.assign({}, config, {
-	entry: "./src/account/user_list/js/app.js",
+	entry: {
+		bundle: "./src/account/user_list/js/app.js"
+	},
 	output: {
 		path: path.resolve(__dirname, "../static/dist/account/user_list/"),
-		filename: "bundle.js",
+		filename: "[name].js",
 		publicPath: "/build/account/user_list/"
 	},
+	plugins: [
+		// ~/vendor/fullcalendar/3.10.0/lib/jquery.min.js
+		new webpack.ProvidePlugin({
+			//$: path.resolve(__dirname, "~/vendor/jquery/jquery.min.js"),
+			//jQuery: path.resolve(__dirname, "~/vendor/jquery/jquery.min.js")
+			//moment: path.resolve(__dirname, "src/vendor/moment/moment.min.js")
+			$: "jquery",
+			jQuery: "jquery"
+		}),
+	    new MiniCssExtractPlugin({  // Evtl sinnlos ? funktioniert auch ohne
+	      filename: "[name].css",
+    	  chunkFilename: "[id].css"
+    	})
+		//, new CleanWebpackPlugin(["dist"])
+	]
+})
+
+
+const appointmentConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/appointment/base/js/app.js", "./src/appointment/base/js/datetimepicker.js",
+				 "./src/appointment/base/js/fullcalendar.js"],
+	},
+	//	    "~/vendor/bootstrap-datetimepicker/4.17.47/build/js/bootstrap-datetimepicker.min.js"
+	output: {
+		path: path.resolve(__dirname, "../static/dist/appointment/base/"),
+		filename: "[name].js",
+		publicPath: "/build/appointment/base/"
+	}
+})
+
+
+const filestorageConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/filestorage/js/app.js"],
+	},
+	//	    "~/vendor/bootstrap-datetimepicker/4.17.47/build/js/bootstrap-datetimepicker.min.js"
+	output: {
+		path: path.resolve(__dirname, "../static/dist/filestorage/"),
+		filename: "[name].js",
+		publicPath: "/build/filestorage/"
+	}
 })
 
 
 module.exports = [
 	baseConfig,
-	accountUserListConfig
+	accountUserListConfig,
+	appointmentConfig,
+	filestorageConfig
 ]
-
-

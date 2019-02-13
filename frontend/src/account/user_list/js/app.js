@@ -1,3 +1,4 @@
+import "~/account/base/js/app.js"
 import '~/account/user_list/css/main.css'
 
 // import '../../vendor/datatables/datatables.min.css'
@@ -5,20 +6,12 @@ import '~/account/user_list/css/main.css'
 import '~/vendor/datatables/DataTables-1.10.18/css/dataTables.bootstrap.min.css'
 import '~/vendor/datatables/Responsive-2.2.2/css/responsive.bootstrap.min.css'
 
-
-
-import "~/base/js/app.js"
-
-
 import '~/vendor/datatables/datatables.min.js'
+
 import '~/vendor/datatables/DataTables-1.10.18/js/dataTables.bootstrap.js'
 
 import '~/vendor/datatables/Responsive-2.2.2/js/dataTables.responsive.js'
 import '~/vendor/datatables/Responsive-2.2.2/js/responsive.bootstrap.js'
-
-// import '../vendor/Bootstrap3/css/bootstrap.min.css'
-// import '../vendor/Bootstrap3/css/bootstrap-theme.min.css'
-// import '../vendor/Bootstrap3/js/bootstrap.min.js'
 
 
 const german_translation =
@@ -86,7 +79,7 @@ $(document).ready(function(){
 	    const search = $(".dataTables_filter")
         const search_input = $(".dataTables_filter input")
 
-        search_input.css("margin-left", "0.9em" )
+        search_input.css("margin-left", "0.9em")
 
         search.removeClass("dataTables_filter")
         search.addClass("text-right")

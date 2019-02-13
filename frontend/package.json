@@ -13,8 +13,10 @@
   "dependencies": {
     "bootstrap": "^3.4.0",
     "clean-webpack-plugin": "^1.0.0",
+    "fullcalendar": "^3.10.0",
     "imports-loader": "^0.8.0",
-    "jquery": "^3.3.1"
+    "jquery": "^3.3.1",
+    "moment": "^2.24.0"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

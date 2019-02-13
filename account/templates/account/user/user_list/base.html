@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block specific_page_vendor_css %}
+{% block css %}
     {% if settings.WEBPACK_DEV_SERVER is True %}
-        <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/account/user_list/main.css" />
+        <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/account/user_list/bundle.css" />
     {% else %}
-        <link rel="stylesheet" href="{% static 'dist/account/user_list/main.css' %}" />
+        <link rel="stylesheet" href="{% static 'dist/account/user_list/bundle.css' %}" />
     {% endif %}
 {% endblock %}
 
@@ -16,4 +16,8 @@
     {% else %}
         <script src="{% static 'dist/account/user_list/bundle.js' %}"></script>
     {% endif %}
+
+    <script>
+    </script>
+
 {% endblock %}

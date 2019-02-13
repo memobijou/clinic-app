@@ -68,6 +68,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
         return Response(data)
 
+
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'', AppointmentViewSet)
