@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/account/user_list/bundle.css" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'dist/account/user_list/bundle.css' %}" />
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    <script>
+        var api_url = "{% url 'account:group_datatables' %}";
+    </script>
+    <!-- Specific Page Vendor -->
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <script src="http://{{ settings.PUBLIC_IP }}:8080/build/account/group_list/bundle.js"></script>
+    {% else %}
+        <script src="{% static 'dist/account/group_list/bundle.js' %}"></script>
+    {% endif %}
+
+    <script>
+    </script>
+
+{% endblock %}

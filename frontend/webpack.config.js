@@ -132,6 +132,17 @@ const accountUserListConfig = Object.assign({}, config, {
 	]
 })
 
+const accountGroupListConfig = Object.assign({}, config, {
+	entry: {
+		bundle: "./src/account/group_list/js/app.js"
+	},
+	output: {
+		path: path.resolve(__dirname, "../static/dist/account/group_list/"),
+		filename: "[name].js",
+		publicPath: "/build/account/group_list/"
+	}
+})
+
 
 const appointmentConfig = Object.assign({}, config, {
 	entry: {
@@ -164,5 +175,6 @@ module.exports = [
 	baseConfig,
 	accountUserListConfig,
 	appointmentConfig,
-	filestorageConfig
+	filestorageConfig,
+	accountGroupListConfig
 ]

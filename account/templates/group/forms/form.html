@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Gruppe bearbeiten</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span>Gruppe bearbeiten</span></li>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <form method="POST" id="form">{% csrf_token %}
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+
+                        <h2 class="panel-title">{{ object.name }}</h2>
+                            <br/>
+                            {{ form.name }}
+                            {{ form.name.errors }}
+                            <br/>
+                    </header>
+                    <div class="panel-body text-center">
+                        <div class="col-md-12" style="padding-bottom:25px;">
+                            {{ form.users }}
+                            {{ form.users.errors }}
+                        </div>
+                        <div class="col-md-12">
+                            <div>
+                                <button class="btn btn-primary">Änderungen speichern</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </section>
+        </div>
+    </div>
+
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="panel-actions">
+                <a href="#" class="fa fa-caret-down"></a>
+                <a href="#" class="fa fa-times"></a>
+            </div>
+            <h2 class="panel-title">Mitglieder {{ object.name }}</h2>
+        </header>
+
+        <div class="panel-body">
+            <div class="col-md-12">
+                {% with users=object.users.all %}
+                    {% if users.count > 0 %}
+                        {% for user in users %}
+                            {{ user }}
+                        {% endfor %}
+                    {% else %}
+                         Dieser Gruppe sind keine Benutzer zugewiesen
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </section>
+<!-- end: page -->
+    <style>
+    ul {
+      padding-left:0;
+      list-style: none;
+    }
+    li {
+      display: inline;
+      padding-right:25px;
+    }
+    </style>
+{% endblock %}
+
+
+{% block examples %}
+
+{% endblock %}
