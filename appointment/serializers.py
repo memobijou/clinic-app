@@ -3,7 +3,7 @@ from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
-from appointment.models import Appointment
+from appointment.models import Appointment, DutyRoster
 import datetime
 
 
@@ -64,3 +64,17 @@ class AppointmentViewSet(viewsets.ModelViewSet):
             data = data.filter(is_conference=True)
 
         return Response(data)
+
+
+# Serializers define the API representation.
+class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = DutyRoster
+        fields = ('pk','upload_date', "file", "calendar_week")
+
+
+# ViewSets define the view behavior.
+class DutyRosterViewSet(viewsets.ModelViewSet):
+    queryset = DutyRoster.objects.all()
+    serializer_class = DutyRosterSerializer
+    pagination_class = LimitOffsetPagination

@@ -13,3 +13,4 @@ User.add_to_class("__str__", get_name)
 class Group(models.Model):
     name = models.CharField(null=True, blank=False, max_length=200)
     users = models.ManyToManyField(User, blank=True, related_name="groups_list")
+    tasks = models.ManyToManyField("taskmanagement.Task", blank=True, related_name="groups_list")

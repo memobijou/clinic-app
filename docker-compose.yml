@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile.web
     tty: true
     environment:
-      - public_ip=192.168.178.41
+      - public_ip=88.73.234.174
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/clinic-app

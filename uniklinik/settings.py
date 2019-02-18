@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'appointment',
     'rest_framework',
     'filestorage',
-    "uniklinik"
+    "uniklinik",
+    'taskmanagement'
 ]
 
 
