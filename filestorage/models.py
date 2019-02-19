@@ -9,5 +9,5 @@ class FileDirectory(models.Model):
 class File(models.Model):
     file = models.FileField(null=True, verbose_name="Datei")
     parent_directory = models.ForeignKey("filestorage.FileDirectory", null=True, verbose_name="Ordnerstruktur",
-                                         on_delete=models.SET_NULL)
+                                         on_delete=models.SET_NULL, related_name="files")
 
