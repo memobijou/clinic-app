@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework import routers
 
 from appointment.duty_roster.datatables import DutyRosterDatatables
+from appointment.duty_roster.views import DutyRosterView
 from appointment.serializers import AppointmentViewSet
 from appointment.views import AppointmentView, InfoboxView, ConferenceView, InfoboxUpdateView, ConferenceUpdateView
 from appointment.duty_roster.serializers import DutyRosterViewSet
@@ -22,4 +23,6 @@ urlpatterns = [
     path(r'infobox/<int:pk>/edit', InfoboxUpdateView.as_view(), name="edit_infobox"),
     path(r'conference/<int:pk>/edit', ConferenceUpdateView.as_view(), name="edit_conference"),
     path(r'duty-roster/datatables', DutyRosterDatatables.as_view(), name="duty_roster_datatables"),
+    path(r'duty-roster/list', DutyRosterView.as_view(), name="duty_roster_list"),
+
 ]

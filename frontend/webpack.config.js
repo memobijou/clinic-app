@@ -158,6 +158,20 @@ const appointmentConfig = Object.assign({}, config, {
 })
 
 
+const dutyRosterConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/appointment/duty_roster/js/app.js",],
+	},
+	//	    "~/vendor/bootstrap-datetimepicker/4.17.47/build/js/bootstrap-datetimepicker.min.js"
+	output: {
+		path: path.resolve(__dirname, "../static/dist/appointment/duty_roster/"),
+		filename: "[name].js",
+		publicPath: "/build/appointment/duty_roster/"
+	}
+})
+
+
+
 const filestorageConfig = Object.assign({}, config, {
 	entry: {
 		bundle: ["./src/filestorage/js/app.js"],
@@ -186,6 +200,7 @@ module.exports = [
 	baseConfig,
 	accountUserListConfig,
 	appointmentConfig,
+	dutyRosterConfig,
 	filestorageConfig,
 	accountGroupListConfig,
 	taskManagementConfig

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block js %}
+    <script>
+        var api_url = "{% url "appointment:duty_roster_datatables" %}";
+    </script>
+    <!-- Specific Page Vendor -->
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <script src="http://{{ settings.PUBLIC_IP }}:8080/build/appointment/duty_roster/bundle.js"></script>
+    {% else %}
+        <script src="{% static 'dist/appointment/duty_roster/bundle.js' %}"></script>
+    {% endif %}
+{% endblock %}
+
+
+{% block css %}
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/appointment/duty_roster/bundle.css" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'dist/appointment/duty_roster/bundle.css' %}" />
+    {% endif %}
+{% endblock %}

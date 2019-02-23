@@ -1,0 +1,21 @@
+{% extends 'appointment/duty_roster/base.html' %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Dienstplan</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span>Dienstplan</span></li>
+{% endblock %}
+
+
+{% block content %}
+    <div class="panel-body">
+        <div class="col-md-12">
+            <table class="table table-bordered table-striped table-hover" id="datatable-default">
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

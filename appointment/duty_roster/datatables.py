@@ -1,13 +1,14 @@
 from django.db.models import Q
 from django.db.models.functions import Lower
 from django.urls import reverse_lazy
+from appointment.duty_roster.serializers import DutyRosterSerializer
 from appointment.models import DutyRoster
 from uniklinik.mixins import DatatablesMixin
 
 
 class DutyRosterDatatables(DatatablesMixin):
     queryset = DutyRoster.objects.all()
-    #serializer_class = DutyRosterSerializer
+    serializer_class = DutyRosterSerializer
 
     def __init__(self):
         super().__init__()
@@ -33,6 +34,6 @@ class DutyRosterDatatables(DatatablesMixin):
 
     def get_data(self, page):
         data = {"results": [[f'<p><a href="{reverse_lazy("account:edit_group", kwargs={"pk": query.pk})}">Bearbeiten</a></p>',
-                             query.name] for query in page],
+                             query.calendar_week, query.file.url] for query in page],
                 "records_total": self.queryset.count()}
         return data

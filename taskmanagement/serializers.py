@@ -47,12 +47,18 @@ class GroupTaskViewSet(viewsets.ModelViewSet):
     serializer_class = GroupTaskSerializer
     pagination_class = LimitOffsetPagination
 
-    #
-    # def get_queryset(self):
-    #     self.filter_by_user_id()
-    #     self.filter_by_name()
-    #     self.filter_by_name_exact()
-    #     return self.queryset
+
+    def get_queryset(self):
+        self.filter_by_group_id()
+        return self.queryset
+
+    def filter_by_group_id(self):
+        group_ids = self.request.GET.getlist("group_id")
+
+        if len(group_ids) > 0:
+            groups = Group.objects.filter(pk__in=group_ids).values("pk")
+            self.queryset = self.queryset.filter(pk__in=groups)
+
     #
     # def filter_by_user_id(self):
     #     user_id = self.request.GET.get("user_id")
