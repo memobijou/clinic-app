@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Aufgaben {{ instance }}</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span>Aufgaben {{ instance }}</span></li>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+            </section>
+        </div>
+    </div>
+    {% for task, task_form in tasks %}
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="#" class="fa fa-caret-down"></a>
+                    <a href="#" class="fa fa-times"></a>
+                </div>
+                <h2 class="panel-title">{{ task.name }}</h2>
+            </header>
+
+            <div class="panel-body">
+                <div class="col-md-12">
+                    {% if instance.users.count > 0 %}
+                        <form method="POST" action="{% url 'taskmanagement:new_task_users' task_pk=task.pk group_pk=instance.pk %}">{% csrf_token %}
+                            {% if form.instance == task_form.instance %}
+                                {{ form.as_p }}
+                            {% else %}
+                                {{ task_form.as_p }}
+                            {% endif %}
+                            <button type="submit" class="btn btn-primary">Speichern</button>
+                        </form>
+                    {% endif %}
+                    {% with userstasks=task.usertasks.all %}
+                        {% if userstasks.count > 0 %}
+                            <hr/>
+                            {% for usertask in userstasks %}
+                                {{ usertask.user }}
+                                {% if usertask.completed == True %}
+                                    <span class="glyphicon glyphicon-ok text-success"></span>
+                                {% else %}
+                                    <span class="glyphicon glyphicon-remove text-danger"></span>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <br/>
+                            Diese Aufgabe wurde noch an keinen Benutzer erteilt
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </section>
+    {% endfor %}
+<!-- end: page -->
+    <style>
+    ul {
+      padding-left:0;
+      list-style: none;
+    }
+    li {
+      display: inline;
+      padding-right:25px;
+    }
+    </style>
+{% endblock %}
+
+
+{% block examples %}
+
+{% endblock %}

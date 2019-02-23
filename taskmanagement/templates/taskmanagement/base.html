@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/taskmanagement/bundle.css" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'dist/taskmanagement/bundle.css' %}" />
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    <script>
+        var api_url = "{% url 'taskmanagement:group_task_datatables' %}";
+    </script>
+    <!-- Specific Page Vendor -->
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <script src="http://{{ settings.PUBLIC_IP }}:8080/build/taskmanagement/bundle.js"></script>
+    {% else %}
+        <script src="{% static 'dist/taskmanagement/bundle.js' %}"></script>
+    {% endif %}
+
+    <script>
+    </script>
+
+{% endblock %}

@@ -7,11 +7,16 @@ from appointment.models import Appointment
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
+from uniklinik.forms import BootstrapModelForm
 
-class InfoboxForm(forms.ModelForm):
+
+class InfoboxForm(BootstrapModelForm):
     class Meta:
         model = Appointment
-        fields = ["start_date", "end_date", "topic", "description", "promoter", "place"]
+        fields = ["start_date", "end_date", "topic", "description", "groups", "place"]
+        widgets = {
+            'groups': forms.CheckboxSelectMultiple,
+        }
 
     def clean(self):
         self.instance.is_infobox = True
@@ -19,17 +24,18 @@ class InfoboxForm(forms.ModelForm):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs["class"] = "form-control"
         self.fields["start_date"].widget.attrs["class"] = "datetimepicker form-control"
         self.fields["end_date"].widget.attrs["class"] = "datetimepicker form-control"
         self.fields["description"].widget.attrs["rows"] = "5"
 
 
-class ConferenceForm(forms.ModelForm):
+class ConferenceForm(BootstrapModelForm):
     class Meta:
         model = Appointment
-        fields = ["start_date", "end_date", "topic", "description", "place"]
+        fields = ["start_date", "end_date", "topic", "description", "place", "groups"]
+        widgets = {
+            'groups': forms.CheckboxSelectMultiple,
+        }
 
     def clean(self):
         self.instance.is_conference = True
@@ -37,8 +43,6 @@ class ConferenceForm(forms.ModelForm):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs["class"] = "form-control"
         self.fields["start_date"].widget.attrs["class"] = "datetimepicker form-control"
         self.fields["end_date"].widget.attrs["class"] = "datetimepicker form-control"
         self.fields["description"].widget.attrs["rows"] = "5"
@@ -124,7 +128,9 @@ class InfoboxView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         if self.infobox_form.is_valid() is True:
-            instance = self.infobox_form.save()
+            instance = self.infobox_form.save(commit=False)
+            instance.promoter = request.user
+            instance.save()
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
         else:
             return render(request, "appointment/appointment.html", self.get_context())
@@ -160,7 +166,9 @@ class ConferenceView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         if self.conference_form.is_valid() is True:
-            instance = self.conference_form.save()
+            instance = self.conference_form.save(commit=False)
+            instance.promoter = request.user
+            instance.save()
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
         else:
             return render(request, "appointment/appointment.html", self.get_context())

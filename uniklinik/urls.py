@@ -26,5 +26,6 @@ urlpatterns = [
     path('account/', include(("account.urls", "account"), namespace="account")),
     path('appointment/', include(("appointment.urls", "appointment"), namespace="appointment")),
     path('filestorage/', include(("filestorage.urls", "filestorage"), namespace="filestorage")),
+    path('taskmanagement/', include(("taskmanagement.urls", "taskmanagement"), namespace="taskmanagement")),
     path(r'api-auth/', include('rest_framework.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

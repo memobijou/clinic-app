@@ -17,6 +17,8 @@ class Group(models.Model):
     users = models.ManyToManyField(User, blank=True, related_name="groups_list")
     tasks = models.ManyToManyField("taskmanagement.Task", blank=True, related_name="groups_list")
 
+    def __str__(self):
+        return f"{self.name}"
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

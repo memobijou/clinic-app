@@ -1,0 +1,64 @@
+{% extends 'taskmanagement/base.html' %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Aufgaben Übersicht</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span>Aufgaben Übersicht</span></li>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions">
+                        <a href="#"></a>
+                    </div>
+
+                    <h2 class="panel-title">Neue Aufgabe</h2>
+                    <form method="POST" action="{% url 'taskmanagement:new_task' %}">{% csrf_token %}
+                        <br/>
+                        {{ form.name }}
+                        {{ form.name.errors }}
+                        <br/>
+                        <div class="checkbox-wrapper">
+                            {{ form.groups }}
+                            {{ form.groups.errors }}
+                        </div>
+                        <br/>
+                        <div class="text-right">
+                            <button class="btn btn-primary">Aufgabe anlegen</button>
+                        </div>
+                    </form>
+                </header>
+            </section>
+        </div>
+    </div>
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="panel-actions">
+                <a href="#" class="fa fa-caret-down"></a>
+                <a href="#" class="fa fa-times"></a>
+            </div>
+            <h2 class="panel-title">Aufgaben Übersicht</h2>
+        </header>
+
+        <div class="panel-body">
+            <div class="col-md-12">
+                <table class="table table-bordered table-striped table-hover" id="datatable-default">
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+<!-- end: page -->
+{% endblock %}
+
+
+{% block examples %}
+
+{% endblock %}

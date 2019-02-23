@@ -170,11 +170,23 @@ const filestorageConfig = Object.assign({}, config, {
 	}
 })
 
+const taskManagementConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/taskmanagement/js/app.js"],
+	},
+	output: {
+		path: path.resolve(__dirname, "../static/dist/taskmanagement/"),
+		filename: "[name].js",
+		publicPath: "/build/taskmanagement/"
+	}
+})
+
 
 module.exports = [
 	baseConfig,
 	accountUserListConfig,
 	appointmentConfig,
 	filestorageConfig,
-	accountGroupListConfig
+	accountGroupListConfig,
+	taskManagementConfig
 ]
