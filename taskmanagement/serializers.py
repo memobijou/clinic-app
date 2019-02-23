@@ -106,7 +106,7 @@ class GroupTaskDatatables(DatatablesMixin):
                 f'<p><a href="{reverse_lazy("taskmanagement:edit_task", kwargs={"pk": query.pk})}">Bearbeiten</a></p>',
                 query.name,
                 self.get_tasks(tasks),
-                self.get_tasks_users(tasks)
+                self.get_users(query)
             ])
         data = {"results": results,
                 "records_total": self.queryset.count()}
@@ -118,8 +118,8 @@ class GroupTaskDatatables(DatatablesMixin):
             tasks_html += f'<p>{query.name}</p>'
         return tasks_html
 
-    def get_tasks_users(self, tasks):
-        tasks_users = User.objects.filter(tasks__pk__in=tasks.all())
+    def get_users(self, query):
+        tasks_users = User.objects.filter(groups_list__in=[query]).distinct()
         tasks_users_html = ""
         for query in tasks_users:
             tasks_users_html += f'<p>{query.first_name} {query.last_name}</p>'

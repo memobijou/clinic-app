@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Dienstplan</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span>Terminplanung</span></li>
+{% endblock %}
+
+
+{% block content %}
+    <div class="panel-body">
+        <div class="col-md-12">
+            <div id="calendar"></div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        var api_url = "{% url "appointment:appointment-calendar" %}";
+    </script>
+    <!-- Specific Page Vendor -->
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <script src="http://{{ settings.PUBLIC_IP }}:8080/build/appointment/duty-roster/base/bundle.js"></script>
+    {% else %}
+        <script src="{% static 'dist/appointment/duty-roster/base/bundle.js' %}"></script>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block css %}
+
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/appointment/duty-roster/base/bundle.css" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'dist/appointment/duty-roster/base/bundle.css' %}" />
+    {% endif %}
+
+{% endblock %}

@@ -128,7 +128,7 @@ class InfoboxView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         if self.infobox_form.is_valid() is True:
-            instance = self.infobox_form.save(commit=False)
+            instance = self.infobox_form.save()
             instance.promoter = request.user
             instance.save()
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
@@ -166,7 +166,7 @@ class ConferenceView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         if self.conference_form.is_valid() is True:
-            instance = self.conference_form.save(commit=False)
+            instance = self.conference_form.save()
             instance.promoter = request.user
             instance.save()
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))

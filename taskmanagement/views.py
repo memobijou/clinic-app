@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -37,10 +38,13 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
         new_groups = form.cleaned_data.get("groups")
         for new_group in new_groups:
             instance.groups_list.add(new_group)
+        print(new_groups)
+        users = User.objects.filter(groups_list__in=new_groups)
+        UserTask.objects.bulk_create([UserTask(user=user, task=instance) for user in users])
         return super().form_valid(form)
 
 
-class UserTaskCreateView(LoginRequiredMixin, generic.UpdateView):
+class UserTaskUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = UserTaskForm
     template_name = "taskmanagement/task_detail.html"
     group = None
@@ -66,8 +70,11 @@ class UserTaskCreateView(LoginRequiredMixin, generic.UpdateView):
     def form_valid(self, form):
         instance = self.object
         users = form.cleaned_data.get("users")
-        assigned_users_tasks = UserTask.objects.filter(user__in=users, task=instance)
-        unassigned_users_tasks = UserTask.objects.filter(~Q(user__in=users) & Q(task=instance))
+        assigned_users_tasks = UserTask.objects.filter(
+            user__in=users, task=instance, user__groups_list__in=[self.group])
+        unassigned_users_tasks = UserTask.objects.filter(
+            ~Q(user__in=users) & Q(task=instance, user__groups_list__in=[self.group])
+        )
         unassigned_users_tasks.delete()
         users = users.exclude(id__in=assigned_users_tasks.values_list("user_id", flat=True))
 
