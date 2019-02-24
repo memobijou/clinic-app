@@ -76,10 +76,16 @@ class GroupTaskViewSet(viewsets.ModelViewSet):
     #         self.queryset = self.queryset.filter(name__iexact=name)
 
 
+class EndUserTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserTask
+        fields = ("pk", "user", "task", "completed")
+
+
 # ViewSets define the view behavior.
 class UserTaskViewSet(viewsets.ModelViewSet):
     queryset = UserTask.objects.all()
-    serializer_class = UserTaskSerializer
+    serializer_class = EndUserTaskSerializer
     pagination_class = LimitOffsetPagination
 
 
