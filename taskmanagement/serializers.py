@@ -76,6 +76,31 @@ class GroupTaskViewSet(viewsets.ModelViewSet):
     #         self.queryset = self.queryset.filter(name__iexact=name)
 
 
+# ViewSets define the view behavior.
+class UserTaskViewSet(viewsets.ModelViewSet):
+    queryset = UserTask.objects.all()
+    serializer_class = UserTaskSerializer
+    pagination_class = LimitOffsetPagination
+
+
+    def get_queryset(self):
+        self.filter_by_user_id()
+        self.filter_by_task_id()
+        return self.queryset
+
+    def filter_by_user_id(self):
+        user_ids = self.request.GET.getlist("user_id")
+
+        if len(user_ids) > 0:
+            self.queryset = self.queryset.filter(user__id=user_ids)
+
+    def filter_by_task_id(self):
+        task_ids = self.request.GET.getlist("task_id")
+
+        if len(task_ids) > 0:
+            self.queryset = self.queryset.filter(task__id=task_ids)
+
+
 class GroupTaskDatatables(DatatablesMixin):
     queryset = Group.objects.all()
     serializer_class = GroupTaskSerializer
