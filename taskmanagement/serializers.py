@@ -92,13 +92,13 @@ class UserTaskViewSet(viewsets.ModelViewSet):
         user_ids = self.request.GET.getlist("user_id")
 
         if len(user_ids) > 0:
-            self.queryset = self.queryset.filter(user__id=user_ids)
+            self.queryset = self.queryset.filter(user__id__in=user_ids)
 
     def filter_by_task_id(self):
         task_ids = self.request.GET.getlist("task_id")
 
         if len(task_ids) > 0:
-            self.queryset = self.queryset.filter(task__id=task_ids)
+            self.queryset = self.queryset.filter(task__id__in=task_ids)
 
 
 class GroupTaskDatatables(DatatablesMixin):

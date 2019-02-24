@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2cc7dbe7-e3be-4627-bf7e-3dc9284478c5" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/taskmanagement/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taskmanagement/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/taskmanagement/urls.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,8 +52,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/taskmanagement/serializers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="254">
-              <caret line="89" column="4" selection-start-line="89" selection-start-column="4" selection-end-line="89" selection-end-column="4" />
+            <state relative-caret-position="335">
+              <caret line="100" column="61" selection-start-line="100" selection-start-column="61" selection-end-line="100" selection-end-column="61" />
               <folding>
                 <element signature="e#0#43#0" expanded="true" />
               </folding>
@@ -634,7 +633,7 @@
       <workItem from="1550444979486" duration="2746000" />
       <workItem from="1550447760285" duration="265000" />
       <workItem from="1550448208076" duration="19763000" />
-      <workItem from="1550532779737" duration="106685000" />
+      <workItem from="1550532779737" duration="106839000" />
     </task>
     <servers />
   </component>
@@ -650,7 +649,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="384971000" />
+    <option name="totallyTimeSpent" value="385125000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1110,8 +1109,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/taskmanagement/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="89" column="4" selection-start-line="89" selection-start-column="4" selection-end-line="89" selection-end-column="4" />
+        <state relative-caret-position="335">
+          <caret line="100" column="61" selection-start-line="100" selection-start-column="61" selection-end-line="100" selection-end-column="61" />
           <folding>
             <element signature="e#0#43#0" expanded="true" />
           </folding>
