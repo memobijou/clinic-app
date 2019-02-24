@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2cc7dbe7-e3be-4627-bf7e-3dc9284478c5" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/uniklinik/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/uniklinik/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uniklinik/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/uniklinik/settings.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -79,20 +79,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/uniklinik/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="215">
-              <caret line="160" lean-forward="true" selection-start-line="160" selection-end-line="160" />
+            <state relative-caret-position="232">
+              <caret line="43" column="18" lean-forward="true" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/uniklinik/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="439">
-              <caret line="34" column="24" selection-start-line="34" selection-start-column="24" selection-end-line="34" selection-end-column="24" />
+            <state relative-caret-position="241">
+              <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
               <folding>
                 <element signature="e#633#665#0" expanded="true" />
               </folding>
@@ -160,7 +160,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>alert</find>
       <find>DataTable(</find>
       <find>module: {</find>
       <find>a</find>
@@ -190,6 +189,7 @@
       <find>GroupTask</find>
       <find>List</find>
       <find>token</find>
+      <find>p</find>
     </findStrings>
     <replaceStrings>
       <replace>&quot;{% url 'octopus/assets</replace>
@@ -256,8 +256,8 @@
         <option value="$PROJECT_DIR$/appointment/duty_roster/datatables.py" />
         <option value="$PROJECT_DIR$/taskmanagement/urls.py" />
         <option value="$PROJECT_DIR$/taskmanagement/serializers.py" />
-        <option value="$PROJECT_DIR$/uniklinik/settings.py" />
         <option value="$PROJECT_DIR$/uniklinik/urls.py" />
+        <option value="$PROJECT_DIR$/uniklinik/settings.py" />
       </list>
     </option>
   </component>
@@ -636,7 +636,7 @@
       <workItem from="1550444979486" duration="2746000" />
       <workItem from="1550447760285" duration="265000" />
       <workItem from="1550448208076" duration="19763000" />
-      <workItem from="1550532779737" duration="108714000" />
+      <workItem from="1550532779737" duration="109177000" />
     </task>
     <servers />
   </component>
@@ -652,7 +652,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="387000000" />
+    <option name="totallyTimeSpent" value="387463000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1106,20 +1106,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/uniklinik/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
-          <caret line="160" lean-forward="true" selection-start-line="160" selection-end-line="160" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/uniklinik/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="439">
-          <caret line="34" column="24" selection-start-line="34" selection-start-column="24" selection-end-line="34" selection-end-column="24" />
+        <state relative-caret-position="241">
+          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
           <folding>
             <element signature="e#633#665#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/uniklinik/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="43" column="18" lean-forward="true" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
         </state>
       </provider>
     </entry>
