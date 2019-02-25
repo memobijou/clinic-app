@@ -31,6 +31,13 @@
             text-align: center;
 
         }
+        .dz-success-mark {
+            display:none;
+        }
+
+        .dz-error-mark{
+            display:none;
+        }
     </style>
 
     {% for directory in tree %}
@@ -53,7 +60,7 @@
 {#                                </span></div>#}
                         </form>
                         <br/>
-                        <div id="preview{{ directory.pk }}" class="dropzone" style="border-width:thin;">
+                        <div id="preview{{ directory.pk }}" class="dropzone col-md-12" style="border-width:thin;">
 
                         </div>
                     </div>
@@ -64,84 +71,43 @@
 {% endblock %}
 
 
-{% block specific_page_vendor_js %}
-    <!-- Specific Page Vendor -->
-    <script src="{% static 'octopus/assets/vendor/jstree/jstree.js'  %}"></script>
-    <script src="{% static 'octopus/assets/javascripts/ui-elements/examples.treeview.js' %}"></script>
-{#    <script src="{% static 'octopus/assets/vendor/dropzone/dropzone.js' %}"></script>#}
-    <script src="{% static 'dropzone/dist/dropzone.js' %}"></script>
+
+
+{% block js %}
     <script>
+        var directories = [];
+        {% for directory in tree %}
+            directories.push({name: "{{ directory.name }}", pk: "{{ directory.pk }}"});
+        {% endfor %}
 
-    Dropzone.autoDiscover = false;
+        var directory_files = {};
+        {% for directory in tree %}
+            var files = [];
+            directory_files["{{ directory.pk }}"] = files;
+            {% for file in directory.files.all %}
+                files.push(
+                    {
+                        name: "{{ file.file.name }}",
+                        size: "{{ file.file.size }}",
+                        pk: "{{ file.pk }}",
+                        url: "{{ file.file.url }}"
+                    }
+                );
+            {% endfor %}
+        {% endfor %}
 
-    var options_in_german = {
-      'dictDefaultMessage': '<h3>Legen Sie Dateien hier ab um Sie hochzuladen</h3><br/>(oder hier klicken)<br/><br/>',
-      'dictFallbackMessage': 'Ihr Browser unterstützt Drag&Drop Dateiuploads nicht',
-      'dictFallbackText': 'Benutzen Sie das Formular um Ihre Dateien hochzuladen',
-      'dictFileTooBig': 'Die Datei ist zu groß. Die maximale Dateigröße beträgt {{maxFileSize}}MB',
-      'dictInvalidFileType': 'Eine Datei dieses Typs kann nicht hochgeladen werden',
-      'dictResponseError': 'Der Server hat ihre Anfrage mit Status {{statusCode}} abgelehnt',
-      'dictCancelUpload': 'Hochladen abbrechen',
-      'dictCancelUploadConfirmation': null,
-      'dictRemoveFile': 'Datei entfernen',
-      'dictMaxFilesExceeded': 'Sie können keine weiteren Dateien mehr hochladen'
-    };
-
-    $.extend(window.Dropzone.prototype.defaultOptions, options_in_german);
-
-    {% for directory in tree %}
-
-        var dropzone_{{ directory.pk }} = new Dropzone(
-            //id of drop zone element 1
-            '#dropzone-example-{{ directory.pk }}',  {
-                maxFilesize: 5,
-                addRemoveLinks: true,
-                dictResponseError: 'Serverfehler',
-                autodiscover: false,
-                success: function(file, response){
-                    file["pk"] = response.pk;
-                },
-                init: function() {
-                    {% for file in directory.file_set.all %}
-                        var mockFile = { name: "{{ file.file.name }}", size: "{{ file.file.size }}", pk: "{{ file.pk }}"};
-                        this.emit("addedfile", mockFile);
-
-                        this.createThumbnailFromUrl(mockFile, "{{ file.file.url }}");
-                        this.emit("complete", mockFile);
-
-                    {% endfor %}
-
-
-                    this.on("removedfile", function(file) {
-                      // Do a post request and pass this path and use server-side language to delete the file
-{#                      $.post("delete.php", { file_to_be_deleted: server_file } );#}
-                        var url = '{% url "filestorage:files-detail" pk=0 %}'.replace("0", file.pk);
-
-                        $.ajax({
-                           beforeSend: function(xhr, settings) {
-                                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                                }
-                           },
-                           url: url,
-                           type: 'DELETE'
-                        });
-                    });
-
-
-                },
-                previewsContainer: '#preview{{ directory.pk }}'
-
-            }
-        );
-
-    {% endfor %}
-
-    $("div").remove(".dz-progress");
+        var url = "{% url "filestorage:files-detail" pk=0 %}";
+        window.CSRF_TOKEN = "{{ csrf_token }}";
 
     </script>
-
+    <!-- Specific Page Vendor -->
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <script src="http://{{ settings.PUBLIC_IP }}:8080/build/filestorage/bundle.js"></script>
+    {% else %}
+        <script src="{% static 'dist/filestorage/bundle.js' %}"></script>
+    {% endif %}
 {% endblock %}
+
 
 {% block css %}
     {% if settings.WEBPACK_DEV_SERVER is True %}

@@ -39,7 +39,7 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
         for new_group in new_groups:
             instance.groups_list.add(new_group)
         print(new_groups)
-        users = User.objects.filter(groups_list__in=new_groups)
+        users = User.objects.filter(groups_list__in=new_groups).distinct()
         UserTask.objects.bulk_create([UserTask(user=user, task=instance) for user in users])
         return super().form_valid(form)
 
