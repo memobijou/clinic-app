@@ -11,7 +11,7 @@ from appointment.duty_roster.serializers import DutyRosterViewSet
 appointment_router = routers.DefaultRouter()
 appointment_router.register(r'', AppointmentViewSet)
 duty_roster_router = routers.DefaultRouter()
-duty_roster_router.register(r'api', DutyRosterViewSet)
+duty_roster_router.register(r'api', DutyRosterViewSet, basename="duty_roster")
 
 
 urlpatterns = [

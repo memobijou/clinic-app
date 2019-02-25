@@ -23,6 +23,7 @@ class Group(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_admin = models.NullBooleanField(verbose_name="Administrations Status")
+    device_token = models.CharField(max_length=500, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"

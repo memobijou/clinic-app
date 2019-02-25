@@ -292,7 +292,7 @@
 												<a href="{% url 'account:user_list' %}">Benutzer Übersicht</a>
 											</li>
                                             <li>
-												<a href="{% url 'account:user_list' %}">Gruppen Übersicht</a>
+												<a href="{% url 'account:group_list' %}">Gruppen Übersicht</a>
 											</li>
 										</ul>
 									</li>
@@ -311,7 +311,7 @@
 										</a>
 									</li>
                                     <li class="nav nav-children">
-										<a href="{% url 'filestorage:tree' %}">
+										<a href="{% url 'appointment:duty_roster_list' %}">
 											<i class="fa fa-calendar-o" aria-hidden="true"></i>
 											<span>Dienstplan</span>
 										</a>
@@ -329,7 +329,7 @@
 										</a>
 									</li>
                                     <li class="nav nav-children">
-										<a href="{% url 'filestorage:tree' %}">
+										<a href="{% url 'taskmanagement:tasks_list' %}">
 											<i class="fa fa-check-square-o" aria-hidden="true"></i>
 											<span>Aufgabenliste</span>
 										</a>

@@ -5,6 +5,10 @@ import '~/appointment/duty_roster/css/main.css'
 
 import '~/vendor/datatables/DataTables-1.10.18/css/dataTables.bootstrap.min.css'
 import '~/vendor/datatables/Responsive-2.2.2/css/responsive.bootstrap.min.css'
+import '~/vendor/dropzone/5.5.1/dropzone.css'
+import '~/vendor/dropzone/5.5.1/basic.css'
+
+
 
 import 'script-loader!~/vendor/datatables/datatables.min.js'
 
@@ -12,6 +16,8 @@ import 'script-loader!~/vendor/datatables/DataTables-1.10.18/js/dataTables.boots
 
 import 'script-loader!~/vendor/datatables/Responsive-2.2.2/js/dataTables.responsive.js'
 import 'script-loader!~/vendor/datatables/Responsive-2.2.2/js/responsive.bootstrap.js'
+
+import 'script-loader!~/vendor/dropzone/5.5.1/dropzone.js'
 
 
 const german_translation =
@@ -62,9 +68,9 @@ $(document).ready(function(){
 	  language: german_translation,
 	  responsive: true,
       columnDefs: [
-        {targets: 0, title: "", name: "calendar_week", orderable: false},
-        {targets: 1, title: "Kalendarwoche", name: "calendar_week", orderable: false},
-        {targets: 2, title: "Terminplan", name: "file"},
+        //{targets: 0, title: "", name: "calendar_week", orderable: false},
+        {targets: 0, title: "Kalendarwoche", name: "calendar_week", orderable: false},
+        {targets: 1, title: "Terminplan", name: "file"},
 
       ],
 
@@ -89,4 +95,43 @@ $(document).ready(function(){
         "order": [[1, 'asc']]
 	} )
 
+
+
+
+    var options_in_german = {
+      'dictDefaultMessage': 'Dateien hier hochladen',
+      'dictFallbackMessage': 'Ihr Browser unterstützt Drag&Drop Dateiuploads nicht',
+      'dictFallbackText': 'Benutzen Sie das Formular um Ihre Dateien hochzuladen',
+      'dictFileTooBig': 'Die Datei ist zu groß. Die maximale Dateigröße beträgt {{maxFileSize}}MB',
+      'dictInvalidFileType': 'Eine Datei dieses Typs kann nicht hochgeladen werden',
+      'dictResponseError': 'Der Server hat ihre Anfrage mit Status {{statusCode}} abgelehnt',
+      'dictCancelUpload': 'Hochladen abbrechen',
+      'dictCancelUploadConfirmation': null,
+      'dictRemoveFile': 'Datei entfernen',
+      'dictMaxFilesExceeded': 'Sie können keine weiteren Dateien mehr hochladen'
+    };
+
+    $.extend(window.Dropzone.prototype.defaultOptions, options_in_german);
+
+
+    Dropzone.autoDiscover = false;
+
+    $("#duty_roster_dropzone").dropzone({
+      dictDefaultMessage: 'Dienstplan hier hochladen',
+      addRemoveLinks : true,
+      dictResponseError: 'Fehler beim hochladen der Datei!',
+      maxFiles: 1,
+      headers: {
+          "x-csrftoken": window.CSRF_TOKEN
+      },
+      //previewsContainer: '#preview',
+      init: function(){
+
+      },
+      success: function (file, response) {
+        this.removeFile(file);
+        location.reload()
+      }
+
+    });
 })

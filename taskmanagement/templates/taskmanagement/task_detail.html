@@ -28,19 +28,19 @@
 
             <div class="panel-body">
                 <div class="col-md-12">
-                    {% if instance.users.count > 0 %}
-                        <form method="POST" action="{% url 'taskmanagement:new_task_users' task_pk=task.pk group_pk=instance.pk %}">{% csrf_token %}
-                            {% if form.instance == task_form.instance %}
-                                {{ form.as_p }}
-                            {% else %}
-                                {{ task_form.as_p }}
-                            {% endif %}
-                            <button type="submit" class="btn btn-primary">Speichern</button>
-                        </form>
-                    {% endif %}
+{#                    {% if instance.users.count > 0 %}#}
+{#                        <form method="POST" action="{% url 'taskmanagement:new_task_users' task_pk=task.pk group_pk=instance.pk %}">{% csrf_token %}#}
+{#                            {% if form.instance == task_form.instance %}#}
+{#                                {{ form.as_p }}#}
+{#                            {% else %}#}
+{#                                {{ task_form.as_p }}#}
+{#                            {% endif %}#}
+{#                            <button type="submit" class="btn btn-primary">Speichern</button>#}
+{#                        </form>#}
+{#                    {% endif %}#}
                     {% with userstasks=task.usertasks.all %}
                         {% if userstasks.count > 0 %}
-                            <hr/>
+                            <!--<hr/>-->
                             {% for usertask in userstasks %}
                                 {{ usertask.user }}
                                 {% if usertask.completed == True %}

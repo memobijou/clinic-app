@@ -140,7 +140,7 @@ class GroupTaskDatatables(DatatablesMixin):
         for query in page:
             tasks = query.tasks.all()
             results.append([
-                f'<p><a href="{reverse_lazy("taskmanagement:edit_task", kwargs={"pk": query.pk})}">Bearbeiten</a></p>',
+                f'<p><a href="{reverse_lazy("taskmanagement:edit_task", kwargs={"pk": query.pk})}">Ansicht</a></p>',
                 query.name,
                 self.get_tasks(tasks),
                 self.get_users(query)

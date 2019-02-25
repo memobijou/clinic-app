@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views import View
@@ -6,7 +7,8 @@ from django import forms
 from appointment.models import Appointment
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-
+from pyfcm import FCMNotification
+import os
 from uniklinik.forms import BootstrapModelForm
 
 
@@ -101,6 +103,22 @@ class AppointmentView(LoginRequiredMixin, View):
                 "edit_infobox_form": self.edit_infobox_form, "edit_conference_form": self.edit_conference_form}
 
 
+def get_users_from_groups(groups):
+    users = User.objects.filter(groups_list__in=groups).distinct()
+    return users
+
+
+def send_push_notifications(users, title, message):
+    push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
+    registration_ids = []
+    for user in users:
+        if user.profile.device_token is not None:
+            registration_ids.append(user.profile.device_token)
+    if len(registration_ids) > 0:
+        result = push_service.notify_multiple_devices(
+            registration_ids=registration_ids, message_title=title, message_body=message, sound="default")
+        print(result)
+
 class InfoboxView(LoginRequiredMixin, View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -131,6 +149,8 @@ class InfoboxView(LoginRequiredMixin, View):
             instance = self.infobox_form.save()
             instance.promoter = request.user
             instance.save()
+            users = get_users_from_groups(instance.groups.all())
+            send_push_notifications(users, instance.topic, instance.description)
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
         else:
             return render(request, "appointment/appointment.html", self.get_context())
@@ -169,6 +189,8 @@ class ConferenceView(LoginRequiredMixin, View):
             instance = self.conference_form.save()
             instance.promoter = request.user
             instance.save()
+            users = get_users_from_groups(instance.groups.all())
+            send_push_notifications(users, instance.topic, instance.description)
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
         else:
             return render(request, "appointment/appointment.html", self.get_context())

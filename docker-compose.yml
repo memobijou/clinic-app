@@ -25,6 +25,7 @@ services:
     tty: true
     environment:
       - public_ip=0.0.0.0
+      - firebase_token=<dein token hier>
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/clinic-app

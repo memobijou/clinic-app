@@ -15,10 +15,13 @@ class Appointment(models.Model):
     groups = models.ManyToManyField("account.Group", related_name="appointments", verbose_name="Gruppen")
 
 class DutyRoster(models.Model):
-    upload_date = models.DateTimeField(null=True, verbose_name="Datum Dienstplan")
+    calendar_week_date = models.DateTimeField(null=True, verbose_name="Datum Dienstplan")
     file = models.FileField(null=True, verbose_name="Dienstplan")
+
+    class Meta:
+        ordering = ("-calendar_week_date", )
 
     @property
     def calendar_week(self):
-        if self.upload_date is not None:
-            return self.upload_date.isocalendar()[1]
+        if self.calendar_week_date is not None:
+            return self.calendar_week_date.isocalendar()[1]

@@ -33,7 +33,14 @@ class DutyRosterDatatables(DatatablesMixin):
         return self.queryset
 
     def get_data(self, page):
-        data = {"results": [[f'<p><a href="{reverse_lazy("account:edit_group", kwargs={"pk": query.pk})}">Bearbeiten</a></p>',
-                             query.calendar_week, query.file.url] for query in page],
+        data = {"results": [[
+                     #f'<p><a>Bearbeiten</a></p>',
+                     query.calendar_week, self.get_pdf(query)] for query in page
+        ],
                 "records_total": self.queryset.count()}
         return data
+
+    def get_pdf(self, query):
+       return f'''
+        <a href="{query.file.url}">Herunterladen</a>
+                '''
