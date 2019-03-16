@@ -1,26 +1,14 @@
-from django.contrib.auth import password_validation
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import PasswordChangeForm
 from django.views import View
-from django import forms
+from abc import ABCMeta, abstractmethod
 
-
-class CustomUserCreationForm(UserCreationForm):
-    class Meta:
-        model = User
-        fields = ('username', 'password1', 'password2', 'first_name', 'last_name', "email", "is_superuser")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs["class"] = "form-control"
+from account.forms import CustomUserCreationForm, ProfileForm, CustomPasswordChangeForm, EditForm
 
 
 class CreateUserView(LoginRequiredMixin, generic.CreateView):
@@ -35,46 +23,20 @@ class UserListView(LoginRequiredMixin, generic.ListView):
     queryset = User.objects.all()
 
 
-class ProfileForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name', "email", "is_superuser")
+class UserEditBaseView(LoginRequiredMixin, generic.UpdateView, metaclass=ABCMeta):
+    @property
+    @abstractmethod
+    def form_class(self):
+        pass
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs["class"] = "form-control"
-        self.fields["is_superuser"].widget.attrs["class"] = ""
-        self.fields["is_superuser"].widget.attrs["style"] = "cursor:pointer;"
-        if self.instance.is_superuser is True:
-            pass
-        print(self.instance.email)
+    @property
+    @abstractmethod
+    def template_name(self):
+        pass
 
-    def clean_is_superuser(self):
-        print(f" ????? 1!!!")
-        is_superuser = self.cleaned_data.get("is_superuser")
-        print(is_superuser)
-        print(self.instance.is_superuser)
-        if self.instance.is_superuser is True and (is_superuser is False or is_superuser is None):
-            self.add_error("is_superuser", "Ein Administrator kann diese Eigenschaft nicht abwählen")
-        return is_superuser
-
-
-class CustomPasswordChangeForm(PasswordChangeForm):
-    old_password = None
-
-    def clean_old_password(self):
-        return self.cleaned_data.get("old_password")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs["class"] = "form-control"
-
-
-class UserProfileView(LoginRequiredMixin, generic.UpdateView):
-    template_name = "account/user/profile/profile.html"
-    form_class = ProfileForm
+    @abstractmethod
+    def get_success_url(self):
+        pass
 
     def __init__(self):
         super().__init__()
@@ -102,8 +64,26 @@ class UserProfileView(LoginRequiredMixin, generic.UpdateView):
         context.update({"password_form": self.password_form})
         return context
 
+
+class UserProfileView(UserEditBaseView):
+    form_class = ProfileForm
+    template_name = "account/user/profile/profile.html"
+
     def get_success_url(self):
         return reverse_lazy("account:user_profile", kwargs={"pk": self.kwargs.get("pk")})
+
+
+class UserEditView(UserEditBaseView):
+    form_class = EditForm
+    template_name = "account/user/edit/edit.html"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
+    def get_success_url(self):
+        return reverse_lazy("account:user_edit", kwargs={"pk": self.kwargs.get("pk")})
 
 
 class ChangeUserPasswordView(LoginRequiredMixin, View):

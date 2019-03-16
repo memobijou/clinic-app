@@ -28,6 +28,8 @@ urlpatterns = [
     path('appointment/', include(("appointment.urls", "appointment"), namespace="appointment")),
     path('filestorage/', include(("filestorage.urls", "filestorage"), namespace="filestorage")),
     path('taskmanagement/', include(("taskmanagement.urls", "taskmanagement"), namespace="taskmanagement")),
+    path('accomplishment/', include(("accomplishment.urls", "accomplishment"), namespace="accomplishment")),
+    path('messaging/', include(("messaging.urls", "messaging"), namespace="messaging")),
     path(r'api-auth/', include('rest_framework.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

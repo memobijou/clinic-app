@@ -20,6 +20,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserTaskSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer()
+
     class Meta:
         model = UserTask
         fields = ("pk", "user", "completed")

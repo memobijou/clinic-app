@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+
+{% block horizontal_nav_title %}
+    <h2>Leistung bearbeiten</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span>Leistungen bearbeiten</span></li>
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ object.name }}</h2>
+                </div>
+                <div class="panel-body">
+                     <p>Gesamtfortschritt</p>
+                     <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="{{ current_score }}"
+                          aria-valuemin="0" aria-valuemax="100" style="width:{{ current_score }}%">
+                              {{ current_score }}%
+                          </div>
+                    </div>
+                    {% for user_accomplishment, user_score in users_scores %}
+                        <div class="row" style="padding-top:10px;">
+                            <div class="col-md-2 col-xs-2">
+                                 <span>{{ user_accomplishment.user }}</span>
+                            </div>
+                            <div class="col-md-6 col-xs-6">
+                                     <div class="progress">
+                                      <div class="progress-bar" role="progressbar" aria-valuenow="{{ user_score }}"
+                                      aria-valuemin="0" aria-valuemax="100" style="width:{{ user_score }}%">
+                                          {{ user_score }}%
+                                      </div>
+                                    </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    {% for user_accomplishment, user_score in non_groups_users_scores %}
+                        <div class="row" style="padding-top:10px;">
+                            <div class="col-md-2 col-xs-2">
+                                 <span style="text-decoration: line-through;">{{ user_accomplishment.user }}</span>
+                            </div>
+                            <div class="col-md-6 col-xs-6">
+                                     <div class="progress">
+                                      <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ user_score }}"
+                                      aria-valuemin="0" aria-valuemax="100" style="width:{{ user_score }}%">
+                                          {{ user_score }}%
+                                      </div>
+                                    </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+
+
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="panel-title">Leistung bearbeiten</h2>
+                </header>
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <form method="POST">{% csrf_token %}
+                            <br/>
+                            <p>
+                                <label for="{{ form.name.id }}">{{ form.name.label }}
+                                </label>
+                                {{ form.name }}
+                                {{ form.name.errors }}
+                            </p>
+                            <p>
+                                <label for="{{ form.full_score.id }}">{{ form.full_score.label }}
+                                </label>
+                                {{ form.full_score }}
+                                {{ form.full_score.errors }}
+                            </p>
+                            <div class="inline-checkboxes">
+                                <label for="{{ form.groups.id }}">Gruppen</label>
+                                {{ form.groups }}
+                                {{ form.groups.errors }}
+                            </div>
+                            <br/>
+                            <div class="text-right">
+                                <button class="btn btn-primary">Änderungen speichern</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}

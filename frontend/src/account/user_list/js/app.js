@@ -62,10 +62,13 @@ $(document).ready(function(){
 	  language: german_translation,
 	  responsive: true,
       columnDefs: [
-        {targets: 0, title: "Benutzername", name: "username"},
-        {targets: 1, title: "Vorname", name: "first_name"},
-        {targets: 2, title: "Nachname", name: "last_name"},
-        {targets: 3, title: "Email", name: "email"}
+        {targets: 0, title: "", name: "", orderrable:false},
+        {targets: 1, title: "Benutzername", name: "username"},
+        {targets: 2, title: "Vorname", name: "first_name"},
+        {targets: 3, title: "Nachname", name: "last_name"},
+        {targets: 4, title: "Email", name: "email"},
+        {targets: 5, title: "Mentor", name: "mentor"},
+        {targets: 6, title: "Schüler", name: "students"}
       ],
 
        // Mit ajax funktioniert muss nur angepasst werden auf REST API

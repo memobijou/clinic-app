@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Datei bearbeiten</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span><a href="{% url 'filestorage:tree' %}">Dateiverwaltung</a></span></li>
+{% endblock %}
+
+
+{% block content %}
+
+    <style>
+        .dz-message {
+            text-align: center;
+
+        }
+        .dz-success-mark {
+            display:none;
+        }
+
+        .dz-error-mark{
+            display:none;
+        }
+    </style>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions">
+                        <a href="#" class="fa fa-caret-down"></a>
+                    </div>
+
+                    <h2 class="panel-title">{{ file.file.name }}</h2>
+                </header>
+                <div class="panel-body">
+                    <div class="col-md-12 col-xs-12">
+                        <div id="preview{{ file.parent_directory.pk }}" class="dropzone" style="border-width:thin;">
+                    </div>
+                    </div>
+
+                    <br/>
+                    <div class="col-md-12 col-xs-12" style="padding-top:15px;">
+                        <form action="{% url 'filestorage:file_upload_edit' file_pk=file.pk %}"
+                              class="dropzone dz-square" id="dropzone-example-{{ file.parent_directory.pk }}"
+                              enctype="multipart/form-data" style="border-style: dashed;">{% csrf_token %}
+                        </form>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{% block js %}
+    <script>
+        var directories = [];
+        directories.push({name: "{{ file.parent_directory.name }}", pk: "{{ file.parent_directory.pk }}"});
+
+        var directory_files = {};
+        var files = [];
+        directory_files["{{ file.parent_directory.pk }}"] = files;
+        files.push(
+            {
+                name: "{{ file.file.name }}",
+                size: "{{ file.file.size }}",
+                pk: "{{ file.pk }}",
+                url: "{{ file.file.url }}",
+                version: "{{ file.version }}",
+                edit_view_url: "{% url 'filestorage:file' pk=file.pk %}",
+            }
+        );
+
+        var url = "{% url "filestorage:files-detail" pk=0 %}";
+        window.CSRF_TOKEN = "{{ csrf_token }}";
+
+    </script>
+    <!-- Specific Page Vendor -->
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <script src="http://{{ settings.PUBLIC_IP }}:8080/build/filestorage/edit/bundle.js"></script>
+    {% else %}
+        <script src="{% static 'dist/filestorage/edit/bundle.js' %}"></script>
+    {% endif %}
+{% endblock %}
+
+
+{% block css %}
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/filestorage/edit/bundle.css" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'dist/filestorage/edit/bundle.css' %}" />
+    {% endif %}
+{% endblock %}

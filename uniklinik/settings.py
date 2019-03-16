@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'filestorage',
     "uniklinik",
-    'taskmanagement'
+    'taskmanagement',
+    "accomplishment",
+    "messaging"
 ]
 
 

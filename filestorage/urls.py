@@ -1,8 +1,9 @@
 from django.urls import path
 from rest_framework import routers
-from filestorage.serializers import FileViewSet, FileUploadView, DirectoryViewSet
-from filestorage.views import FileTreeView
+from filestorage.serializers import FileViewSet, FileUploadCreateView, DirectoryViewSet, FileUploadUpdateView
+from filestorage.views import FileDirectoryView, DownloadView
 from django.urls import include
+from filestorage.views import FileView
 
 
 # Routers provide an easy way of automatically determining the URL conf.
@@ -16,6 +17,10 @@ urlpatterns = [
     path(r'api/', include(directory_router.urls)),
 
     path(r'files_api/', include(router.urls)),
-    path(r'api/peform-upload/<int:directory_pk>/', FileUploadView.as_view(), name='file_upload'),
-    path(r'', FileTreeView.as_view(), name="tree"),
+    path(r'api/peform-upload/<int:directory_pk>/', FileUploadCreateView.as_view(), name='file_upload'),
+    path(r'api/file/<int:file_pk>/edit/', FileUploadUpdateView.as_view(), name="file_upload_edit"),
+    path(r'', FileDirectoryView.as_view(), name="tree"),
+    path(r'downloads/', DownloadView.as_view(), name="download"),
+    path(r'file/<int:pk>/', FileView.as_view(), name="file")
+
 ]

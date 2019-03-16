@@ -5,10 +5,12 @@ from taskmanagement.models import Task
 from account.models import Group
 from django import forms
 
+
 class GroupTaskForm(BootstrapModelForm):
     groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
                                             widget=forms.CheckboxSelectMultiple
                                             )
+
     class Meta:
         model = Task
         fields = ("name", "groups", )

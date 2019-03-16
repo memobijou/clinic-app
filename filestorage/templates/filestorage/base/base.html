@@ -1,14 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block horizontal_nav_title %}
-    <h2>Dateiverwaltung</h2>
-{% endblock %}
-
-{% block horizontal_nav_navigation %}
-    <li><span>Dateiverwaltung</span></li>
-{% endblock %}
-
 {% block content %}
 
     <div class="row">
@@ -20,7 +12,7 @@
                     </div>
 
                     <h2 class="panel-title">Ordnerstruktur</h2>
-                    {% include "filestorage/tree/forms/form.html" %}
+                    {% include "filestorage/base/forms/form.html" %}
                 </header>
             </section>
         </div>
@@ -40,7 +32,7 @@
         }
     </style>
 
-    {% for directory in tree %}
+    {% for directory in file_directories %}
         <div class="row">
             <div class="col-xs-12">
                 <section class="panel">
@@ -76,12 +68,12 @@
 {% block js %}
     <script>
         var directories = [];
-        {% for directory in tree %}
+        {% for directory in file_directories %}
             directories.push({name: "{{ directory.name }}", pk: "{{ directory.pk }}"});
         {% endfor %}
 
         var directory_files = {};
-        {% for directory in tree %}
+        {% for directory in file_directories %}
             var files = [];
             directory_files["{{ directory.pk }}"] = files;
             {% for file in directory.files.all %}
@@ -90,13 +82,16 @@
                         name: "{{ file.file.name }}",
                         size: "{{ file.file.size }}",
                         pk: "{{ file.pk }}",
-                        url: "{{ file.file.url }}"
+                        url: "{{ file.file.url }}",
+                        version: "{{ file.version }}",
+                        edit_view_url: "{% url 'filestorage:file' pk=file.pk %}",
                     }
                 );
             {% endfor %}
         {% endfor %}
 
         var url = "{% url "filestorage:files-detail" pk=0 %}";
+        var edit_url = "{% url 'filestorage:file' pk=0 %}"
         window.CSRF_TOKEN = "{{ csrf_token }}";
 
     </script>

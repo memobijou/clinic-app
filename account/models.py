@@ -20,13 +20,30 @@ class Group(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_admin = models.NullBooleanField(verbose_name="Administrations Status")
     device_token = models.CharField(max_length=500, null=True, blank=True)
+    mentor = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="students")
+
+    @property
+    def mentor_name(self):
+        if hasattr(self.mentor, "profile"):
+            return self.mentor.profile
+        return "/"
+
+    def get_students_string(self):
+        students_string = ""
+        for student in self.user.students.all():
+            students_string += f"{str(student)}<br/>"
+        if students_string == "":
+            students_string = "/"
+        return students_string
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -36,6 +53,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created or hasattr(instance, "profile") is False:
         print(f"created!")
         Profile.objects.create(user=instance)
+
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):

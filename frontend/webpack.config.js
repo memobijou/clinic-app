@@ -184,6 +184,20 @@ const filestorageConfig = Object.assign({}, config, {
 	}
 })
 
+
+const filestorageEditConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/filestorage/js/edit.js"],
+	},
+	//	    "~/vendor/bootstrap-datetimepicker/4.17.47/build/js/bootstrap-datetimepicker.min.js"
+	output: {
+		path: path.resolve(__dirname, "../static/dist/filestorage/edit/"),
+		filename: "[name].js",
+		publicPath: "/build/filestorage/edit/"
+	}
+})
+
+
 const taskManagementConfig = Object.assign({}, config, {
 	entry: {
 		bundle: ["./src/taskmanagement/js/app.js"],
@@ -196,12 +210,28 @@ const taskManagementConfig = Object.assign({}, config, {
 })
 
 
+const accomplishmentConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/accomplishment/list/js/app.js"],
+	},
+	output: {
+		path: path.resolve(__dirname, "../static/dist/accomplishment/list/"),
+		filename: "[name].js",
+		publicPath: "/build/accomplishment/list/"
+	}
+})
+
+
+
+
 module.exports = [
 	baseConfig,
 	accountUserListConfig,
 	appointmentConfig,
 	dutyRosterConfig,
 	filestorageConfig,
+	filestorageEditConfig,
 	accountGroupListConfig,
-	taskManagementConfig
+	taskManagementConfig,
+	accomplishmentConfig
 ]

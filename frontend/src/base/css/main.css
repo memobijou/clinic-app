@@ -3,3 +3,14 @@
     list-style:none;
     padding:0px;
 }
+
+.inline-checkboxes li {
+    list-style-type: none;
+    display: inline-block;
+    padding-right:15px;
+    margin:0;
+}
+
+.inline-checkboxes ul {
+    padding:0;
+}
