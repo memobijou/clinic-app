@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from accomplishment.serializers import AccomplishmentViewSet
+from accomplishment.serializers import AccomplishmentViewSet, UserAccomplishmentViewSet
 from accomplishment.datatables import AccomplishmentDatatables
 from rest_framework import routers
 
@@ -8,7 +8,7 @@ from rest_framework import routers
 from accomplishment.views import AccomplishmentListView, AccomplishmentUpdateView
 
 router = routers.DefaultRouter()
-router.register(r'', AccomplishmentViewSet)
+router.register(r'', UserAccomplishmentViewSet)
 
 urlpatterns = [
     path(r'api/', include(router.urls)),

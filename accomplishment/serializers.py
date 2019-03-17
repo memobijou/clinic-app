@@ -5,32 +5,45 @@ from account.models import Group
 from account.serializers import UserSerializer
 
 
-class AccomplishmentGroupSerializer(serializers.HyperlinkedModelSerializer):
-    users = UserSerializer(many=True)
-
-    class Meta:
-        model = Group
-        fields = ("pk", 'name', "users")
-
-
-class AccomplishmentUserSerializer(serializers.HyperlinkedModelSerializer):
-    user = UserSerializer()
-
-    class Meta:
-        model = UserAccomplishment
-        fields = ("pk", 'score', 'user',)
+# class AccomplishmentGroupSerializer(serializers.HyperlinkedModelSerializer):
+#     users = UserSerializer(many=True)
+#
+#     class Meta:
+#         model = Group
+#         fields = ("pk", 'name', "users")
 
 
 class AccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
-    groups = AccomplishmentGroupSerializer(many=True)
-    user_accomplishments = AccomplishmentUserSerializer(many=True)
+    # groups = AccomplishmentGroupSerializer(many=True)
+    # user_accomplishments = UserAccomplishmentSerializer(many=True)
 
     class Meta:
         model = Accomplishment
-        fields = ("pk", "name", "full_score", "groups", "user_accomplishments", )
+        fields = ("pk", "name", "full_score", )
+
+
+class UserAccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
+    user = UserSerializer()
+    accomplishment = AccomplishmentSerializer()
+
+    class Meta:
+        model = UserAccomplishment
+        fields = ("pk", 'score', 'user', "accomplishment", )
 
 
 class AccomplishmentViewSet(viewsets.ModelViewSet):
     queryset = Accomplishment.objects.all()
     serializer_class = AccomplishmentSerializer
     pagination_class = LimitOffsetPagination
+
+
+class UserAccomplishmentViewSet(viewsets.ModelViewSet):
+    queryset = UserAccomplishment.objects.all()
+    serializer_class = UserAccomplishmentSerializer
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        user_id = self.request.GET.get("user_id")
+        if user_id:
+            self.queryset = self.queryset.filter(user_id=user_id)
+        return self.queryset
