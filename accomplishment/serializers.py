@@ -24,7 +24,7 @@ class UserAccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = UserAccomplishment
-        fields = ("pk", 'score', 'user', )
+        fields = ('score', 'user', )
 
 
 class AccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
@@ -56,6 +56,12 @@ class UserAccomplishmentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user_id = self.request.GET.get("user_id")
+        accomplishment_id = self.request.GET.get("accomplishment_id")
+
         if user_id:
             self.queryset = self.queryset.filter(user_id=user_id)
+
+        if accomplishment_id:
+            self.queryset = self.queryset.filter(accomplishment_id=accomplishment_id)
+
         return self.queryset
