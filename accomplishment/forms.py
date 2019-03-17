@@ -27,8 +27,20 @@ class AccomplishmentForm(BootstrapModelForm):
         return full_score
 
     def save(self, commit=True, **kwargs):
+        is_new_object = False
+        if self.instance.pk is None:
+            is_new_object = True
+
+        print(f"is_new_object: {is_new_object}")
         instance = super().save(commit)
         users = User.objects.filter(groups_list__in=instance.groups.all()).distinct()
+
+        if is_new_object is False:
+            existing_users = UserAccomplishment.objects.filter(
+                user__in=users, accomplishment=self.instance).values_list("user__pk", flat=True).distinct()
+            print(f"{existing_users}")
+            users = users.exclude(pk__in=existing_users)
+
         UserAccomplishment.objects.bulk_create(
             [UserAccomplishment(user=user, accomplishment=instance, score=0) for user in users])
         return instance

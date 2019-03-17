@@ -33,16 +33,17 @@
                             </div>
                             <div class="col-md-6 col-xs-6">
                                      <div class="progress">
-                                      <div class="progress-bar" role="progressbar" aria-valuenow="{{ user_score }}"
-                                      aria-valuemin="0" aria-valuemax="100" style="width:{{ user_score }}%">
-                                          {{ user_score }}%
-                                      </div>
+                                          <div class="progress-bar" role="progressbar" aria-valuenow="{{ user_score }}"
+                                          aria-valuemin="0" aria-valuemax="100" style="width:{{ user_score }}%">
+                                              {{ user_score }}%
+                                          </div>
                                     </div>
                             </div>
                         </div>
                     {% endfor %}
 
                     {% for user_accomplishment, user_score in non_groups_users_scores %}
+                        {% if user_score > 0 %}
                         <div class="row" style="padding-top:10px;">
                             <div class="col-md-2 col-xs-2">
                                  <span style="text-decoration: line-through;">{{ user_accomplishment.user }}</span>
@@ -56,6 +57,7 @@
                                     </div>
                             </div>
                         </div>
+                        {% endif %}
                     {% endfor %}
 
 
