@@ -25,7 +25,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_admin = models.NullBooleanField(verbose_name="Administrations Status")
     device_token = models.CharField(max_length=500, null=True, blank=True)
-    mentor = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="students")
+    mentor = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="students")
 
     @property
     def mentor_name(self):
