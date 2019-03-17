@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2cc7dbe7-e3be-4627-bf7e-3dc9284478c5" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/accomplishment/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/accomplishment/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accomplishment/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/accomplishment/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accomplishment/templates/accomplishment/edit/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/accomplishment/templates/accomplishment/edit/edit.html" afterDir="false" />
-    </list>
+    <list default="true" id="2cc7dbe7-e3be-4627-bf7e-3dc9284478c5" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,8 +62,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/accomplishment/templates/accomplishment/edit/edit.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="236">
-              <caret line="46" column="46" selection-start-line="46" selection-start-column="46" selection-end-line="46" selection-end-column="46" />
+            <state relative-caret-position="266">
+              <caret line="48" column="87" lean-forward="true" selection-start-line="48" selection-start-column="87" selection-end-line="48" selection-end-column="87" />
               <folding>
                 <element signature="e#760#794#0#HTML" expanded="true" />
                 <element signature="e#1026#1051#0#HTML" expanded="true" />
@@ -612,7 +608,7 @@
       <workItem from="1550448208076" duration="19763000" />
       <workItem from="1550532779737" duration="144893000" />
       <workItem from="1551065655205" duration="7953000" />
-      <workItem from="1551947952566" duration="124828000" />
+      <workItem from="1551947952566" duration="125889000" />
     </task>
     <servers />
   </component>
@@ -628,7 +624,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="555960000" />
+    <option name="totallyTimeSpent" value="557021000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1119,8 +1115,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/accomplishment/templates/accomplishment/edit/edit.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="236">
-          <caret line="46" column="46" selection-start-line="46" selection-start-column="46" selection-end-line="46" selection-end-column="46" />
+        <state relative-caret-position="266">
+          <caret line="48" column="87" lean-forward="true" selection-start-line="48" selection-start-column="87" selection-end-line="48" selection-end-column="87" />
           <folding>
             <element signature="e#760#794#0#HTML" expanded="true" />
             <element signature="e#1026#1051#0#HTML" expanded="true" />
