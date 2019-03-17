@@ -7,7 +7,8 @@ from django.db import models
 class Accomplishment(models.Model):
     name = models.CharField(max_length=200, null=True, blank=False, verbose_name="Bezeichnung")
     full_score = models.IntegerField(null=True, blank=False, verbose_name="Gesamtpunktezahl")
-    groups = models.ManyToManyField("account.Group", related_name="accomplishments", verbose_name="Gruppen")
+    groups = models.ManyToManyField(
+        "account.Group", blank=True, related_name="accomplishments", verbose_name="Gruppen")
     users = models.ManyToManyField(User, blank=True, through="accomplishment.UserAccomplishment",
                                    related_name="accomplishments", verbose_name="Benutzer")
 

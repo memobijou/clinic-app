@@ -24,7 +24,7 @@ class UserAccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = UserAccomplishment
-        fields = ('score', 'user', )
+        fields = ("pk", 'score', 'user', )
 
 
 class AccomplishmentSerializer(serializers.HyperlinkedModelSerializer):

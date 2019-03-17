@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 class AccomplishmentForm(BootstrapModelForm):
     groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
-                                            widget=forms.CheckboxSelectMultiple
+                                            widget=forms.CheckboxSelectMultiple, required=False
                                             )
 
     class Meta:
