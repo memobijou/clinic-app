@@ -16,7 +16,7 @@ from account.serializers import UserSerializer
 class BasicUserAccomplishmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAccomplishment
-        fields = ("pk", 'score', "user", "accomplishment" )
+        fields = ("pk", 'score', "user", "accomplishment", )
 
 
 class UserAccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
@@ -29,11 +29,12 @@ class UserAccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
 
 class AccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
     # groups = AccomplishmentGroupSerializer(many=True)
+    users = UserSerializer(many=True)
     user_accomplishments = UserAccomplishmentSerializer(many=True)
 
     class Meta:
         model = Accomplishment
-        fields = ("pk", "name", "full_score", "user_accomplishments",)
+        fields = ("pk", "name", "full_score", "user_accomplishments", "users", )
 
 
 class AccomplishmentViewSet(viewsets.ModelViewSet):
@@ -44,7 +45,7 @@ class AccomplishmentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user_id = self.request.GET.get("user_id")
         if user_id:
-            self.queryset = self.queryset.filter(user_accomplishments__user__pk=user_id)
+            self.queryset = self.queryset.filter(users__user__pk=user_id)
         print(self.queryset.values())
         return self.queryset
 
