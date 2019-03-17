@@ -17,10 +17,10 @@ def send_file_messages_through_firebase(file, is_new=True):
     if file.parent_directory.announcement is True:
         if is_new is True:
             title = f"Neue Datei in {file.parent_directory.name}"
-            message = f'"{file.file.name}" Version {file.file.version}'
+            message = f'"{file.file.name}" Version {round(file.version, 2)}'
         else:
             title = f"Update vorhanden in {file.parent_directory.name}"
-            message = f"{file.file.name} jetzt auf Version {file.version}"
+            message = f"{file.file.name} jetzt auf Version {round(file.version, 2)}"
         send_push_notifications(User.objects.all(), title, message)
         print(message)
         print(title)
