@@ -29,12 +29,11 @@ class UserAccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
 
 class AccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
     # groups = AccomplishmentGroupSerializer(many=True)
-    users = UserSerializer(many=True)
     user_accomplishments = UserAccomplishmentSerializer(many=True)
 
     class Meta:
         model = Accomplishment
-        fields = ("pk", "name", "full_score", "user_accomplishments", "users", )
+        fields = ("pk", "name", "full_score", "user_accomplishments", )
 
 
 class AccomplishmentViewSet(viewsets.ModelViewSet):
