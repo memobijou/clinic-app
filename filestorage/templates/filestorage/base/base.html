@@ -38,6 +38,11 @@
                 <section class="panel">
                     <header class="panel-heading">
                         <div class="panel-actions">
+                            <form method="POST" action="{% url 'filestorage:subscribe_filestorage' pk=directory.pk %}" style="padding:0;margin:0;display:inline;">{% csrf_token %}
+                                <button class="btn" style="background:transparent;">
+                                    <span class="glyphicon glyphicon-bullhorn {% if directory.announcement is True %} text-warning {% endif %}"></span>
+                                </button>
+                            </form>
                             <a href="#" class="fa fa-caret-up"></a>
                         </div>
 

@@ -14,6 +14,7 @@ class Appointment(models.Model):
     description = models.TextField(null=True, verbose_name="Beschreibung")
     groups = models.ManyToManyField("account.Group", related_name="appointments", verbose_name="Gruppen")
 
+
 class DutyRoster(models.Model):
     calendar_week_date = models.DateTimeField(null=True, verbose_name="Datum Dienstplan")
     file = models.FileField(null=True, verbose_name="Dienstplan")

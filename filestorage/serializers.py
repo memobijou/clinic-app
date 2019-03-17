@@ -1,13 +1,29 @@
+from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status, serializers
+
+from appointment.views import send_push_notifications
 from filestorage.models import File, FileDirectory
 from django.shortcuts import get_object_or_404
 from abc import ABCMeta, abstractmethod
 from decimal import Decimal
+
+
+def send_file_messages_through_firebase(file, is_new=True):
+    if file.parent_directory.announcement is True:
+        if is_new is True:
+            title = f"Neue Datei in {file.parent_directory.name}"
+            message = f'"{file.file.name}" Version {file.file.version}'
+        else:
+            title = f"Update vorhanden in {file.parent_directory.name}"
+            message = f"{file.file.name} jetzt auf Version {file.version}"
+        send_push_notifications(User.objects.all(), title, message)
+        print(message)
+        print(title)
 
 
 class FileSerializerBase(serializers.ModelSerializer):
@@ -16,6 +32,11 @@ class FileSerializerBase(serializers.ModelSerializer):
     class Meta:
         model = File
         fields = ("file", "parent_directory", "type", "pk", "version")
+
+    def save(self, **kwargs):
+        instance = super().save(**kwargs)
+        send_file_messages_through_firebase(instance)
+        return instance
 
 
 class FileSerializer(FileSerializerBase):
@@ -79,6 +100,7 @@ class FileUploadUpdateView(IFileUploadView):
                 self.file.version = version
             self.file.file = request.FILES.get("file")
             self.file.save()
+            send_file_messages_through_firebase(self.file, is_new=False)
             return Response(file_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

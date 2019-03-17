@@ -57,7 +57,6 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         elif self.request.GET.get("is_conference") == "true":
             self.queryset = self.queryset.filter(is_conference=True)
 
-
     @action(detail=False, name="calendar")
     def calendar(self, request):
         print("GOOD")

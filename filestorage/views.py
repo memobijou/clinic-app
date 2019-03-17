@@ -7,6 +7,7 @@ from filestorage.forms import FileDirectoryForm, DownloadForm
 from filestorage.models import FileDirectory, File
 from django.urls import reverse_lazy
 from abc import ABCMeta, abstractmethod
+from django.shortcuts import get_object_or_404
 
 
 class FileDirectoryBaseView(LoginRequiredMixin, View, metaclass=ABCMeta):
@@ -91,3 +92,27 @@ class FileView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         self.file = File.objects.get(pk=self.kwargs.get("pk"))
         return render(request, self.template_name, {"file": self.file})
+
+
+class BaseSubscribeAnnouncement(LoginRequiredMixin, View, metaclass=ABCMeta):
+    @property
+    @abstractmethod
+    def success_url(self):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        instance = get_object_or_404(FileDirectory, pk=self.kwargs.get("pk"))
+        if instance.announcement in [False, None]:
+            instance.announcement = True
+        else:
+            instance.announcement = None
+        instance.save()
+        return HttpResponseRedirect(self.success_url)
+
+
+class FilestorageSubscribeAnnouncement(BaseSubscribeAnnouncement):
+    success_url = reverse_lazy("filestorage:tree")
+
+
+class DownloadSubscribeAnnouncement(BaseSubscribeAnnouncement):
+    success_url = reverse_lazy("filestorage:donwload")

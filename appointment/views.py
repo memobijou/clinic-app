@@ -119,6 +119,7 @@ def send_push_notifications(users, title, message):
             registration_ids=registration_ids, message_title=title, message_body=message, sound="default")
         print(result)
 
+
 class InfoboxView(LoginRequiredMixin, View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

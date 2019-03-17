@@ -16,8 +16,13 @@
             <div class="col-md-12">
                 <div class="col-md-8 col-md-offset-2">
                     <div class="text-center">
+                        Dienstplan
+                        <h2 style="color:black;margin-top: 0;">{{ current_duty_roster.calendar_week_date|date:'F' }} {{ current_duty_roster.calendar_week_date.year }}</h2>
+                    </div>
+
+                    <div class="text-center">
                         Kalendarwoche
-                        <h2 style="color:black;margin-top: 0;">{{ calendar_week }}</h2>
+                        <h4 style="color:black;margin-top: 0;">{{ calendar_week }}</h4>
                     </div>
 
                     <form action="{% url 'appointment:duty_roster-list' %}"

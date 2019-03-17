@@ -11,10 +11,19 @@ from datetime import datetime, timedelta
 class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = DutyRoster
-        fields = ('pk','calendar_week_date', "file", "calendar_week",)
+        fields = ('pk', 'calendar_week_date', "file", "calendar_week",)
 
     def validate(self, data):
         today = datetime.now()
+        duty_rosters = DutyRoster.objects.filter(
+            calendar_week_date__month=today.month, calendar_week_date__year=today.year)
+
+        if duty_rosters.count() > 0:
+            duty_rosters.delete()
+        data["calendar_week_date"] = today
+        return data
+
+    def filter_week_date(self, today):
         print(f"yes: {today}")
         week_dates = get_week_dates(today)
         query_condition = Q()
@@ -26,11 +35,7 @@ class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
             )
         print(query_condition)
         duty_rosters = DutyRoster.objects.filter(query_condition)
-
-        if duty_rosters.count() > 0:
-            duty_rosters.delete()
-        data["calendar_week_date"] = get_first_date_of_week_dates(week_dates)
-        return data
+        get_first_date_of_week_dates(week_dates)
 
 
 # ViewSets define the view behavior.

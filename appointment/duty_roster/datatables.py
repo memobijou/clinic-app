@@ -1,9 +1,9 @@
 from django.db.models import Q
 from django.db.models.functions import Lower
-from django.urls import reverse_lazy
 from appointment.duty_roster.serializers import DutyRosterSerializer
 from appointment.models import DutyRoster
 from uniklinik.mixins import DatatablesMixin
+from django.template.defaultfilters import date
 
 
 class DutyRosterDatatables(DatatablesMixin):
@@ -35,7 +35,8 @@ class DutyRosterDatatables(DatatablesMixin):
     def get_data(self, page):
         data = {"results": [[
                      #f'<p><a>Bearbeiten</a></p>',
-                     query.calendar_week, self.get_pdf(query)] for query in page
+                     f'{date(query.calendar_week_date, "F")} {query.calendar_week_date.year}', self.get_pdf(query)]
+            for query in page
         ],
                 "records_total": self.queryset.count()}
         return data

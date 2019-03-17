@@ -69,7 +69,7 @@ $(document).ready(function(){
 	  responsive: true,
       columnDefs: [
         //{targets: 0, title: "", name: "calendar_week", orderable: false},
-        {targets: 0, title: "Kalendarwoche", name: "calendar_week", orderable: false},
+        {targets: 0, title: "Monat", name: "calendar_week", orderable: false},
         {targets: 1, title: "Terminplan", name: "file"},
 
       ],

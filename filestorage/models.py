@@ -6,6 +6,10 @@ class FileDirectory(models.Model):
     name = models.CharField(max_length=200, null=True, verbose_name="Ordner")
     type = models.CharField(choices=(("download", "download"), ("filestorage", "filestorage")), max_length=200,
                             default="filestorage")
+    announcement = models.NullBooleanField(null=True, blank=True, verbose_name="Ankündigung")
+
+    class Meta:
+        ordering = ("pk", )
 
 
 class File(models.Model):
