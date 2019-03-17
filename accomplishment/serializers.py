@@ -13,22 +13,27 @@ from account.serializers import UserSerializer
 #         fields = ("pk", 'name', "users")
 
 
-class AccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
-    # groups = AccomplishmentGroupSerializer(many=True)
-    # user_accomplishments = UserAccomplishmentSerializer(many=True)
-
+class BasicUserAccomplishmentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Accomplishment
-        fields = ("pk", "name", "full_score", )
+        model = UserAccomplishment
+        fields = ("pk", 'score', "user", "accomplishment" )
 
 
 class UserAccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer()
-    accomplishment = AccomplishmentSerializer()
 
     class Meta:
         model = UserAccomplishment
-        fields = ("pk", 'score', 'user', "accomplishment", )
+        fields = ("pk", 'score', 'user', )
+
+
+class AccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
+    # groups = AccomplishmentGroupSerializer(many=True)
+    user_accomplishments = UserAccomplishmentSerializer(many=True)
+
+    class Meta:
+        model = Accomplishment
+        fields = ("pk", "name", "full_score", "user_accomplishments",)
 
 
 class AccomplishmentViewSet(viewsets.ModelViewSet):
@@ -36,10 +41,17 @@ class AccomplishmentViewSet(viewsets.ModelViewSet):
     serializer_class = AccomplishmentSerializer
     pagination_class = LimitOffsetPagination
 
+    def get_queryset(self):
+        user_id = self.request.GET.get("user_id")
+        if user_id:
+            self.queryset = self.queryset.filter(user_accomplishments__user__pk=user_id)
+        print(self.queryset.values())
+        return self.queryset
+
 
 class UserAccomplishmentViewSet(viewsets.ModelViewSet):
     queryset = UserAccomplishment.objects.all()
-    serializer_class = UserAccomplishmentSerializer
+    serializer_class = BasicUserAccomplishmentSerializer
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):

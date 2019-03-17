@@ -1,9 +1,6 @@
 from rest_framework.pagination import LimitOffsetPagination
-
 from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets
-
-from accomplishment.models import UserAccomplishment
 from account.models import Profile
 
 
@@ -11,6 +8,14 @@ class BasicUserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ('pk', 'username', 'first_name', 'last_name', "email", "is_superuser", )
+
+
+class BasicProfileSerializer(serializers.HyperlinkedModelSerializer):
+    user = BasicUserSerializer()
+
+    class Meta:
+        model = Profile
+        fields = ("is_admin", "user", )
 
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,17 +26,9 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         fields = ("is_admin", "mentor", )
 
 
-class UserAccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
-    user = BasicUserSerializer()
-
-    class Meta:
-        model = UserAccomplishment
-        fields = ("pk", "user", )
-
-
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = ProfileSerializer()
-    students = UserAccomplishmentSerializer(many=True)
+    students = BasicProfileSerializer(many=True)
 
     class Meta:
         model = User
