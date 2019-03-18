@@ -67,9 +67,13 @@ class UserGroupViewSet(viewsets.ModelViewSet):
         user_id = self.request.GET.get("user_id")
         if user_id:
             self.queryset = self.queryset.filter(user_id=user_id)
-        group_id = self.request.GET.get("group_id")
-        if group_id:
-            self.queryset = self.queryset.filter(group_id=group_id)
+        group_ids = self.request.GET.getlist("group_id")
+        if group_ids:
+            self.queryset = self.queryset.filter(group_id__in=group_ids)
+
+        type = self.request.GET.get("type")
+        if type:
+            self.queryset = self.queryset.filter(group__type__iexact=type)
         return self.queryset
 
 
