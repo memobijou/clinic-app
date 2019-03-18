@@ -17,7 +17,7 @@ user_group_router.register(r'user-group', UserGroupViewSet)
 
 urlpatterns = [
     path(r'api/', include(router.urls)),
-    path(r'api/<int:user_id>/<int:group_id>/', include(user_group_router.urls)),
+    path(r'api/', include(user_group_router.urls)),
     path(r'users/datatables', UserListDatatables.as_view(), name="user_datatables"),
     path(r'groups/datatables', GroupDatatables.as_view(), name="group_datatables"),
     path(r'users/login/', auth_views.LoginView.as_view(), name="login"),

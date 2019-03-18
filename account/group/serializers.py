@@ -64,8 +64,12 @@ class UserGroupViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
-        self.queryset = self.queryset.filter(user_id=self.kwargs.get("user_id"))
-        self.queryset = self.queryset.filter(group_id=self.kwargs.get("group_id"))
+        user_id = self.request.GET.get("user_id")
+        if user_id:
+            self.queryset = self.queryset.filter(user_id=user_id)
+        group_id = self.request.GET.get("group_id")
+        if group_id:
+            self.queryset = self.queryset.filter(group_id=group_id)
         return self.queryset
 
 
