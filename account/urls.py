@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from account.group.serializers import GroupDatatables, GroupViewSet
+from account.group.serializers import GroupDatatables, ReadOnlyGroupViewSet, UserGroupViewSet
 from account.group.views import GroupListView, GroupCreateView, GroupUpdateView
 from account.serializers import UserViewSet
 from account.datatables import UserListDatatables
@@ -11,10 +11,13 @@ from django.contrib.auth import views as auth_views
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
-router.register(r'groups', GroupViewSet)
+router.register(r'groups', ReadOnlyGroupViewSet)
+user_group_router = routers.DefaultRouter()
+user_group_router.register(r'user-group', UserGroupViewSet)
 
 urlpatterns = [
     path(r'api/', include(router.urls)),
+    path(r'api/<int:user_id>/<int:group_id>/', include(user_group_router.urls)),
     path(r'users/datatables', UserListDatatables.as_view(), name="user_datatables"),
     path(r'groups/datatables', GroupDatatables.as_view(), name="group_datatables"),
     path(r'users/login/', auth_views.LoginView.as_view(), name="login"),

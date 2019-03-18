@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 
 class AccomplishmentForm(BootstrapModelForm):
-    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
+    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.filter(type__iexact="discipline"),
                                             widget=forms.CheckboxSelectMultiple, required=False
                                             )
 

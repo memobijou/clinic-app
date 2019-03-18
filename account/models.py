@@ -16,6 +16,7 @@ class Group(models.Model):
     name = models.CharField(null=True, blank=False, max_length=200)
     users = models.ManyToManyField(User, blank=True, related_name="groups_list")
     tasks = models.ManyToManyField("taskmanagement.Task", blank=True, related_name="groups_list")
+    type = models.CharField(null=True, blank=True, max_length=200, verbose_name="Typ")
 
     def __str__(self):
         return f"{self.name}"

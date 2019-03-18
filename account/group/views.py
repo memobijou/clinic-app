@@ -1,12 +1,9 @@
-from django.http import HttpResponseRedirect
 from django.views import generic
-from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from account.models import Group
 from django import forms
 from django.urls import reverse_lazy
 from uniklinik.forms import BootstrapModelForm
-from django.shortcuts import render
 
 
 class GroupListView(LoginRequiredMixin, generic.ListView):
@@ -33,9 +30,12 @@ class GroupForm(BootstrapModelForm):
 
 
 class GroupUsersForm(BootstrapModelForm):
+    choices = ((None, "--------"), ("discipline", "Fachrichtung"))
+    type = forms.ChoiceField(choices=choices, label="Art", required=False)
+
     class Meta:
         model = Group
-        fields = ("name", "users", )
+        fields = ("name", "users", "type", )
         widgets = {
             'users': forms.CheckboxSelectMultiple,
         }

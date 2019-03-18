@@ -17,8 +17,14 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ("pk", 'name', "users")
 
 
+class UserGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group.users.through
+        fields = ("pk", 'user', "group")
+
+
 # ViewSets define the view behavior.
-class GroupViewSet(viewsets.ModelViewSet):
+class ReadOnlyGroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     pagination_class = LimitOffsetPagination
@@ -27,6 +33,7 @@ class GroupViewSet(viewsets.ModelViewSet):
         self.filter_by_user_id()
         self.filter_by_name()
         self.filter_by_name_exact()
+        self.filter_by_type()
         return self.queryset
 
     def filter_by_user_id(self):
@@ -43,6 +50,23 @@ class GroupViewSet(viewsets.ModelViewSet):
         name = self.request.GET.get("name_exact")
         if name is not None:
             self.queryset = self.queryset.filter(name__iexact=name)
+
+    def filter_by_type(self):
+        type = self.request.GET.get("type")
+        if type is not None:
+            self.queryset = self.queryset.filter(type__iexact=type)
+
+
+# ViewSets define the view behavior.
+class UserGroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.users.through.objects.all()
+    serializer_class = UserGroupSerializer
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        self.queryset = self.queryset.filter(user_id=self.kwargs.get("user_id"))
+        self.queryset = self.queryset.filter(group_id=self.kwargs.get("group_id"))
+        return self.queryset
 
 
 class GroupDatatables(DatatablesMixin):
