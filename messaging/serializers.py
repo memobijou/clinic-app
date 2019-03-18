@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 from django.db.models import Q
 from rest_framework import serializers, viewsets
 from rest_framework.pagination import LimitOffsetPagination
@@ -5,7 +6,7 @@ from account.serializers import UserSerializer
 from messaging.models import TextMessage
 
 
-class TextMessageSerializer(serializers.HyperlinkedModelSerializer):
+class ReadOnlyTextMessageSerializer(serializers.HyperlinkedModelSerializer):
     sender = UserSerializer()
     receiver = UserSerializer()
 
@@ -14,10 +15,21 @@ class TextMessageSerializer(serializers.HyperlinkedModelSerializer):
         fields = ("pk", "sender", "receiver", "message", "created_datetime", )
 
 
-class TextMessageViewset(viewsets.ModelViewSet):
+class TextMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TextMessage
+        fields = ("pk", "sender", "receiver", "message", "created_datetime", )
+
+
+class BaseTextMessageViewset(metaclass=ABCMeta):
+    kwargs = None
     queryset = TextMessage.objects.all()
-    serializer_class = TextMessageSerializer
     pagination_class = LimitOffsetPagination
+
+    @property
+    @abstractmethod
+    def serializer_class(self):
+        pass
 
     def get_queryset(self):
         self.filter_by_users()
@@ -31,3 +43,12 @@ class TextMessageViewset(viewsets.ModelViewSet):
             self.queryset = self.queryset.filter(
                 Q(Q(Q(receiver__pk=user1_pk) & Q(sender__pk=user2_pk)) |
                   Q(Q(receiver__pk=user2_pk) & Q(sender__pk=user1_pk))))
+
+
+class ReadOnlyTextMessageViewset(BaseTextMessageViewset, viewsets.ReadOnlyModelViewSet):
+    serializer_class = ReadOnlyTextMessageSerializer
+
+
+class TextMessageViewset(BaseTextMessageViewset, viewsets.ModelViewSet):
+    serializer_class = TextMessageSerializer
+
