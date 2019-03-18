@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2cc7dbe7-e3be-4627-bf7e-3dc9284478c5" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messaging/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/messaging/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/messaging/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/messaging/serializers.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -135,7 +133,7 @@
         <entry file="file://$PROJECT_DIR$/messaging/models.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="180">
-              <caret line="12" column="22" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
+              <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -548,7 +546,7 @@
       <workItem from="1550448208076" duration="19763000" />
       <workItem from="1550532779737" duration="144893000" />
       <workItem from="1551065655205" duration="7953000" />
-      <workItem from="1551947952566" duration="148556000" />
+      <workItem from="1551947952566" duration="148703000" />
     </task>
     <servers />
   </component>
@@ -564,7 +562,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="579688000" />
+    <option name="totallyTimeSpent" value="579835000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1113,7 +1111,7 @@
     <entry file="file://$PROJECT_DIR$/messaging/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
-          <caret line="12" column="22" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
+          <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>

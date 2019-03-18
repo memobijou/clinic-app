@@ -10,4 +10,4 @@ class TextMessage(models.Model):
     created_datetime = models.DateTimeField(null=True, auto_now=True)
 
     class Meta:
-        ordering = ("-created_datetime", )
+        ordering = ("created_datetime", )
