@@ -33,7 +33,7 @@ class BaseTextMessageViewset(metaclass=ABCMeta):
 
     def get_queryset(self):
         self.filter_by_users()
-        return self.queryset.order_by("created_datetime")
+        return self.queryset
 
     def filter_by_users(self):
         user1_pk = self.kwargs.get("user1")
