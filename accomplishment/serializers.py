@@ -44,12 +44,16 @@ class AccomplishmentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user_id = self.request.GET.get("user_id")
         pk = self.request.GET.get("pk")
+        group_id = self.request.GET.get("group_id")
 
         if pk:
             self.queryset = self.queryset.filter(pk=pk)
 
         if user_id:
             self.queryset = self.queryset.filter(groups__users__pk=user_id).distinct()
+
+        if group_id:
+            self.queryset = self.queryset.filter(groups__pk=group_id).distinct()
 
         return self.queryset
 
