@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'uniklinik.urls'
@@ -145,13 +146,6 @@ MEDIA_URL = "/media/"
 # CUSTOM SETTINGS
 PUBLIC_IP = os.environ.get("public_ip", "0.0.0.0")
 print(f'what ? {os.environ.get("public_ip")}')
-
-
-MIDDLEWARE_CLASSES = (
-    # Simplified static file serving.
-    # https://warehouse.python.org/project/whitenoise/
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-)
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
