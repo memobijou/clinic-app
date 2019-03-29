@@ -1,2 +1,2 @@
 release: python manage.py migrate --no-input
-web: gunicorn clinic-app.wsgi
+web: gunicorn uniklinik.wsgi

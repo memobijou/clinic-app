@@ -253,6 +253,11 @@
               <item name="clinic-app" type="b2602c69:ProjectViewProjectNode" />
               <item name="clinic-app" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="clinic-app" type="b2602c69:ProjectViewProjectNode" />
+              <item name="clinic-app" type="462c0819:PsiDirectoryNode" />
+              <item name="uniklinik" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -462,7 +467,7 @@
       <workItem from="1550532779737" duration="144893000" />
       <workItem from="1551065655205" duration="7953000" />
       <workItem from="1551947952566" duration="155914000" />
-      <workItem from="1553878816007" duration="1010000" />
+      <workItem from="1553878816007" duration="1087000" />
     </task>
     <servers />
   </component>
@@ -478,7 +483,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="588056000" />
+    <option name="totallyTimeSpent" value="588133000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -547,18 +552,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/filestorage/templates/filestorage/edit/edit.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
-          <caret line="80" column="28" selection-start-line="80" selection-start-column="28" selection-end-line="80" selection-end-column="28" />
-          <folding>
-            <element signature="e#833#859#0#HTML" expanded="true" />
-            <element signature="e#970#995#0#HTML" expanded="true" />
-            <element signature="n#style#0;n#form#0;n#div#1;n#div#0;n#section#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/src/filestorage/js/edit.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
@@ -1235,6 +1228,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
           <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/uniklinik/wsgi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
         </state>
       </provider>
     </entry>
