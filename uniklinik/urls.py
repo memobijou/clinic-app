@@ -31,10 +31,12 @@ urlpatterns = [
     path('accomplishment/', include(("accomplishment.urls", "accomplishment"), namespace="accomplishment")),
     path('messaging/', include(("messaging.urls", "messaging"), namespace="messaging")),
     path(r'api-auth/', include('rest_framework.urls'))
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
 urlpatterns += [
     path(r'api-token-auth/', views.obtain_auth_token)
 ]
 
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+if settings.DEBUG is True:
+    urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
