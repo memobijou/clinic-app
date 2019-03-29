@@ -122,11 +122,15 @@ LOGIN_URL = reverse_lazy("account:login")
 LOGOUT_REDIRECT_URL = reverse_lazy("account:user_list")
 
 
+# STATIC
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
@@ -145,7 +149,3 @@ MEDIA_URL = "/media/"
 
 # CUSTOM SETTINGS
 PUBLIC_IP = os.environ.get("public_ip", "0.0.0.0")
-print(f'what ? {os.environ.get("public_ip")}')
-
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
