@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2cc7dbe7-e3be-4627-bf7e-3dc9284478c5" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/messaging/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/messaging/models.py" afterDir="false" />
-    </list>
+    <list default="true" id="2cc7dbe7-e3be-4627-bf7e-3dc9284478c5" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,21 +36,9 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/accomplishment/serializers.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="62" column="29" lean-forward="true" selection-start-line="62" selection-start-column="29" selection-end-line="62" selection-end-column="29" />
-              <folding>
-                <element signature="e#0#48#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/taskmanagement/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
+            <state relative-caret-position="255">
               <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
               <folding>
                 <element signature="e#0#43#0" expanded="true" />
@@ -64,8 +50,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/accomplishment/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="7" lean-forward="true" selection-start-line="17" selection-start-column="7" selection-end-line="17" selection-end-column="7" />
+            <state relative-caret-position="240">
+              <caret line="17" column="7" selection-start-line="17" selection-start-column="7" selection-end-line="17" selection-end-column="7" />
               <folding>
                 <element signature="e#0#43#0" expanded="true" />
               </folding>
@@ -74,33 +60,13 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/accomplishment/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <folding>
-                <element signature="e#0#57#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/accomplishment/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
-              <folding>
-                <element signature="e#0#37#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/accomplishment/forms.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="24" column="31" lean-forward="true" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="31" />
+            <state relative-caret-position="150">
+              <caret line="14" column="41" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
+              <folding>
+                <element signature="e#0#68#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -108,7 +74,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/account/serializers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="359">
+            <state relative-caret-position="615">
               <caret line="44" column="17" selection-start-line="44" selection-start-column="17" selection-end-line="44" selection-end-column="17" />
               <folding>
                 <element signature="e#0#59#0" expanded="true" />
@@ -120,23 +86,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/messaging/serializers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="454">
-              <caret line="35" column="28" selection-start-line="35" selection-start-column="28" selection-end-line="35" selection-end-column="28" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="345">
+              <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/messaging/models.py">
+        <entry file="file://$PROJECT_DIR$/Procfile">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="30">
+              <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
             </state>
           </provider>
         </entry>
@@ -144,8 +104,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/messaging/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+            <state relative-caret-position="150">
+              <caret line="15" column="1" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -167,10 +127,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>abstractmethod</find>
-      <find>StringRelated</find>
-      <find>related_name=</find>
-      <find>Title</find>
       <find>forms.</find>
       <find>through=</find>
       <find>form</find>
@@ -197,6 +153,10 @@
       <find>get_object_or</find>
       <find>discipline</find>
       <find>di</find>
+      <find>CharFi</find>
+      <find>CharField</find>
+      <find>def get_quer</find>
+      <find>get_queryset</find>
     </findStrings>
     <replaceStrings>
       <replace>&quot;{% url 'octopus/assets</replace>
@@ -214,7 +174,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/accomplishment/datatables.py" />
         <option value="$PROJECT_DIR$/taskmanagement/serializers.py" />
         <option value="$PROJECT_DIR$/taskmanagement/models.py" />
         <option value="$PROJECT_DIR$/accomplishment/views.py" />
@@ -265,6 +224,7 @@
         <option value="$PROJECT_DIR$/accomplishment/serializers.py" />
         <option value="$PROJECT_DIR$/messaging/serializers.py" />
         <option value="$PROJECT_DIR$/messaging/models.py" />
+        <option value="$PROJECT_DIR$/Procfile" />
       </list>
     </option>
   </component>
@@ -290,53 +250,6 @@
             <path>
               <item name="clinic-app" type="b2602c69:ProjectViewProjectNode" />
               <item name="clinic-app" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="clinic-app" type="b2602c69:ProjectViewProjectNode" />
-              <item name="clinic-app" type="462c0819:PsiDirectoryNode" />
-              <item name="accomplishment" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="clinic-app" type="b2602c69:ProjectViewProjectNode" />
-              <item name="clinic-app" type="462c0819:PsiDirectoryNode" />
-              <item name="account" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="clinic-app" type="b2602c69:ProjectViewProjectNode" />
-              <item name="clinic-app" type="462c0819:PsiDirectoryNode" />
-              <item name="account" type="462c0819:PsiDirectoryNode" />
-              <item name="group" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="clinic-app" type="b2602c69:ProjectViewProjectNode" />
-              <item name="clinic-app" type="462c0819:PsiDirectoryNode" />
-              <item name="account" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="clinic-app" type="b2602c69:ProjectViewProjectNode" />
-              <item name="clinic-app" type="462c0819:PsiDirectoryNode" />
-              <item name="account" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="group" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="clinic-app" type="b2602c69:ProjectViewProjectNode" />
-              <item name="clinic-app" type="462c0819:PsiDirectoryNode" />
-              <item name="account" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="group" type="462c0819:PsiDirectoryNode" />
-              <item name="forms" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="clinic-app" type="b2602c69:ProjectViewProjectNode" />
-              <item name="clinic-app" type="462c0819:PsiDirectoryNode" />
-              <item name="messaging" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="clinic-app" type="b2602c69:ProjectViewProjectNode" />
-              <item name="clinic-app" type="462c0819:PsiDirectoryNode" />
-              <item name="taskmanagement" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -546,7 +459,8 @@
       <workItem from="1550448208076" duration="19763000" />
       <workItem from="1550532779737" duration="144893000" />
       <workItem from="1551065655205" duration="7953000" />
-      <workItem from="1551947952566" duration="148703000" />
+      <workItem from="1551947952566" duration="155914000" />
+      <workItem from="1553878816007" duration="834000" />
     </task>
     <servers />
   </component>
@@ -562,7 +476,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="579835000" />
+    <option name="totallyTimeSpent" value="587880000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -574,11 +488,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="769" height="900" extended-state="6" />
+    <frame x="0" y="0" width="1440" height="900" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.36726272" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.19384836" />
       <window_info id="Structure" order="2" weight="0.25330132" />
       <window_info anchor="bottom" id="Event Log" order="0" sideWeight="0.21474878" side_tool="true" weight="0.32534248" />
       <window_info anchor="bottom" id="Version Control" order="1" weight="0.32850242" />
@@ -631,90 +545,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/messaging/admin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/filestorage/templates/filestorage/base/forms/form.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="7" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/filestorage/js/base.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="uml://Python/#/Users/mimounbijjou/projects/clinic-app/filestorage/serializers.py">
-      <provider selected="true" editor-type-id="UmlEditorProvider">
-        <state>
-          <ID>Python</ID>
-          <OriginalElement>#/Users/mimounbijjou/projects/clinic-app/filestorage/serializers.py</OriginalElement>
-          <nodes>
-            <node x="" y="">rest_framework.viewsets.ViewSetMixin</node>
-            <node x="" y="">filestorage.serializers.FileView</node>
-            <node x="" y="">rest_framework.mixins.RetrieveModelMixin</node>
-            <node x="" y="">django.views.generic.base.View</node>
-            <node x="" y="">rest_framework.mixins.ListModelMixin</node>
-            <node x="" y="">rest_framework.serializers.SerializerMetaclass</node>
-            <node x="" y="">filestorage.serializers.FileUploadUpdateView</node>
-            <node x="" y="">rest_framework.mixins.UpdateModelMixin</node>
-            <node x="" y="">filestorage.serializers.FileDirectorySerializer</node>
-            <node x="" y="">rest_framework.viewsets.ModelViewSet</node>
-            <node x="" y="">rest_framework.mixins.DestroyModelMixin</node>
-            <node x="" y="">filestorage.serializers.FileSerializer</node>
-            <node x="" y="">rest_framework.views.APIView</node>
-            <node x="" y="">rest_framework.viewsets.GenericViewSet</node>
-            <node x="" y="">filestorage.serializers.DirectoryViewSet</node>
-            <node x="" y="">rest_framework.serializers.ModelSerializer</node>
-            <node x="" y="">rest_framework.serializers.BaseSerializer</node>
-            <node x="" y="">object</node>
-            <node x="" y="">rest_framework.serializers.Serializer</node>
-            <node x="" y="">rest_framework.generics.GenericAPIView</node>
-            <node x="" y="">rest_framework.mixins.CreateModelMixin</node>
-            <node x="" y="">filestorage.serializers.FileViewSet</node>
-            <node x="" y="">rest_framework.fields.Field</node>
-            <node x="" y="">filestorage.serializers.FileUploadCreateView</node>
-          </nodes>
-          <notes />
-          <edges />
-          <settings layout="Hierarchic Group" zoom="0.9057374586963051" x="2105.601916954099" y="2990.619992040329" />
-          <SelectedNodes />
-          <Categories>
-            <Category>Methods</Category>
-            <Category>Inner Classes</Category>
-            <Category>Fields</Category>
-          </Categories>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/webpack.config.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="225" lean-forward="true" selection-start-line="225" selection-end-line="225" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/filestorage/js/templates/base_tpl.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="29" column="24" lean-forward="true" selection-start-line="29" selection-start-column="24" selection-end-line="29" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2018.3/remote_sources/-635472324/-337502517/django/contrib/auth/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="265">
-          <caret line="361" column="7" lean-forward="true" selection-start-line="361" selection-start-column="7" selection-end-line="361" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/filestorage/templates/filestorage/edit/edit.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="370">
@@ -761,13 +591,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1311">
           <caret line="7" column="4" lean-forward="true" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2018.3/remote_sources/-635472324/-337502517/rest_framework/mixins.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="46" column="45" selection-start-line="46" selection-start-column="45" selection-end-line="46" selection-end-column="45" />
         </state>
       </provider>
     </entry>
@@ -937,13 +760,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2018.3/remote_sources/-635472324/-337502517/rest_framework/viewsets.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="218" column="32" selection-start-line="218" selection-start-column="32" selection-end-line="218" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/account/forms.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-106">
@@ -1051,9 +867,321 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2018.3/remote_sources/-635472324/-337502517/django/forms/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="159">
+          <caret line="374" column="30" lean-forward="true" selection-start-line="374" selection-start-column="30" selection-end-line="374" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2018.3/remote_sources/-635472324/-337502517/django/forms/fields.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="251">
+          <caret line="64" column="29" lean-forward="true" selection-start-line="64" selection-start-column="29" selection-end-line="64" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2018.3/remote_sources/-635472324/-337502517/django/forms/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="22" selection-start-line="6" selection-start-column="22" selection-end-line="6" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2018.3/remote_sources/-635472324/-337502517/rest_framework/mixins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="27" column="12" selection-start-line="27" selection-start-column="12" selection-end-line="27" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2018.3/remote_sources/-635472324/-337502517/rest_framework/generics.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="97">
+          <caret line="25" column="6" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2018.3/remote_sources/-635472324/-337502517/rest_framework/viewsets.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="101">
+          <caret line="200" column="49" lean-forward="true" selection-start-line="200" selection-start-column="49" selection-end-line="200" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2018.3/remote_sources/-635472324/-337502517/rest_framework/pagination.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="889">
+          <caret line="324" column="28" selection-start-line="324" selection-start-column="28" selection-end-line="324" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/messaging/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="6" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="uml://Python/#/Users/mimounbijjou/projects/clinic-app/messaging/serializers.py">
+      <provider selected="true" editor-type-id="UmlEditorProvider">
+        <state>
+          <ID>Python</ID>
+          <OriginalElement>#/Users/mimounbijjou/projects/clinic-app/messaging/serializers.py</OriginalElement>
+          <nodes>
+            <node x="975.9999999999999" y="946.0">rest_framework.viewsets.ViewSetMixin</node>
+            <node x="1036.0" y="4280.5">messaging.serializers.TextMessageViewset</node>
+            <node x="1631.0" y="3617.5">rest_framework.mixins.RetrieveModelMixin</node>
+            <node x="2175.0" y="1067.5">metaclass</node>
+            <node x="1346.0" y="990.0">django.views.generic.base.View</node>
+            <node x="1945.0" y="3617.5">rest_framework.mixins.ListModelMixin</node>
+            <node x="3270.0" y="2170.5">rest_framework.serializers.SerializerMetaclass</node>
+            <node x="2199.5058333333327" y="4014.0">messaging.serializers.BaseTextMessageViewset</node>
+            <node x="1685.5" y="4091.5">rest_framework.viewsets.ReadOnlyModelViewSet</node>
+            <node x="0.0" y="1034.5">rest_framework.mixins.UpdateModelMixin</node>
+            <node x="2458.03" y="3474.0">abc.ABCMeta</node>
+            <node x="972.9999999999999" y="4091.5">rest_framework.viewsets.ModelViewSet</node>
+            <node x="355.0" y="1045.5">rest_framework.mixins.DestroyModelMixin</node>
+            <node x="1339.5" y="1642.0">rest_framework.views.APIView</node>
+            <node x="1211.8216666666667" y="3628.5">rest_framework.viewsets.GenericViewSet</node>
+            <node x="1928.75" y="4280.5">messaging.serializers.ReadOnlyTextMessageViewset</node>
+            <node x="2977.5716666666667" y="3342.0">rest_framework.serializers.ModelSerializer</node>
+            <node x="2873.0" y="1983.0">rest_framework.serializers.BaseSerializer</node>
+            <node x="1526.3216666666667" y="0.0">object</node>
+            <node x="3119.0716666666667" y="2822.0">rest_framework.serializers.Serializer</node>
+            <node x="2823.899166666667" y="4058.0">rest_framework.serializers.HyperlinkedModelSerializer</node>
+            <node x="1407.5" y="2866.0">rest_framework.generics.GenericAPIView</node>
+            <node x="670.0" y="1034.5">rest_framework.mixins.CreateModelMixin</node>
+            <node x="3290.899166666667" y="4080.5">messaging.serializers.TextMessageSerializer</node>
+            <node x="2289.0" y="572.0">rest_framework.fields.Field</node>
+            <node x="2866.899166666667" y="4258.0">messaging.serializers.ReadOnlyTextMessageSerializer</node>
+          </nodes>
+          <notes />
+          <edges>
+            <edge source="rest_framework.serializers.Serializer" target="rest_framework.serializers.SerializerMetaclass">
+              <point x="64.25" y="-235.0" />
+              <point x="3311.8216666666667" y="2797.0" />
+              <point x="3426.0" y="2797.0" />
+              <point x="0.0" y="36.5" />
+            </edge>
+            <edge source="rest_framework.viewsets.ReadOnlyModelViewSet" target="rest_framework.mixins.RetrieveModelMixin">
+              <point x="0.0" y="-14.5" />
+              <point x="73.5" y="25.5" />
+            </edge>
+            <edge source="rest_framework.viewsets.ModelViewSet" target="rest_framework.mixins.UpdateModelMixin">
+              <point x="-114.16666666666652" y="-14.5" />
+              <point x="995.8333333333334" y="3994.0" />
+              <point x="167.5" y="3994.0" />
+              <point x="0.0" y="47.5" />
+            </edge>
+            <edge source="rest_framework.mixins.CreateModelMixin" target="object">
+              <point x="0.0" y="-47.5" />
+              <point x="813.0" y="532.0" />
+              <point x="1599.0716666666667" y="532.0" />
+              <point x="-72.75" y="246.0" />
+            </edge>
+            <edge source="rest_framework.viewsets.GenericViewSet" target="rest_framework.generics.GenericAPIView">
+              <point x="71.0" y="-14.5" />
+              <point x="1424.8216666666667" y="3317.0" />
+              <point x="1549.0" y="3317.0" />
+              <point x="0.0" y="191.0" />
+            </edge>
+            <edge source="messaging.serializers.BaseTextMessageViewset" target="abc.ABCMeta">
+              <point x="108.66666666666674" y="-92.0" />
+              <point x="2471.1724999999997" y="3994.0" />
+              <point x="2642.53" y="3994.0" />
+              <point x="0.0" y="169.0" />
+            </edge>
+            <edge source="messaging.serializers.ReadOnlyTextMessageViewset" target="messaging.serializers.BaseTextMessageViewset">
+              <point x="88.5" y="-25.5" />
+              <point x="2194.25" y="4238.0" />
+              <point x="2444.0058333333327" y="4238.0" />
+              <point x="81.5" y="92.0" />
+            </edge>
+            <edge source="rest_framework.viewsets.ModelViewSet" target="rest_framework.viewsets.GenericViewSet">
+              <point x="22.833333333333485" y="-14.5" />
+              <point x="1132.8333333333335" y="3964.0" />
+              <point x="1282.8216666666667" y="3964.0" />
+              <point x="-71.0" y="14.5" />
+            </edge>
+            <edge source="messaging.serializers.BaseTextMessageViewset" target="object">
+              <point x="0.0" y="-92.0" />
+              <point x="2362.5058333333327" y="3994.0" />
+              <point x="2278.5" y="3994.0" />
+              <point x="2278.5" y="522.0" />
+              <point x="1773.6716666666666" y="522.0" />
+              <point x="101.84999999999991" y="246.0" />
+            </edge>
+            <edge source="messaging.serializers.TextMessageViewset" target="messaging.serializers.BaseTextMessageViewset">
+              <point x="74.0" y="-25.5" />
+              <point x="1258.0" y="4228.0" />
+              <point x="2281.0058333333327" y="4228.0" />
+              <point x="-81.5" y="92.0" />
+            </edge>
+            <edge source="rest_framework.serializers.BaseSerializer" target="rest_framework.fields.Field">
+              <point x="0.0" y="-224.0" />
+              <point x="0.0" y="510.0" />
+            </edge>
+            <edge source="rest_framework.generics.GenericAPIView" target="rest_framework.views.APIView">
+              <point x="0.0" y="-191.0" />
+              <point x="0.0" y="565.0" />
+            </edge>
+            <edge source="rest_framework.serializers.ModelSerializer" target="rest_framework.serializers.Serializer">
+              <point x="0.0" y="-301.0" />
+              <point x="0.0" y="235.0" />
+            </edge>
+            <edge source="metaclass" target="object">
+              <point x="0.0" y="-14.5" />
+              <point x="2221.5" y="532.0" />
+              <point x="1744.5716666666667" y="532.0" />
+              <point x="72.75" y="246.0" />
+            </edge>
+            <edge source="messaging.serializers.BaseTextMessageViewset" target="metaclass">
+              <point x="-108.66666666666674" y="-92.0" />
+              <point x="2253.8391666666657" y="3994.0" />
+              <point x="2221.5" y="3994.0" />
+              <point x="0.0" y="14.5" />
+            </edge>
+            <edge source="rest_framework.viewsets.GenericViewSet" target="rest_framework.viewsets.ViewSetMixin">
+              <point x="-71.0" y="-14.5" />
+              <point x="1282.8216666666667" y="3317.0" />
+              <point x="1151.0" y="3317.0" />
+              <point x="0.0" y="136.0" />
+            </edge>
+            <edge source="messaging.serializers.ReadOnlyTextMessageSerializer" target="rest_framework.serializers.HyperlinkedModelSerializer">
+              <point x="0.0" y="-48.0" />
+              <point x="0.0" y="48.0" />
+            </edge>
+            <edge source="rest_framework.viewsets.ReadOnlyModelViewSet" target="rest_framework.viewsets.GenericViewSet">
+              <point x="-110.66666666666652" y="-14.5" />
+              <point x="1740.8333333333335" y="3964.0" />
+              <point x="1424.8216666666667" y="3964.0" />
+              <point x="71.0" y="14.5" />
+            </edge>
+            <edge source="rest_framework.mixins.DestroyModelMixin" target="object">
+              <point x="0.0" y="-36.5" />
+              <point x="502.5" y="522.0" />
+              <point x="1569.9716666666668" y="522.0" />
+              <point x="-101.84999999999991" y="246.0" />
+            </edge>
+            <edge source="rest_framework.viewsets.ModelViewSet" target="rest_framework.mixins.DestroyModelMixin">
+              <point x="-68.5" y="-14.5" />
+              <point x="1041.5" y="3984.0" />
+              <point x="502.5" y="3984.0" />
+              <point x="0.0" y="36.5" />
+            </edge>
+            <edge source="rest_framework.viewsets.ViewSetMixin" target="object">
+              <point x="0.0" y="-136.0" />
+              <point x="1151.0" y="542.0" />
+              <point x="1628.1716666666666" y="542.0" />
+              <point x="-43.65000000000009" y="246.0" />
+            </edge>
+            <edge source="django.views.generic.base.View" target="object">
+              <point x="0.0" y="-92.0" />
+              <point x="1549.0" y="552.0" />
+              <point x="1657.2716666666665" y="552.0" />
+              <point x="-14.550000000000182" y="246.0" />
+            </edge>
+            <edge source="rest_framework.viewsets.ModelViewSet" target="rest_framework.mixins.CreateModelMixin">
+              <point x="-22.833333333333485" y="-14.5" />
+              <point x="1087.1666666666665" y="3974.0" />
+              <point x="812.9999999999999" y="3974.0" />
+              <point x="0.0" y="47.5" />
+            </edge>
+            <edge source="rest_framework.viewsets.ReadOnlyModelViewSet" target="rest_framework.mixins.ListModelMixin">
+              <point x="110.66666666666652" y="-14.5" />
+              <point x="1962.1666666666665" y="3994.0" />
+              <point x="2144.5" y="3994.0" />
+              <point x="66.5" y="25.5" />
+            </edge>
+            <edge source="rest_framework.fields.Field" target="object">
+              <point x="0.0" y="-510.0" />
+              <point x="3061.5" y="512.0" />
+              <point x="1802.771666666667" y="512.0" />
+              <point x="130.95000000000027" y="246.0" />
+            </edge>
+            <edge source="rest_framework.mixins.UpdateModelMixin" target="object">
+              <point x="0.0" y="-47.5" />
+              <point x="167.5" y="512.0" />
+              <point x="1540.871666666667" y="512.0" />
+              <point x="-130.94999999999982" y="246.0" />
+            </edge>
+            <edge source="messaging.serializers.ReadOnlyTextMessageViewset" target="rest_framework.viewsets.ReadOnlyModelViewSet">
+              <point x="-88.5" y="-25.5" />
+              <point x="2017.25" y="4218.0" />
+              <point x="1851.5" y="4218.0" />
+              <point x="0.0" y="14.5" />
+            </edge>
+            <edge source="rest_framework.serializers.HyperlinkedModelSerializer" target="rest_framework.serializers.ModelSerializer">
+              <point x="0.0" y="-48.0" />
+              <point x="3047.399166666667" y="3994.0" />
+              <point x="3112.5716666666667" y="3994.0" />
+              <point x="-135.0" y="301.0" />
+            </edge>
+            <edge source="rest_framework.viewsets.ModelViewSet" target="rest_framework.mixins.ListModelMixin">
+              <point x="114.16666666666652" y="-14.5" />
+              <point x="1224.1666666666665" y="3984.0" />
+              <point x="2011.5" y="3984.0" />
+              <point x="-66.5" y="25.5" />
+            </edge>
+            <edge source="rest_framework.serializers.Serializer" target="rest_framework.serializers.BaseSerializer">
+              <point x="-64.25" y="-235.0" />
+              <point x="3183.3216666666667" y="2797.0" />
+              <point x="3061.5" y="2797.0" />
+              <point x="0.0" y="224.0" />
+            </edge>
+            <edge source="rest_framework.views.APIView" target="django.views.generic.base.View">
+              <point x="0.0" y="-565.0" />
+              <point x="0.0" y="92.0" />
+            </edge>
+            <edge source="messaging.serializers.TextMessageSerializer" target="rest_framework.serializers.ModelSerializer">
+              <point x="0.0" y="-25.5" />
+              <point x="3442.399166666667" y="3994.0" />
+              <point x="3382.5716666666667" y="3994.0" />
+              <point x="135.0" y="301.0" />
+            </edge>
+            <edge source="rest_framework.mixins.RetrieveModelMixin" target="object">
+              <point x="0.0" y="-25.5" />
+              <point x="1778.0" y="552.0" />
+              <point x="1686.371666666667" y="552.0" />
+              <point x="14.550000000000182" y="246.0" />
+            </edge>
+            <edge source="messaging.serializers.TextMessageViewset" target="rest_framework.viewsets.ModelViewSet">
+              <point x="-74.0" y="-25.5" />
+              <point x="0.0" y="14.5" />
+            </edge>
+            <edge source="rest_framework.viewsets.ModelViewSet" target="rest_framework.mixins.RetrieveModelMixin">
+              <point x="68.5" y="-14.5" />
+              <point x="1178.5" y="3974.0" />
+              <point x="1704.5" y="3974.0" />
+              <point x="-73.5" y="25.5" />
+            </edge>
+            <edge source="rest_framework.mixins.ListModelMixin" target="object">
+              <point x="0.0" y="-25.5" />
+              <point x="2078.0" y="542.0" />
+              <point x="1715.4716666666668" y="542.0" />
+              <point x="43.65000000000009" y="246.0" />
+            </edge>
+          </edges>
+          <settings layout="Hierarchic Group" zoom="0.8056671449067431" x="2908.0" y="4041.0" />
+          <SelectedNodes>
+            <node>rest_framework.viewsets.ViewSetMixin</node>
+          </SelectedNodes>
+          <Categories>
+            <Category>Methods</Category>
+            <Category>Inner Classes</Category>
+            <Category>Fields</Category>
+          </Categories>
+          <SCOPE>All</SCOPE>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/taskmanagement/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
+        <state relative-caret-position="255">
           <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
           <folding>
             <element signature="e#0#43#0" expanded="true" />
@@ -1063,8 +1191,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/accomplishment/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="7" lean-forward="true" selection-start-line="17" selection-start-column="7" selection-end-line="17" selection-end-column="7" />
+        <state relative-caret-position="240">
+          <caret line="17" column="7" selection-start-line="17" selection-start-column="7" selection-end-line="17" selection-end-column="7" />
           <folding>
             <element signature="e#0#43#0" expanded="true" />
           </folding>
@@ -1073,14 +1201,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/accomplishment/forms.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="24" column="31" lean-forward="true" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="31" />
+        <state relative-caret-position="150">
+          <caret line="14" column="41" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#68#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/account/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="359">
+        <state relative-caret-position="615">
           <caret line="44" column="17" selection-start-line="44" selection-start-column="17" selection-end-line="44" selection-end-column="17" />
           <folding>
             <element signature="e#0#59#0" expanded="true" />
@@ -1090,8 +1221,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/messaging/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+        <state relative-caret-position="150">
+          <caret line="15" column="1" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>
@@ -1100,21 +1231,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/messaging/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="35" column="28" selection-start-line="35" selection-start-column="28" selection-end-line="35" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="345">
+          <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/messaging/models.py">
+    <entry file="file://$PROJECT_DIR$/Procfile">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="30">
+          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
         </state>
       </provider>
     </entry>
