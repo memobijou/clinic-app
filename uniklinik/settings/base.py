@@ -80,41 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'uniklinik.wsgi.application'
 
-WEBPACK_DEV_SERVER = True
-
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.environ.get("PG_DB"),
-#         'USER': os.environ.get("PG_USER"),
-#         'PASSWORD': os.environ.get("PG_PASSWORD"),
-#         'HOST': os.environ.get("PG_HOST"),
-#         'PORT': os.environ.get("PG_PORT"),
-#     }
-# }
-
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "postgres",
-        'USER': "postgres",
-        'PASSWORD': "postgres",
-        'HOST': "db",
-        'PORT': 5432,
-    }
-}
-
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
@@ -180,3 +145,14 @@ MEDIA_URL = "/media/"
 # CUSTOM SETTINGS
 PUBLIC_IP = os.environ.get("public_ip", "0.0.0.0")
 print(f'what ? {os.environ.get("public_ip")}')
+
+
+MIDDLEWARE_CLASSES = (
+    # Simplified static file serving.
+    # https://warehouse.python.org/project/whitenoise/
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+)
+
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
