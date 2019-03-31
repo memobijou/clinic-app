@@ -26,4 +26,4 @@ AWS_S3_OBJECT_PARAMETERS = {
 
 # AWS - Media
 
-DEFAULT_FILE_STORAGE = 'uniklink.settings.storage_backends.MediaStorage'  # <-- here is where we reference it
+DEFAULT_FILE_STORAGE = 'uniklinik.settings.storage_backends.MediaStorage'  # <-- here is where we reference it
