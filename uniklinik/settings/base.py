@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     "uniklinik",
     'taskmanagement',
     "accomplishment",
-    "messaging"
+    "messaging",
+    'storages',
 ]
 
 
