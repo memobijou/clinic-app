@@ -48,11 +48,7 @@ class Profile(models.Model):
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    print(f"signal sent")
-    print(created)
-    print(hasattr(instance, "profile"))
     if created or hasattr(instance, "profile") is False:
-        print(f"created!")
         Profile.objects.create(user=instance)
 
 

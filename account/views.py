@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
@@ -49,7 +49,6 @@ class UserEditBaseView(LoginRequiredMixin, generic.UpdateView, metaclass=ABCMeta
 
     def get_object(self, queryset=None):
         self.object = User.objects.get(pk=self.kwargs.get("pk"))
-        print(self.object.username)
         return self.object
 
     def get_password_form(self):
@@ -99,7 +98,6 @@ class ChangeUserPasswordView(LoginRequiredMixin, View):
         if self.request.method == "GET":
             return HttpResponseRedirect(self.get_profile_url())
         self.object = User.objects.get(pk=self.kwargs.get("pk"))
-        print(f"why: {self.object.username}")
         self.password_form = self.get_password_form()
         self.form = self.get_form()
         return super().dispatch(request, *args, **kwargs)

@@ -50,7 +50,8 @@ class EditForm(EditBaseForm):
         self.fields["password1"].required = False
         self.fields["password2"].required = False
         self.fields["mentor"] = forms.ModelChoiceField(
-            queryset=User.objects.exclude(pk=user.pk), label="Mentor", initial=self.instance.profile.mentor)
+            queryset=User.objects.exclude(pk=user.pk), label="Mentor", initial=self.instance.profile.mentor,
+            required=False)
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")

@@ -15,14 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from uniklinik.views import HomeView
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.authtoken import views
+from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
 
 
 urlpatterns = [
-    path(r'', HomeView.as_view(), name='main-view'),
+    path('', login_required(TemplateView.as_view(template_name='main.html')), name="main"),
     path('admin/', admin.site.urls),
     path('account/', include(("account.urls", "account"), namespace="account")),
     path('appointment/', include(("appointment.urls", "appointment"), namespace="appointment")),
