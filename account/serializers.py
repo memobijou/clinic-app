@@ -19,20 +19,28 @@ class BasicProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
-    mentor = BasicUserSerializer()
+    mentor = BasicUserSerializer(read_only=True)
 
     class Meta:
         model = Profile
-        fields = ("is_admin", "mentor", )
+        fields = ("is_admin", "mentor", "device_token", )
+        read_only_fields = ('is_admin',)
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = ProfileSerializer()
-    students = BasicProfileSerializer(many=True)
+    students = BasicProfileSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
         fields = ('pk', 'username', 'first_name', 'last_name', "email", "is_superuser", "profile", "students", )
+
+    def update(self, instance, validated_data):
+        profile = validated_data.pop("profile")
+        User.objects.filter(pk=instance.pk).update(**validated_data)
+        Profile.objects.filter(pk=instance.profile.pk).update(**profile)
+        instance.refresh_from_db()
+        return instance
 
 
 # ViewSets define the view behavior.
