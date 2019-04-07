@@ -12,7 +12,7 @@ class Appointment(models.Model):
     is_conference = models.NullBooleanField(verbose_name="Konferenz")
     topic = models.CharField(max_length=200, null=True, verbose_name="Thema")
     description = models.TextField(null=True, verbose_name="Beschreibung")
-    groups = models.ManyToManyField("account.Group", related_name="appointments", verbose_name="Gruppen")
+    groups = models.ManyToManyField("account.Group", related_name="appointments", verbose_name="Gruppen", blank=True)
 
 
 class DutyRoster(models.Model):

@@ -60,7 +60,6 @@ $(document).ready(function(){
                           eventRender: function (event, element, view) {
                                 element.find(".fc-title").remove();
                                 element.find(".fc-time").remove();
-
                                 var promoter_name = event.promoter_name || "";
                                 var start_date = moment(event.start_date, "YYYY-MM-DD hh:mm").toDate();
                                 var start_minutes = parseInt(start_date.getMinutes());
@@ -124,6 +123,12 @@ $(document).ready(function(){
                                    if(is_infobox) {
                                         $('#edit_infobox').modal();
 
+                                        $('input[name=infobox_edit-groups]').removeAttr("checked");
+
+                                        for(let i=0;i<event.groups.length; i++){
+                                           let group = event.groups[i]
+                                           $('input[name=infobox_edit-groups][value='+ group.pk +']').prop("checked", "checked")
+                                        }
 
                                         $('#id_infobox_edit-start_date').val(start_date_str + " " + start_date_time);
 
@@ -139,13 +144,21 @@ $(document).ready(function(){
                                           }
                                         });
 
-                                        action_url = "{% url 'appointment:edit_infobox' pk=0 %}";
+                                        action_url = edit_infobox_action_url;
                                         action_url = action_url.replace("0", event.pk);
                                         // die 0 ist als Platzhalt weil event.pk erst nach python im frontend ausgeführt wird
                                         $('#edit_infobox_form').attr('action', action_url);
 
                                     }else if(is_conference){
                                         $('#edit_conference').modal();
+
+
+                                        $('input[name=conference_edit-groups]').removeAttr("checked");
+
+                                        for(let i=0;i<event.groups.length; i++){
+                                           let group = event.groups[i]
+                                           $('input[name=conference_edit-groups][value='+ group.pk +']').prop("checked", "checked")
+                                        }
 
                                         $('#id_conference_edit-start_date').val(start_date_str + " " + start_date_time);
 
@@ -161,7 +174,7 @@ $(document).ready(function(){
                                           }
                                         });
 
-                                        action_url = "{% url 'appointment:edit_conference' pk=0 %}";
+                                        action_url = edit_conference_action_url;
                                         action_url = action_url.replace("0", event.pk);
                                         // die 0 ist als Platzhalt weil event.pk erst nach python im frontend ausgeführt wird
                                         $('#edit_conference_form').attr('action', action_url);

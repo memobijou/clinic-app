@@ -3,20 +3,20 @@ from django.db.models import Sum, Q
 from django.shortcuts import render
 from django.views import generic
 # Create your views here.
-from accomplishment.forms import AccomplishmentForm
+from accomplishment.forms import AccomplishmentFormMixin
 from accomplishment.models import Accomplishment
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 
 
 class AccomplishmentListView(LoginRequiredMixin, generic.CreateView):
-    form_class = AccomplishmentForm
+    form_class = AccomplishmentFormMixin
     template_name = "accomplishment/accomplishment_list.html"
     success_url = reverse_lazy("accomplishment:list")
 
 
 class AccomplishmentUpdateView(LoginRequiredMixin, generic.UpdateView):
-    form_class = AccomplishmentForm
+    form_class = AccomplishmentFormMixin
     template_name = "accomplishment/edit/edit.html"
 
     def __init__(self, **kwargs):

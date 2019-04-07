@@ -22,7 +22,7 @@ class DutyRosterView(LoginRequiredMixin, View):
     def get_context(self):
         return {
                 "form": self.form, "calendar_week": datetime.now().isocalendar()[1],
-                "current_duty_roster": self.get_current_duty_roster()
+                "current_duty_roster": self.get_current_duty_roster(), "current_datetime": datetime.now()
         }
 
     def get_current_duty_roster(self):

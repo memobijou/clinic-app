@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from account.models import Group
 from django import forms
 from django.urls import reverse_lazy
-from uniklinik.forms import BootstrapModelForm
+from uniklinik.forms import BootstrapModelFormMixin
 
 
 class GroupListView(LoginRequiredMixin, generic.ListView):
@@ -13,11 +13,11 @@ class GroupListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"] = GroupForm
+        context["form"] = GroupFormMixin
         return context
 
 
-class GroupForm(BootstrapModelForm):
+class GroupFormMixin(BootstrapModelFormMixin):
     class Meta:
         model = Group
         fields = ("name", )
@@ -29,7 +29,7 @@ class GroupForm(BootstrapModelForm):
         return name
 
 
-class GroupUsersForm(BootstrapModelForm):
+class GroupUsersFormMixin(BootstrapModelFormMixin):
     choices = ((None, "--------"), ("discipline", "Fachrichtung"))
     type = forms.ChoiceField(choices=choices, label="Art", required=False)
 
@@ -50,13 +50,13 @@ class GroupUsersForm(BootstrapModelForm):
 
 
 class GroupCreateView(LoginRequiredMixin, generic.CreateView):
-    form_class = GroupForm
+    form_class = GroupFormMixin
     success_url = reverse_lazy("account:group_list")
     template_name = "group/group_list.html"
 
 
 class GroupUpdateView(LoginRequiredMixin, generic.UpdateView):
-    form_class = GroupUsersForm
+    form_class = GroupUsersFormMixin
     success_url = reverse_lazy("account:group_list")
     template_name = "group/forms/form.html"
 

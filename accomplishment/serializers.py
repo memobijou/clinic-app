@@ -1,76 +1,73 @@
-from rest_framework import serializers, viewsets
+from rest_framework import serializers, viewsets, status
 from rest_framework.pagination import LimitOffsetPagination
 from accomplishment.models import Accomplishment, UserAccomplishment
-from account.models import Group
 from account.serializers import UserSerializer
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 
 
-# class AccomplishmentGroupSerializer(serializers.HyperlinkedModelSerializer):
-#     users = UserSerializer(many=True)
-#
-#     class Meta:
-#         model = Group
-#         fields = ("pk", 'name', "users")
-
-
-class BasicUserAccomplishmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserAccomplishment
-        fields = ("pk", 'score', "user", "accomplishment", )
-
-
-class UserAccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
-    user = UserSerializer()
-
-    class Meta:
-        model = UserAccomplishment
-        fields = ("pk", 'score', 'user', )
-
-
-class AccomplishmentSerializer(serializers.HyperlinkedModelSerializer):
-    # groups = AccomplishmentGroupSerializer(many=True)
-    user_accomplishments = UserAccomplishmentSerializer(many=True)
-
+class AccomplishmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Accomplishment
-        fields = ("pk", "name", "full_score", "user_accomplishments", )
+        fields = ("pk", "name", "full_score", )
+
+
+class UserAccomplishmentSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    accomplishment = AccomplishmentSerializer(read_only=True)
+
+    class Meta:
+        model = UserAccomplishment
+        fields = ('score', 'user', "accomplishment", )
+
+    def validate_score(self, value):
+        if value > self.instance.accomplishment.full_score:
+            raise serializers.ValidationError(
+                "Die Gesamtpunktezahl wurde erreicht und kann nicht mehr weiter erhöht werden.")
+        elif value < 0:
+            raise serializers.ValidationError("Die Punktezahl kann nicht kleiner als 0 sein.")
+        return value
 
 
 class AccomplishmentViewSet(viewsets.ModelViewSet):
-    queryset = Accomplishment.objects.all()
-    serializer_class = AccomplishmentSerializer
+    queryset = UserAccomplishment.objects.all()
+    serializer_class = UserAccomplishmentSerializer
     pagination_class = LimitOffsetPagination
+    lookup_field = "accomplishment_id"
 
     def get_queryset(self):
-        user_id = self.request.GET.get("user_id")
-        pk = self.request.GET.get("pk")
+        user_id = self.kwargs.get("user_id")
         group_id = self.request.GET.get("group_id")
 
-        if pk:
-            self.queryset = self.queryset.filter(pk=pk)
-
         if user_id:
-            self.queryset = self.queryset.filter(groups__users__pk=user_id).distinct()
+            self.queryset = self.queryset.filter(user__pk=user_id).distinct()
 
         if group_id:
             self.queryset = self.queryset.filter(groups__pk=group_id).distinct()
 
         return self.queryset
 
+    @action(detail=True, methods=['get'])
+    def incrementation(self, request, user_id=None, accomplishment_id=None):
+        instance = self.get_object()
+        data = {**request.data, "score": instance.score + 5}
+        serializer = self.serializer_class(instance=instance, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
-class UserAccomplishmentViewSet(viewsets.ModelViewSet):
-    queryset = UserAccomplishment.objects.all()
-    serializer_class = BasicUserAccomplishmentSerializer
-    pagination_class = LimitOffsetPagination
-
-    def get_queryset(self):
-        user_id = self.request.GET.get("user_id")
-        accomplishment_id = self.request.GET.get("accomplishment_id")
-
-        if user_id:
-            self.queryset = self.queryset.filter(user_id=user_id)
-
-        if accomplishment_id:
-            self.queryset = self.queryset.filter(accomplishment_id=accomplishment_id)
-
-        return self.queryset
+    @action(detail=True, methods=['get'])
+    def decrementation(self, request, user_id=None, accomplishment_id=None):
+        instance = self.get_object()
+        data = {**request.data, "score": instance.score - 5}
+        serializer = self.serializer_class(instance=instance, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)

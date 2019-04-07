@@ -2,6 +2,8 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django import forms
 
+from uniklinik.forms import BootstrapModelFormMixin
+
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -25,9 +27,6 @@ class EditBaseForm(UserCreationForm):
             visible.field.widget.attrs["class"] = "form-control"
         self.fields["is_superuser"].widget.attrs["class"] = ""
         self.fields["is_superuser"].widget.attrs["style"] = "cursor:pointer;"
-        if self.instance.is_superuser is True:
-            pass
-        print(self.instance.email)
 
     def clean_is_superuser(self):
         print(f" ????? 1!!!")
@@ -39,8 +38,29 @@ class EditBaseForm(UserCreationForm):
         return is_superuser
 
 
-class ProfileForm(EditBaseForm):
-    pass
+class ProfileFormMixin(BootstrapModelFormMixin):
+    biography = forms.CharField(widget=forms.Textarea(), label="Biografie", required=False)
+    is_admin = forms.BooleanField(label="Adminstrator", required=False)
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', "email", "is_superuser", )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if self.instance:
+            print(f"wwwww: {self.instance} {self.instance.profile.biography}")
+            self.fields["biography"].initial = self.instance.profile.biography
+            self.fields["is_admin"].initial = self.instance.profile.is_admin
+
+    def save(self, commit=True):
+        instance = super().save()
+        biography = self.cleaned_data.get("biography")
+        is_admin = self.cleaned_data.get("is_admin")
+        instance.profile.biography = biography
+        instance.profile.is_admin = is_admin
+        instance.profile.save()
+        return instance
 
 
 class EditForm(EditBaseForm):

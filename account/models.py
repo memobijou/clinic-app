@@ -27,6 +27,7 @@ class Profile(models.Model):
     is_admin = models.NullBooleanField(verbose_name="Administrations Status")
     device_token = models.CharField(max_length=500, null=True, blank=True)
     mentor = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="students")
+    biography = models.TextField(null=True, blank=True, verbose_name="Über dich")
 
     @property
     def mentor_name(self):

@@ -1,5 +1,5 @@
-<form class="form-horizontal" action="{% url 'account:user_profile' pk=object.pk %}" method="POST">{% csrf_token %}
-    {{ form.non_field_errors }}
+<form class="form-horizontal" method="POST">{% csrf_token %}
+    {{ form.errors }}
 
     <h4 class="mb-xlg">Persönliche Informationen</h4>
     <fieldset>
@@ -36,20 +36,22 @@
     <h4 class="mb-xlg">Über dich</h4>
     <fieldset>
         <div class="form-group">
-            <label class="col-md-3 control-label" for="profileBio">Biografie</label>
+            {{ form.biography.errors }}
+            <label class="col-md-3 control-label" for="{{ form.biography.id_for_label }}">{{ form.biography.label }}</label>
             <div class="col-md-8">
-                <textarea class="form-control" rows="3" id="profileBio"></textarea>
+                {{ form.biography.errors }}
+                {{ form.biography }}
             </div>
         </div>
     </fieldset>
     <hr class="dotted tall">
     <h4 class="mb-xlg">Rechte und Privilegien</h4>
     <div class="form-group">
-        <label class="col-xs-3 control-label mt-xs pt-none">{{ form.is_superuser.label }}</label>
+        <label class="col-xs-3 control-label mt-xs pt-none">{{ form.is_admin.label }}</label>
         <div class="col-md-8">
-            {{ form.is_superuser.errors }}
+            {{ form.is_admin.errors }}
             <div class="checkbox-custom checkbox-default checkbox-inline mt-xs">
-                {{ form.is_superuser }}
+                {{ form.is_admin }}
                 <label for="profilePublic"></label>
             </div>
         </div>
