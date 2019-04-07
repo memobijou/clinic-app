@@ -12,19 +12,31 @@ import datetime
 # Serializers define the API representation.
 class AppointmentSerializer(serializers.HyperlinkedModelSerializer):
     groups = GroupSerializer(many=True)
+    promoter = serializers.StringRelatedField()
+    start = serializers.SerializerMethodField()
+    end = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
+
+    def get_start(self, instance):
+        return instance.start_date
+
+    def get_end(self, instance):
+        return instance.end_date
+
+    def get_title(self, instance):
+        return instance.topic
 
     class Meta:
         model = Appointment
         fields = ('pk', 'topic', 'description', 'start_date', 'end_date', "place", "promoter", "is_infobox",
-                  "is_conference", "groups")
-    promoter = serializers.StringRelatedField()
+                  "is_conference", "groups", "title", "start", "end",)
 
 
 # ViewSets define the view behavior.
 class AppointmentViewSet(viewsets.ModelViewSet):
     queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = None
 
     def get_queryset(self):
         self.queryset = super().get_queryset()
@@ -32,6 +44,29 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         self.filter_by_group_name()
         self.filter_by_group_pks()
         self.filter_groups_by_user_id()
+
+        is_info = self.request.GET.get("is_infobox")
+        is_conference = self.request.GET.get("is_conference")
+
+        if is_info == "true":
+            self.queryset = self.queryset.filter(is_infobox=True)
+            from django.db.models.functions import Concat
+            from django.db.models import Value, CharField
+            self.queryset = self.queryset.annotate(
+                promoter_name=Concat(F("promoter__first_name"), Value(' '), F("promoter__last_name"),
+                                     output_field=CharField()))
+        if is_conference == "true":
+            self.queryset = self.queryset.filter(is_conference=True)
+
+        start_datetime = self.request.GET.get("start")
+        end_datetime = self.request.GET.get("end")
+
+        if start_datetime is not None and end_datetime is not None:
+            start_date = datetime.datetime.strptime(start_datetime, "%Y-%m-%d").date()
+            end_date = datetime.datetime.strptime(end_datetime, "%Y-%m-%d").date()
+
+            self.queryset = self.queryset.filter(
+                start_date__range=(start_date, end_date), end_date__range=(start_date, end_date))
         return self.queryset
 
     def filter_by_group_name(self):
@@ -59,19 +94,15 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, name="calendar")
     def calendar(self, request):
-        print("GOOD")
-        print(request.GET.get("start"))
-        print(request.GET.get("end"))
         to_filter_start_date = request.GET.get("start")
         to_filter_end_date = request.GET.get("end")
         is_info = request.GET.get("is_infobox")
         is_conference = request.GET.get("is_conference")
 
-        print(f"is_conference : {is_conference} --- is_info : {is_info}")
-
-        data = Appointment.objects.all().values("start_date", "end_date", "description", "pk", "place", "is_infobox",
-                                                "is_conference").annotate(
-            start=F("start_date"), end=F("end_date"), title=F("topic"))
+        data = Appointment.objects.all().select_related('groups').only('pk', ).values(
+            "start_date", "end_date", "description", "pk", "place", "is_infobox", "is_conference", "groups").annotate(
+            start=F("start_date"), end=F("end_date"), title=F("topic")).distinct()
+        print(f"safeee: {data}")
 
         if to_filter_start_date is not None and to_filter_end_date is not None:
             to_filter_start_date = datetime.datetime.strptime(to_filter_start_date, "%Y-%m-%d").date()
@@ -89,5 +120,4 @@ class AppointmentViewSet(viewsets.ModelViewSet):
                                                       output_field=CharField()))
         if is_conference == "true":
             data = data.filter(is_conference=True)
-
         return Response(data)

@@ -32,23 +32,23 @@ class UserTestCase(TestCase):
         data = student.__dict__
         data["mentor"] = mentor.pk
         response = self.client.post(reverse_lazy("account:user_profile", kwargs={"pk": student.pk}), data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         self.assertEqual(student.mentor, mentor.pk)
 
     def test_user_password_changed(self):
-        data = {"password1": "Password1¢", "password2": "Password1¢", **self.session_user.__dict__}
+        data = {"new_password1": "Password1¢", "new_password2": "Password1¢", **self.session_user.__dict__}
         response = self.client.post(reverse_lazy(
-            "account:user_edit", kwargs={"pk": self.session_user.pk}), data)
+            "account:change_user_password", kwargs={"pk": self.session_user.pk}), data)
         self.assertEqual(response.status_code, 302)
         self.client.logout()
         self.client.login(username=self.session_user.username, password="Password1¢")
-        response = self.client.get(reverse_lazy("account:user_edit", kwargs={"pk": self.session_user.pk}))
-        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse_lazy("account:change_user_password", kwargs={"pk": self.session_user.pk}))
+        self.assertEqual(response.status_code, 302)
 
     def test_group_creation(self):
         groups_count = Group.objects.count()
         with mixer.ctx(commit=False):
-            data = mixer.blend(Group).__dict__
+            data = mixer.blend(Group, type="discipline").__dict__
         response = self.client.post(reverse_lazy("account:new_group"), data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Group.objects.count(), groups_count+1)

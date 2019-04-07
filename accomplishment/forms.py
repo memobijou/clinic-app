@@ -1,11 +1,11 @@
 from accomplishment.models import Accomplishment, UserAccomplishment
-from uniklinik.forms import BootstrapModelForm
+from uniklinik.forms import BootstrapModelFormMixin
 from django import forms
 from account.models import Group
 from django.contrib.auth.models import User
 
 
-class AccomplishmentForm(BootstrapModelForm):
+class AccomplishmentFormMixin(BootstrapModelFormMixin):
     groups = forms.ModelMultipleChoiceField(queryset=Group.objects.filter(type__iexact="discipline"),
                                             widget=forms.CheckboxSelectMultiple, required=False
                                             )

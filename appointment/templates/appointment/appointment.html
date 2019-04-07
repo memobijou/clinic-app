@@ -11,6 +11,22 @@
 
 
 {% block content %}
+    <style>
+        @media only screen and (max-width: 480px) {
+            .modal .modal-dialog {
+                position:relative;
+                width:auto;
+                margin: 10px;
+            }
+        }
+
+        @media only screen and (min-width: 481px) {
+            .modal .modal-dialog {
+                width:414px;
+            }
+        }
+    </style>
+
     <div class="panel-body">
     <br/><br/>
         <div class="col-md-8 col-md-offset-2">
@@ -48,23 +64,6 @@
             <div id="calendar"></div>
         </div>
     </div>
-
-
-    <style>
-        @media only screen and (max-width: 480px) {
-            .modal .modal-dialog {
-                position:relative;
-                width:auto;
-                margin: 10px;
-            }
-        }
-
-        @media only screen and (min-width: 481px) {
-            .modal .modal-dialog {
-                width:414px;
-            }
-        }
-    </style>
 
     <!-- Modal -->
     <div id="edit_infobox" class="modal fade" role="dialog">
@@ -137,12 +136,21 @@
           display: inline;
           padding-right:25px;
         }
+        form li{
+            list-style:none;
+        }
+        form ul {
+            display:inline;
+        }
+
     </style>
 {% endblock %}
 
 {% block js %}
     <script>
-        var api_url = "{% url "appointment:appointment-calendar" %}";
+        var api_url = "{% url "appointment:appointment-list" %}";
+        var edit_infobox_action_url = "{% url 'appointment:edit_infobox' pk=0 %}";
+        var edit_conference_action_url = "{% url 'appointment:edit_conference' pk=0 %}";
     </script>
     <!-- Specific Page Vendor -->
     {% if settings.WEBPACK_DEV_SERVER is True %}
@@ -150,12 +158,6 @@
     {% else %}
         <script src="{% static 'dist/appointment/base/bundle.js' %}"></script>
     {% endif %}
-
-    <script>
-    console.log(window.$.fn.jquery)
-    console.log(moment)
-
-    </script>
 {% endblock %}
 
 

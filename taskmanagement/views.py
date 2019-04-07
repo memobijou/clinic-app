@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views import  generic
 
-from taskmanagement.forms import GroupTaskForm, UserTaskForm
+from taskmanagement.forms import GroupTaskFormMixin, UserTaskFormMixin
 from taskmanagement.models import Task, UserTask
 # Create your views here.
 from account.models import Group
@@ -16,11 +16,11 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
     template_name = "taskmanagement/task_list.html"
     paginate_by = 15
     queryset = Task.objects.all()
-    form = GroupTaskForm()
+    form = GroupTaskFormMixin()
 
     def get_form(self):
         if self.request.method == "POST":
-            self.form = GroupTaskForm(data=self.request.POST)
+            self.form = GroupTaskFormMixin(data=self.request.POST)
         return self.form
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -31,7 +31,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("taskmanagement:tasks_list")
-    form_class = GroupTaskForm
+    form_class = GroupTaskFormMixin
 
     def form_valid(self, form):
         instance = form.save()
@@ -45,7 +45,7 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 class UserTaskUpdateView(LoginRequiredMixin, generic.UpdateView):
-    form_class = UserTaskForm
+    form_class = UserTaskFormMixin
     template_name = "taskmanagement/task_detail.html"
     group = None
     object = None
@@ -99,9 +99,9 @@ class UserTaskUpdateView(LoginRequiredMixin, generic.UpdateView):
         for task in tasks:
             if self.request.method == "POST" and task.pk == int(self.kwargs.get("task_pk")):
                 print(f"{task.pk} - {self.kwargs.get('task_pk')}")
-                form = UserTaskForm(instance=self.object, group=instance, data=self.request.POST)
+                form = UserTaskFormMixin(instance=self.object, group=instance, data=self.request.POST)
             else:
-                form = UserTaskForm(instance=task, group=instance)
+                form = UserTaskFormMixin(instance=task, group=instance)
             forms.append(form)
         return list(zip(tasks, forms))
 
@@ -120,5 +120,5 @@ class GroupTaskDetailView(LoginRequiredMixin, generic.UpdateView):
 
     def get_tasks(self, instance):
         tasks = instance.tasks.all()
-        forms = [UserTaskForm(instance=task, group=instance) for task in tasks]
+        forms = [UserTaskFormMixin(instance=task, group=instance) for task in tasks]
         return list(zip(tasks, forms))

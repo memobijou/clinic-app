@@ -8,11 +8,13 @@ from appointment.models import Appointment
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from pyfcm import FCMNotification
+import pyfcm
+from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError
 import os
-from uniklinik.forms import BootstrapModelForm
+from uniklinik.forms import BootstrapModelFormMixin
 
 
-class InfoboxForm(BootstrapModelForm):
+class InfoboxFormMixin(BootstrapModelFormMixin):
     class Meta:
         model = Appointment
         fields = ["start_date", "end_date", "topic", "description", "groups", "place"]
@@ -31,7 +33,7 @@ class InfoboxForm(BootstrapModelForm):
         self.fields["description"].widget.attrs["rows"] = "5"
 
 
-class ConferenceForm(BootstrapModelForm):
+class ConferenceFormMixin(BootstrapModelFormMixin):
     class Meta:
         model = Appointment
         fields = ["start_date", "end_date", "topic", "description", "place", "groups"]
@@ -72,30 +74,30 @@ class AppointmentView(LoginRequiredMixin, View):
 
     def get_infobox_form(self):
         if self.request.method == "POST":
-            self.infobox_form = InfoboxForm(data=self.request.POST)
+            self.infobox_form = InfoboxFormMixin(data=self.request.POST)
         else:
-            self.infobox_form = InfoboxForm()
+            self.infobox_form = InfoboxFormMixin()
         return self.infobox_form
 
     def get_conference_form(self):
         if self.request.method == "POST":
-            self.conference_form = ConferenceForm(data=self.request.POST)
+            self.conference_form = ConferenceFormMixin(data=self.request.POST)
         else:
-            self.conference_form = ConferenceForm()
+            self.conference_form = ConferenceFormMixin()
         return self.conference_form
 
     def get_edit_infobox_form(self):
         if self.request.method == "POST":
-            self.edit_infobox_form = InfoboxForm(prefix="infobox_edit", data=self.request.POST)
+            self.edit_infobox_form = InfoboxFormMixin(prefix="infobox_edit", data=self.request.POST)
         else:
-            self.edit_infobox_form = InfoboxForm(prefix="infobox_edit")
+            self.edit_infobox_form = InfoboxFormMixin(prefix="infobox_edit")
         return self.edit_infobox_form
 
     def get_edit_conference_form(self):
         if self.request.method == "POST":
-            self.edit_conference_form = ConferenceForm(prefix="conference_edit", data=self.request.POST)
+            self.edit_conference_form = ConferenceFormMixin(prefix="conference_edit", data=self.request.POST)
         else:
-            self.edit_conference_form = ConferenceForm(prefix="conference_edit")
+            self.edit_conference_form = ConferenceFormMixin(prefix="conference_edit")
         return self.edit_conference_form
 
     def get_context(self):
@@ -109,15 +111,18 @@ def get_users_from_groups(groups):
 
 
 def send_push_notifications(users, title, message):
-    push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
-    registration_ids = []
-    for user in users:
-        if user.profile.device_token is not None:
-            registration_ids.append(user.profile.device_token)
-    if len(registration_ids) > 0:
-        result = push_service.notify_multiple_devices(
-            registration_ids=registration_ids, message_title=title, message_body=message, sound="default")
-        print(result)
+    if os.environ.get("firebase_token"):
+        push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
+        registration_ids = []
+        for user in users:
+            if user.profile.device_token is not None:
+                registration_ids.append(user.profile.device_token)
+        if len(registration_ids) > 0:
+            try:
+                push_service.notify_multiple_devices(
+                    registration_ids=registration_ids, message_title=title, message_body=message, sound="default")
+            except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
+                print(e)
 
 
 class InfoboxView(LoginRequiredMixin, View):
@@ -133,16 +138,16 @@ class InfoboxView(LoginRequiredMixin, View):
 
     def get_infobox_form(self):
         if self.request.method == "POST":
-            self.infobox_form = InfoboxForm(data=self.request.POST)
+            self.infobox_form = InfoboxFormMixin(data=self.request.POST)
         else:
-            self.infobox_form = InfoboxForm()
+            self.infobox_form = InfoboxFormMixin()
         return self.infobox_form
 
     def get_conference_form(self):
         if self.request.method == "POST":
-            self.conference_form = ConferenceForm(initial=self.request.POST)
+            self.conference_form = ConferenceFormMixin(initial=self.request.POST)
         else:
-            self.conference_form = ConferenceForm()
+            self.conference_form = ConferenceFormMixin()
         return self.conference_form
 
     def post(self, request, *args, **kwargs):
@@ -173,16 +178,16 @@ class ConferenceView(LoginRequiredMixin, View):
 
     def get_infobox_form(self):
         if self.request.method == "POST":
-            self.infobox_form = InfoboxForm(initial=self.request.POST)
+            self.infobox_form = InfoboxFormMixin(initial=self.request.POST)
         else:
-            self.infobox_form = InfoboxForm()
+            self.infobox_form = InfoboxFormMixin()
         return self.infobox_form
 
     def get_conference_form(self):
         if self.request.method == "POST":
-            self.conference_form = ConferenceForm(data=self.request.POST)
+            self.conference_form = ConferenceFormMixin(data=self.request.POST)
         else:
-            self.conference_form = ConferenceForm()
+            self.conference_form = ConferenceFormMixin()
         return self.conference_form
 
     def post(self, request, *args, **kwargs):
@@ -215,32 +220,30 @@ class InfoboxUpdateView(LoginRequiredMixin, View):
         self.edit_conference_form = self.get_edit_conference_form()
         self.infobox_form = self.get_infobox_form()
         self.conference_form = self.get_conference_form()
-        print("call detected !")
         return super().dispatch(request, *args, **kwargs)
 
     def get_edit_infobox_form(self):
         if self.request.method == "POST":
-            self.edit_infobox_form = InfoboxForm(prefix="infobox_edit", data=self.request.POST, instance=self.object)
+            self.edit_infobox_form = InfoboxFormMixin(prefix="infobox_edit", data=self.request.POST,
+                                                      instance=self.object)
         else:
-            self.edit_infobox_form = InfoboxForm(prefix="infobox_edit", instance=self.object)
+            self.edit_infobox_form = InfoboxFormMixin(prefix="infobox_edit", instance=self.object)
         return self.edit_infobox_form
 
     def get_edit_conference_form(self):
         if self.request.method == "POST":
-            self.edit_conference_form = ConferenceForm(prefix="conference_edit", initial=self.request.POST,
-                                                       instance=self.object)
+            self.edit_conference_form = ConferenceFormMixin(prefix="conference_edit", initial=self.request.POST,
+                                                            instance=self.object)
         else:
-            self.edit_conference_form = ConferenceForm(prefix="conference_edit", instance=self.object)
+            self.edit_conference_form = ConferenceFormMixin(prefix="conference_edit", instance=self.object)
         return self.edit_conference_form
 
     def post(self, request, *args, **kwargs):
-        print("akhiiii")
-        print(self.object.pk)
         if self.edit_infobox_form.is_valid() is True:
             self.edit_infobox_form.save()
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
         else:
-            print(self.edit_infobox_form.errors)
+            print(f"king: {self.edit_infobox_form.errors}")
             return render(request, "appointment/appointment.html", {"edit_infobox_form": self.edit_infobox_form,
                                                                     "edit_conference_form": self.edit_conference_form,
                                                                     "infobox_form": self.infobox_form,
@@ -249,16 +252,16 @@ class InfoboxUpdateView(LoginRequiredMixin, View):
 
     def get_infobox_form(self):
         if self.request.method == "POST":
-            self.infobox_form = InfoboxForm(initial=self.request.POST)
+            self.infobox_form = InfoboxFormMixin(initial=self.request.POST)
         else:
-            self.infobox_form = InfoboxForm()
+            self.infobox_form = InfoboxFormMixin()
         return self.infobox_form
 
     def get_conference_form(self):
         if self.request.method == "POST":
-            self.conference_form = ConferenceForm(initial=self.request.POST)
+            self.conference_form = ConferenceFormMixin(initial=self.request.POST)
         else:
-            self.conference_form = ConferenceForm()
+            self.conference_form = ConferenceFormMixin()
         return self.conference_form
 
 
@@ -277,31 +280,27 @@ class ConferenceUpdateView(LoginRequiredMixin, View):
         self.edit_infobox_form = self.get_edit_infobox_form()
         self.infobox_form = self.get_infobox_form()
         self.conference_form = self.get_conference_form()
-        print("call detected !")
         return super().dispatch(request, *args, **kwargs)
 
     def get_edit_infobox_form(self):
         if self.request.method == "POST":
-            self.edit_infobox_form = InfoboxForm(prefix="infobox_edit", initial=self.request.POST, instance=self.object)
+            self.edit_infobox_form = InfoboxFormMixin(prefix="infobox_edit", initial=self.request.POST, instance=self.object)
         else:
-            self.edit_infobox_form = InfoboxForm(prefix="infobox_edit", instance=self.object)
+            self.edit_infobox_form = InfoboxFormMixin(prefix="infobox_edit", instance=self.object)
         return self.edit_infobox_form
 
     def get_edit_conference_form(self):
         if self.request.method == "POST":
-            self.edit_conference_form = ConferenceForm(prefix="conference_edit", data=self.request.POST, instance=self.object)
+            self.edit_conference_form = ConferenceFormMixin(prefix="conference_edit", data=self.request.POST, instance=self.object)
         else:
-            self.edit_conference_form = ConferenceForm(prefix="conference_edit", instance=self.object)
+            self.edit_conference_form = ConferenceFormMixin(prefix="conference_edit", instance=self.object)
         return self.edit_conference_form
 
     def post(self, request, *args, **kwargs):
-        print("akhiiii")
-        print(self.object.pk)
         if self.edit_conference_form.is_valid() is True:
             self.edit_conference_form.save()
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
         else:
-            print(self.edit_conference_form.errors)
             return render(request, "appointment/appointment.html", {"edit_conference_form": self.edit_conference_form,
                                                                     "edit_infobox_form": self.edit_infobox_form,
                                                                     "infobox_form": self.infobox_form,
@@ -309,14 +308,14 @@ class ConferenceUpdateView(LoginRequiredMixin, View):
 
     def get_infobox_form(self):
         if self.request.method == "POST":
-            self.infobox_form = InfoboxForm(initial=self.request.POST)
+            self.infobox_form = InfoboxFormMixin(initial=self.request.POST)
         else:
-            self.infobox_form = InfoboxForm()
+            self.infobox_form = InfoboxFormMixin()
         return self.infobox_form
 
     def get_conference_form(self):
         if self.request.method == "POST":
-            self.conference_form = ConferenceForm(initial=self.request.POST)
+            self.conference_form = ConferenceFormMixin(initial=self.request.POST)
         else:
-            self.conference_form = ConferenceForm()
+            self.conference_form = ConferenceFormMixin()
         return self.conference_form

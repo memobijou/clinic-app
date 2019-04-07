@@ -31,7 +31,8 @@ urlpatterns = [
     path('taskmanagement/', include(("taskmanagement.urls", "taskmanagement"), namespace="taskmanagement")),
     path('accomplishment/', include(("accomplishment.urls", "accomplishment"), namespace="accomplishment")),
     path('messaging/', include(("messaging.urls", "messaging"), namespace="messaging")),
-    path(r'api-auth/', include('rest_framework.urls'))
+    path(r'api-auth/', include('rest_framework.urls')),
+    path('api/v1/', include('accomplishment.api_urls')),
 ]
 
 urlpatterns += [

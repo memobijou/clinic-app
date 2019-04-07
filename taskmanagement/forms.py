@@ -1,12 +1,12 @@
 from django.contrib.auth.models import User
 
-from uniklinik.forms import BootstrapModelForm
+from uniklinik.forms import BootstrapModelFormMixin
 from taskmanagement.models import Task
 from account.models import Group
 from django import forms
 
 
-class GroupTaskForm(BootstrapModelForm):
+class GroupTaskFormMixin(BootstrapModelFormMixin):
     groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
                                             widget=forms.CheckboxSelectMultiple
                                             )
@@ -16,7 +16,7 @@ class GroupTaskForm(BootstrapModelForm):
         fields = ("name", "groups", )
 
 
-class UserTaskForm(BootstrapModelForm):
+class UserTaskFormMixin(BootstrapModelFormMixin):
     class Meta:
         model = Task
         fields = ("users", )
