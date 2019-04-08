@@ -14,7 +14,7 @@ User.add_to_class("__str__", get_name)
 
 class Group(models.Model):
     name = models.CharField(null=True, blank=False, max_length=200)
-    users = models.ManyToManyField(User, blank=True, related_name="groups_list")
+    users = models.ManyToManyField(User, blank=True, related_name="groups_list", verbose_name="Mitglieder")
     tasks = models.ManyToManyField("taskmanagement.Task", blank=True, related_name="groups_list")
     type = models.CharField(null=True, blank=True, max_length=200, verbose_name="Typ")
 
@@ -42,6 +42,11 @@ class Profile(models.Model):
         if students_string == "":
             students_string = "/"
         return students_string
+
+    def get_discipline(self):
+        discipline = self.user.groups_list.filter(type="discipline").first()
+        if discipline:
+            return discipline.name
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"

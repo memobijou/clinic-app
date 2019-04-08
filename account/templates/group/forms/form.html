@@ -19,20 +19,23 @@
                             <a href="#" class="fa fa-caret-down"></a>
                             <a href="#" class="fa fa-times"></a>
                         </div>
-
                         <h2 class="panel-title">{{ object.name }}</h2>
                             <br/>
                             {{ form.name }}
                             {{ form.name.errors }}
                             <br/>
                     </header>
-                    <div class="panel-body text-center">
+                    <div class="panel-body">
                         <div class="col-md-12" style="padding-bottom:25px;">
+                            {{ form.non_field_errors }}
+                        </div>
+                        <div class="col-md-12" style="padding-bottom:25px;">
+                            {{ form.users.label }}
                             {{ form.users }}
                             {{ form.users.errors }}
                         </div>
                         <div class="col-md-12" style="padding-bottom:25px;">
-                            <div class="col-md-6 col-md-offset-3">
+                            <div class="col-md-6" style="padding:0;">
                                 {{ form.type.label }}
                                 {{ form.type }}
                                 {{ form.type.errors }}
@@ -45,7 +48,6 @@
                         </div>
                     </div>
                 </form>
-
             </section>
         </div>
     </div>

@@ -2,6 +2,10 @@ from rest_framework.pagination import LimitOffsetPagination
 from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets
 from account.models import Profile
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from django.shortcuts import get_object_or_404
 
 
 class BasicUserSerializer(serializers.HyperlinkedModelSerializer):
@@ -57,3 +61,17 @@ class UserViewSet(viewsets.ModelViewSet):
         pk_filter_value = self.request.GET.get("pk")
         if pk_filter_value is not None and pk_filter_value != "":
             self.queryset = self.queryset.filter(pk=pk_filter_value)
+
+    @action(detail=False, methods=['POST'])
+    def login(self, request):
+        username = self.request.POST.get("username")
+        password = self.request.POST.get("password")
+        user = get_object_or_404(User, username=username)
+        is_valid_password = user.check_password(password)
+
+        if is_valid_password is True:
+            user_serializer = UserSerializer(instance=user)
+            return Response(user_serializer.data)
+        else:
+            return Response({"error": "invalid password or username"},
+                            status=status.HTTP_400_BAD_REQUEST)

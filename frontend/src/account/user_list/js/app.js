@@ -68,7 +68,9 @@ $(document).ready(function(){
         {targets: 3, title: "Nachname", name: "last_name"},
         {targets: 4, title: "Email", name: "email"},
         {targets: 5, title: "Mentor", name: "mentor"},
-        {targets: 6, title: "Schüler", name: "students"}
+        {targets: 6, title: "Schüler", name: "students"},
+        {targets: 7, title: "Fachrichtung", name: "discipline"}
+
       ],
 
        // Mit ajax funktioniert muss nur angepasst werden auf REST API

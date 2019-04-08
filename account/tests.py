@@ -1,11 +1,9 @@
 from django.test import TestCase
-from account.models import Profile
 from django.contrib.auth.models import User
 from mixer.backend.django import mixer
-from account.forms import CustomUserCreationForm
 from django.urls import reverse_lazy
-import sys
 from account.models import Group
+import json
 
 
 # Create your tests here.
@@ -62,3 +60,18 @@ class UserTestCase(TestCase):
         response = self.client.post(reverse_lazy("account:edit_group", kwargs={"pk": group.pk}), data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(group.users.count(), group_users_count+5)
+
+    def test_login_api(self):
+        user = mixer.blend(User)
+        password = "Password1¢"
+        user.set_password(password)
+        user.save()
+        response = self.client.post(reverse_lazy("api_account:user-login"),
+                                    data={"username": user.username, "password": password})
+        self.assertEqual(response.status_code, 200)
+        json_response = json.loads(response.content)
+        self.assertEqual(user.pk, json_response.get("pk"))
+
+        response = self.client.post(reverse_lazy("api_account:user-login"),
+                                    data={"username": user.username, "password": "WRONG PASSWORD"})
+        self.assertEqual(response.status_code, 400)
