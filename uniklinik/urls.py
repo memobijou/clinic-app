@@ -32,7 +32,9 @@ urlpatterns = [
     path('accomplishment/', include(("accomplishment.urls", "accomplishment"), namespace="accomplishment")),
     path('messaging/', include(("messaging.urls", "messaging"), namespace="messaging")),
     path(r'api-auth/', include('rest_framework.urls')),
-    path('api/v1/', include('accomplishment.api_urls')),
+    path('api/v1/', include(('accomplishment.api_urls', "accomplishment"), namespace="api_accomplishment")),
+    path('api/v1/', include(('account.api_urls', "account"), namespace="api_account")),
+
 ]
 
 urlpatterns += [

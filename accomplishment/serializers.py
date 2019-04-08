@@ -48,7 +48,7 @@ class AccomplishmentViewSet(viewsets.ModelViewSet):
 
         return self.queryset
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=['PUT'])
     def incrementation(self, request, user_id=None, accomplishment_id=None):
         instance = self.get_object()
         data = {**request.data, "score": instance.score + 5}
@@ -60,7 +60,7 @@ class AccomplishmentViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=['PUT'])
     def decrementation(self, request, user_id=None, accomplishment_id=None):
         instance = self.get_object()
         data = {**request.data, "score": instance.score - 5}
