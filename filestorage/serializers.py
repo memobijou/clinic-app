@@ -28,10 +28,14 @@ def send_file_messages_through_firebase(file, is_new=True):
 
 class FileSerializerBase(serializers.ModelSerializer):
     type = serializers.StringRelatedField()
+    filename = serializers.SerializerMethodField()
+
+    def get_filename(self, instance):
+        return instance.file.name
 
     class Meta:
         model = File
-        fields = ("file", "parent_directory", "type", "pk", "version")
+        fields = ("file", "parent_directory", "type", "pk", "version", "filename")
 
     def save(self, **kwargs):
         instance = super().save(**kwargs)
