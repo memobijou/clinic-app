@@ -43,6 +43,7 @@ let template =  `
             </svg>  
         </div>
         <div class="dz-edit text-center">
+            <p><span data-dz-edit="" class="download-span"></span></p>
             <span data-dz-edit="" class="edit-span"></span>
         </div>
     </div>

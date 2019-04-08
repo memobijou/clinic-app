@@ -31,11 +31,14 @@ window.options_in_german = {
 window.success_function = function(dropzone, file, response){
     let version_spans = file.previewElement.getElementsByClassName("version-span")
     let edit_spans = file.previewElement.getElementsByClassName("edit-span")
+    let download_spans = file.previewElement.getElementsByClassName("download-span")
 
     let version_span = version_spans[0]
     let edit_span = edit_spans[0]
+    let download_span = download_spans[0]
 
     version_span.innerHTML =  "<b>Version:</b> " + "1.00"
+    download_span.innerHTML = "<a href='" + response.file +"'>Herunterladen</a>"
     edit_span.innerHTML = "<a href='" + edit_url.replace("0", response.pk) +"'>Bearbeiten</a>"
 
 }
@@ -73,6 +76,7 @@ $(document).ready(function(){
                 init: function() {
                     let version_spans = this.previewsContainer.getElementsByClassName("version-span")
                     let edit_spans = this.previewsContainer.getElementsByClassName("edit-span")
+                    let download_spans = this.previewsContainer.getElementsByClassName("download-span")
 
                     for(let j in directory_files[directory.pk.toString()]){
                         let file = directory_files[directory.pk.toString()][j]
@@ -82,6 +86,8 @@ $(document).ready(function(){
                         this.emit("complete", mockFile)
                         version_spans[j].innerHTML =  "<b>Version:</b> " + file.version.replace(",", ".")
                         edit_spans[j].innerHTML = "<a href='" + file.edit_view_url +"'>Bearbeiten</a>"
+                        download_spans[j].innerHTML = "<a href='" + file.url +"'>Herunterladen</a>"
+
                     }
 
                     this.on("removedfile", function(file) {
