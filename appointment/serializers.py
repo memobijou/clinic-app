@@ -1,7 +1,7 @@
 from django.db.models import F
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from account.group.serializers import GroupSerializer
@@ -36,7 +36,7 @@ class AppointmentSerializer(serializers.HyperlinkedModelSerializer):
 class AppointmentViewSet(viewsets.ModelViewSet):
     queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
-    pagination_class = None
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         self.queryset = super().get_queryset()
@@ -94,30 +94,5 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, name="calendar")
     def calendar(self, request):
-        to_filter_start_date = request.GET.get("start")
-        to_filter_end_date = request.GET.get("end")
-        is_info = request.GET.get("is_infobox")
-        is_conference = request.GET.get("is_conference")
-
-        data = Appointment.objects.all().select_related('groups').only('pk', ).values(
-            "start_date", "end_date", "description", "pk", "place", "is_infobox", "is_conference", "groups").annotate(
-            start=F("start_date"), end=F("end_date"), title=F("topic")).distinct()
-        print(f"safeee: {data}")
-
-        if to_filter_start_date is not None and to_filter_end_date is not None:
-            to_filter_start_date = datetime.datetime.strptime(to_filter_start_date, "%Y-%m-%d").date()
-            to_filter_end_date = datetime.datetime.strptime(to_filter_end_date, "%Y-%m-%d").date()
-
-            data = data.filter(start_date__range=(to_filter_start_date, to_filter_end_date),
-                               end_date__range=(to_filter_start_date, to_filter_end_date)
-                               )
-
-        if is_info == "true":
-            data = data.filter(is_infobox=True)
-            from django.db.models.functions import Concat
-            from django.db.models import Value, CharField
-            data = data.annotate(promoter_name=Concat(F("promoter__first_name"), Value(' '), F("promoter__last_name"),
-                                                      output_field=CharField()))
-        if is_conference == "true":
-            data = data.filter(is_conference=True)
-        return Response(data)
+        self.pagination_class = None
+        return super().list(request)

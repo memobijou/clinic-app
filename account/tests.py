@@ -66,6 +66,7 @@ class UserTestCase(TestCase):
         password = "Password1¢"
         user.set_password(password)
         user.save()
+        print(reverse_lazy("api_account:user-login"))
         response = self.client.post(reverse_lazy("api_account:user-login"),
                                     data={"username": user.username, "password": password})
         self.assertEqual(response.status_code, 200)

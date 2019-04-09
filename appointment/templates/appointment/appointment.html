@@ -148,7 +148,7 @@
 
 {% block js %}
     <script>
-        var api_url = "{% url "appointment:appointment-list" %}";
+        var api_url = "{% url "appointment:appointment-calendar" %}";
         var edit_infobox_action_url = "{% url 'appointment:edit_infobox' pk=0 %}";
         var edit_conference_action_url = "{% url 'appointment:edit_conference' pk=0 %}";
     </script>
