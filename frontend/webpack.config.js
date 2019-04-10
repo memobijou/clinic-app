@@ -224,6 +224,16 @@ const accomplishmentConfig = Object.assign({}, config, {
 })
 
 
+const phoneBookConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/phonebook/js/app.js"],
+	},
+	output: {
+		path: path.resolve(__dirname, "../static/dist/phonebook/"),
+		filename: "[name].js",
+		publicPath: "/build/phonebook/"
+	}
+})
 
 
 module.exports = [
@@ -235,5 +245,6 @@ module.exports = [
 	filestorageEditConfig,
 	accountGroupListConfig,
 	taskManagementConfig,
-	accomplishmentConfig
+	accomplishmentConfig,
+	phoneBookConfig
 ]

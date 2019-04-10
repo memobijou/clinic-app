@@ -1,10 +1,9 @@
 from rest_framework import serializers, viewsets, status
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import PageNumberPagination
 from accomplishment.models import Accomplishment, UserAccomplishment
 from account.serializers import UserSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 
 
 class AccomplishmentSerializer(serializers.ModelSerializer):
@@ -33,7 +32,7 @@ class UserAccomplishmentSerializer(serializers.ModelSerializer):
 class AccomplishmentViewSet(viewsets.ModelViewSet):
     queryset = UserAccomplishment.objects.all()
     serializer_class = UserAccomplishmentSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = PageNumberPagination
     lookup_field = "accomplishment_id"
 
     def get_queryset(self):

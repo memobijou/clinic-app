@@ -1,4 +1,4 @@
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets
 from account.models import Profile
@@ -51,7 +51,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         self.filter_by_pk()

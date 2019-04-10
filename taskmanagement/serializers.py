@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.db.models.functions import Lower
 from rest_framework import serializers, viewsets
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import PageNumberPagination
 from account.models import Group
 from account.serializers import ProfileSerializer
 from taskmanagement.models import Task, UserTask
@@ -46,8 +46,7 @@ class GroupTaskSerializer(serializers.HyperlinkedModelSerializer):
 class GroupTaskViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupTaskSerializer
-    pagination_class = LimitOffsetPagination
-
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         self.filter_by_group_id()
@@ -87,8 +86,7 @@ class EndUserTaskSerializer(serializers.ModelSerializer):
 class UserTaskViewSet(viewsets.ModelViewSet):
     queryset = UserTask.objects.all()
     serializer_class = EndUserTaskSerializer
-    pagination_class = LimitOffsetPagination
-
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         self.filter_by_user_id()

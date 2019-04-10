@@ -1,11 +1,10 @@
 from django.db.models import Q
 from rest_framework import serializers, viewsets
-# Serializers define the API representation.
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import PageNumberPagination
 
 from appointment.duty_roster.utils import get_first_date_of_week_dates, get_week_dates
 from appointment.models import DutyRoster
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
@@ -42,7 +41,7 @@ class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
 class DutyRosterViewSet(viewsets.ModelViewSet):
     queryset = DutyRoster.objects.all()
     serializer_class = DutyRosterSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         return super().get_queryset()

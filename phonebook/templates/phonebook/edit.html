@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Kontakt bearbeiten</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span><a href="{% url 'phonebook:list' %}">Kontaktliste Übersicht</a></span></li>
+    <li><span>Kontakt bearbeiten</span></li>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <form method="POST" id="form">{% csrf_token %}
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+                        <h2 class="panel-title">Kontakt bearbeiten</h2>
+                        <br/>
+                    </header>
+                    <div class="panel-body">
+                        <div class="col-md-6" style="padding-bottom:25px;">
+                            {{ form.as_p }}
+                        </div>
+                        <div class="col-md-12">
+                            <div>
+                                <button class="btn btn-primary">Änderungen speichern</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+
+<!-- end: page -->
+    <style>
+    form ul {
+      padding-left:0;
+      list-style: none;
+    }
+    form li {
+      display: inline;
+      padding-right:25px;
+    }
+    </style>
+{% endblock %}
+
+
+{% block examples %}
+
+{% endblock %}

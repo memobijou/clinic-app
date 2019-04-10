@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from django.db.models import Q
 from rest_framework import serializers, viewsets
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import PageNumberPagination
 from account.serializers import UserSerializer
 from messaging.models import TextMessage
 
@@ -24,7 +24,7 @@ class TextMessageSerializer(serializers.ModelSerializer):
 class BaseTextMessageViewset(metaclass=ABCMeta):
     kwargs = None
     queryset = TextMessage.objects.all()
-    pagination_class = LimitOffsetPagination
+    pagination_class = PageNumberPagination
 
     @property
     @abstractmethod

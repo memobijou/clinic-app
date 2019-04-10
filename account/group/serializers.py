@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import PageNumberPagination
 from django.db.models.functions import Lower
 from account.models import Group
 from rest_framework import serializers, viewsets
@@ -27,7 +27,7 @@ class UserGroupSerializer(serializers.ModelSerializer):
 class ReadOnlyGroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         self.filter_by_user_id()
@@ -61,7 +61,7 @@ class ReadOnlyGroupViewSet(viewsets.ModelViewSet):
 class UserGroupViewSet(viewsets.ModelViewSet):
     queryset = Group.users.through.objects.all()
     serializer_class = UserGroupSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         user_id = self.request.GET.get("user_id")

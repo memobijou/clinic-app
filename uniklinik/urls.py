@@ -31,9 +31,11 @@ urlpatterns = [
     path('taskmanagement/', include(("taskmanagement.urls", "taskmanagement"), namespace="taskmanagement")),
     path('accomplishment/', include(("accomplishment.urls", "accomplishment"), namespace="accomplishment")),
     path('messaging/', include(("messaging.urls", "messaging"), namespace="messaging")),
+    path('phone-books/', include(("phonebook.urls", "phonebook"), namespace="phonebook")),
     path(r'api-auth/', include('rest_framework.urls')),
     path('api/v1/', include(('accomplishment.api_urls', "accomplishment"), namespace="api_accomplishment")),
     path('api/v1/', include(('account.api_urls', "account"), namespace="api_account")),
+    path('api/v1/', include(('phonebook.api_urls', "phonebook"), namespace="api_phonebook")),
 
 ]
 
