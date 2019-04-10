@@ -148,7 +148,7 @@ class FileDirectorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FileDirectory
-        fields = ("name", "type", "files")
+        fields = ("pk", "name", "type", "files")
 
     def save(self, **kwargs):
         super().save(**kwargs)
