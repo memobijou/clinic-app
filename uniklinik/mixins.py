@@ -85,19 +85,16 @@ class DatatablesMixin(mixins.ListModelMixin, generics.GenericAPIView, metaclass=
         self.page_number = page_number
         self.page_size = length
 
-        print(f"Page: {page_number}")
         self.filter_queryset(self.queryset)
         self.get_filtered_queryset()
         queryset = self.get_ordered_queryset()
         page = self.paginate_queryset(queryset)
-        print(f"haack: {page}")
         if page is not None:
             data = self.get_data(page)
 
             return self.get_paginated_response(data)
         # hier checken was passiert wenn der queryset leer ist !
         serializer = self.get_serializer(queryset, many=True)
-        print(f"???: {serializer.data}")
         return Response(serializer.data)
 
     @abstractmethod

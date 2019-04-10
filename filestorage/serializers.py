@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import viewsets
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
@@ -129,7 +129,7 @@ class FileView(APIView):
 class FileViewSet(viewsets.ModelViewSet):
     queryset = File.objects.all()
     serializer_class = FileSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -158,7 +158,7 @@ class FileDirectorySerializer(serializers.ModelSerializer):
 class DirectoryViewSet(viewsets.ModelViewSet):
     queryset = FileDirectory.objects.all()
     serializer_class = FileDirectorySerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         self.queryset = super().get_queryset()
