@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block horizontal_nav_title %}
     <h2>Startseite</h2>
@@ -15,7 +16,12 @@
                     <h2 class="panel-title">Startseite</h2>
                 </div>
                 <div class="panel-body">
-                    Willkommen auf der Startseite
+                    <div class="col-md-12">
+                        Willkommen auf der Startseite
+                    </div>
+                    <div class="col-md-12" style="padding-top:50px;padding-bottom:50px;">
+                        <img src="{% static "ukgm_logo.jpg" %}" style="height:250px;"/>
+                    </div>
                 </div>
             </section>
         </div>
