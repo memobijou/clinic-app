@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
 from subject_area.models import SubjectArea
 from subject_area.serializers import SubjectAreaSerializer
+from django.utils.functional import lazy
 
 
 class BasicUserSerializer(serializers.HyperlinkedModelSerializer):
@@ -24,11 +25,16 @@ class BasicProfileSerializer(serializers.HyperlinkedModelSerializer):
         fields = ("is_admin", "user", )
 
 
+def get_subject_area_choices():
+    return SubjectArea.objects.values_list("pk", "title")
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     mentor = BasicUserSerializer(read_only=True)
     subject_area = SubjectAreaSerializer(read_only=True)
     subject_area_id = serializers.ChoiceField(
-        source="subject_area.pk", allow_null=True, label="Fachrichtung (subject_area_id)", choices=())
+        source="subject_area.pk", allow_null=True, label="Fachrichtung (subject_area_id)",
+        choices=lazy(get_subject_area_choices, tuple)())
 
     class Meta:
         model = Profile
