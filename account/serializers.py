@@ -28,8 +28,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     mentor = BasicUserSerializer(read_only=True)
     subject_area = SubjectAreaSerializer(read_only=True)
     subject_area_id = serializers.ChoiceField(
-        source="subject_area.pk", allow_null=True, label="Fachrichtung (subject_area_id)",
-        choices=SubjectArea.objects.values_list("pk", "title"))
+        source="subject_area.pk", allow_null=True, label="Fachrichtung (subject_area_id)", choices=())
 
     class Meta:
         model = Profile
