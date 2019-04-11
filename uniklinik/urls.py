@@ -32,11 +32,12 @@ urlpatterns = [
     path('accomplishment/', include(("accomplishment.urls", "accomplishment"), namespace="accomplishment")),
     path('messaging/', include(("messaging.urls", "messaging"), namespace="messaging")),
     path('phone-books/', include(("phonebook.urls", "phonebook"), namespace="phonebook")),
+    path('subject-areas/', include(("subject_area.urls", "subject_area"), namespace="subject_area")),
     path(r'api-auth/', include('rest_framework.urls')),
     path('api/v1/', include(('accomplishment.api_urls', "accomplishment"), namespace="api_accomplishment")),
     path('api/v1/', include(('account.api_urls', "account"), namespace="api_account")),
     path('api/v1/', include(('phonebook.api_urls', "phonebook"), namespace="api_phonebook")),
-
+    path('api/v1/', include(('subject_area.api_urls', "subject_area"), namespace="api_subject_area")),
 ]
 
 urlpatterns += [

@@ -59,7 +59,7 @@ class UserListDatatables(DatatablesMixin):
         data = {"results": [[f'<a href="{reverse_lazy("account:user_edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
                              query.username, query.first_name, query.last_name, query.email,
                              str(query.profile.mentor_name), query.profile.get_students_string(),
-                             query.profile.get_discipline() or ""]
+                             getattr(getattr(query.profile, "subject_area", ""), "title", "")]
                             for query in page],
                 "records_total": self.queryset.count()}
         return data
