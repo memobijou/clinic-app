@@ -4,10 +4,14 @@ from mixer.backend.django import mixer
 from django.urls import reverse_lazy
 from account.models import Group
 import json
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 # Create your tests here.
 # admitStudent_MissingMandatoryFields_FailToAdmit
+from subject_area.models import SubjectArea
+
+
 class UserTestCase(TestCase):
     def setUp(self):
         self.session_user = mixer.blend(User)
@@ -76,3 +80,15 @@ class UserTestCase(TestCase):
         response = self.client.post(reverse_lazy("api_account:user-login"),
                                     data={"username": user.username, "password": "WRONG PASSWORD"})
         self.assertEqual(response.status_code, 400)
+
+    def test_rest_api_user_subject_area_assignment(self):
+        user = mixer.blend(User)
+        subject_area = mixer.blend(SubjectArea)
+        user.profile.subject_area = subject_area
+        user.save()
+        new_subject_area = mixer.blend(SubjectArea)
+        print(reverse_lazy("api_account:user-subject-area-assignment", kwargs={"pk": user.pk}))
+        response = self.client.put(reverse_lazy("api_account:user-subject-area-assignment", kwargs={"pk": user.pk}),
+                                   data={"subject_area": new_subject_area.pk}, content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(User.objects.get(pk=user.pk).profile.subject_area.title, new_subject_area.title)

@@ -236,6 +236,19 @@ const phoneBookConfig = Object.assign({}, config, {
 })
 
 
+const subjectAreaConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/subject_area/js/app.js"],
+	},
+	output: {
+		path: path.resolve(__dirname, "../static/dist/subject_area/"),
+		filename: "[name].js",
+		publicPath: "/build/subject_area/"
+	}
+})
+
+
+
 module.exports = [
 	baseConfig,
 	accountUserListConfig,
@@ -246,5 +259,6 @@ module.exports = [
 	accountGroupListConfig,
 	taskManagementConfig,
 	accomplishmentConfig,
-	phoneBookConfig
+	phoneBookConfig,
+	subjectAreaConfig
 ]

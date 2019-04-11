@@ -9,7 +9,6 @@ $(document).ready(function(){
       columnDefs: [
         {targets: 0, title: "", name: "", orderable: false},
         {targets: 1, title: "Bezeichnung", name: "title"},
-        {targets: 2, title: "Rufnummer", name: "phone_number"},
       ],
 
        // Mit ajax funktioniert muss nur angepasst werden auf REST API

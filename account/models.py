@@ -28,6 +28,8 @@ class Profile(models.Model):
     device_token = models.CharField(max_length=500, null=True, blank=True)
     mentor = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="students")
     biography = models.TextField(null=True, blank=True, verbose_name="Über dich")
+    subject_area = models.ForeignKey("subject_area.SubjectArea", null=True, blank=True, on_delete=models.SET_NULL,
+                                     related_name="profiles")
 
     @property
     def mentor_name(self):

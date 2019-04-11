@@ -6,6 +6,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
+from subject_area.models import SubjectArea
+from subject_area.serializers import SubjectAreaSerializer
 
 
 class BasicUserSerializer(serializers.HyperlinkedModelSerializer):
@@ -22,16 +24,20 @@ class BasicProfileSerializer(serializers.HyperlinkedModelSerializer):
         fields = ("is_admin", "user", )
 
 
-class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     mentor = BasicUserSerializer(read_only=True)
+    subject_area = SubjectAreaSerializer(read_only=True)
+    subject_area_id = serializers.ChoiceField(
+        source="subject_area.pk", allow_null=True, label="Fachrichtung (subject_area_id)",
+        choices=SubjectArea.objects.values_list("pk", "title"))
 
     class Meta:
         model = Profile
-        fields = ("is_admin", "mentor", "device_token", )
+        fields = ("is_admin", "mentor", "device_token", "subject_area", "subject_area_id", )
         read_only_fields = ('is_admin',)
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
     students = BasicProfileSerializer(many=True, read_only=True)
 
@@ -41,10 +47,17 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     def update(self, instance, validated_data):
         profile = validated_data.pop("profile")
+        subject_area = profile.pop("subject_area")
         User.objects.filter(pk=instance.pk).update(**validated_data)
-        Profile.objects.filter(pk=instance.profile.pk).update(**profile)
+        Profile.objects.filter(pk=instance.profile.pk).update(**profile, subject_area_id=subject_area.get("pk"))
         instance.refresh_from_db()
         return instance
+
+
+class SubjectAreaAssignmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ("subject_area",)
 
 
 # ViewSets define the view behavior.
@@ -54,6 +67,7 @@ class UserViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
+        print(self.request.POST)
         self.filter_by_pk()
         return self.queryset
 
@@ -75,3 +89,15 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response({"error": "invalid password or username"},
                             status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["PUT"], url_path="subject-area-assignment")
+    def subject_area_assignment(self, request, pk=None):
+        print(f"ahd wenn: {pk}")
+        user_instance = self.get_object()
+        profile_instance = user_instance.profile
+        serializer = SubjectAreaAssignmentSerializer(instance=profile_instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

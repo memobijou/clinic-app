@@ -16,6 +16,11 @@ class CreateUserView(LoginRequiredMixin, generic.CreateView):
     template_name = "account/user/new_user/new_user.html"
     success_url = reverse_lazy("account:user_list")
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
 
 class UserListView(LoginRequiredMixin, generic.ListView):
     template_name = "account/user/user_list/user_list.html"
