@@ -37,7 +37,6 @@ class Accomplishment(models.Model):
 
     def get_non_subject_area_users_scores(self, subject_area_users, user_accomplishments):
         user_accomplishments = user_accomplishments.exclude(user__in=subject_area_users)
-
         user_scores = []
         for user_accomplishment in user_accomplishments:
             current_score = int((user_accomplishment.score/self.full_score)*100)

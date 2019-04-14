@@ -77,6 +77,7 @@ class UserTestCase(TestCase):
         json_response = json.loads(response.content)
         self.assertEqual(user.pk, json_response.get("pk"))
 
+        print(f'besesn:: {reverse_lazy("api_account:user-login")}')
         response = self.client.post(reverse_lazy("api_account:user-login"),
                                     data={"username": user.username, "password": "WRONG PASSWORD"})
         self.assertEqual(response.status_code, 400)

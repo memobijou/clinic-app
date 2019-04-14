@@ -1,8 +1,8 @@
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
-# Create your models here.
+from accomplishment.models import Accomplishment, UserAccomplishment
 
 
 def get_name(self):
@@ -52,11 +52,21 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
-    # def save(self, force_insert=False, force_update=False, using=None,
-    #          update_fields=None):
-    #
-    #     print(f"HAHAHAAHAH {update_fields}")
-    #     return super().save(force_insert, force_update, using, update_fields)
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        subject_area_changed = None
+        if self.pk is not None:
+            old_instance = Profile.objects.get(pk=self.pk)
+            if old_instance.subject_area != self.subject_area:
+                subject_area_changed = True
+
+        if self.pk is None or subject_area_changed is True:
+            accomplishments = Accomplishment.objects.filter(subject_areas__pk=self.subject_area_id).exclude(
+                user_accomplishments__user__profile=self).distinct()
+            UserAccomplishment.objects.bulk_create(
+                [UserAccomplishment(accomplishment=accomplishment, user=self.user, score=0)
+                 for accomplishment in accomplishments])
+        return super().save(force_insert, force_update, using, update_fields)
 
 
 @receiver(post_save, sender=User)

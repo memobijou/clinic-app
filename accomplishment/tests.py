@@ -38,6 +38,22 @@ class AccomplishmentTestCase(TestCase):
         self.assertEqual(len(users), instance.users.all().count())
         self.assertEqual(len(subject_areas), instance.subject_areas.all().count())
 
+        users_after_accomplishment_creation = mixer.cycle(2).blend(User)
+
+        subject_area_after_accomplishment_creation = mixer.blend(SubjectArea)
+
+        instance.subject_areas.add(subject_area_after_accomplishment_creation)
+
+        i = 0
+        for user in users_after_accomplishment_creation:
+            user.profile.subject_area = subject_area_after_accomplishment_creation
+            user.save()
+            i += 1
+
+        instance.refresh_from_db()
+
+        self.assertEqual(len(users)+len(users_after_accomplishment_creation), instance.users.all().count())
+
     def test_accomplishment_edition(self):
         full_score = 3
         instance = self.create_accomplishment(full_score=full_score)
