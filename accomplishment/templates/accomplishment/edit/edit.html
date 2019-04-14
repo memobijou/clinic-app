@@ -53,20 +53,20 @@
                             <div class="col-md-2 col-xs-2">
                                  <span style="text-decoration: line-through;">{{ user_accomplishment.user }}</span>
                             </div>
-                            <div class="col-md-6 col-xs-6">
+                            <div class="col-md-5 col-xs-5">
                                      <div class="progress">
-                                      <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ user_score }}"
+                                      <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ user_score }}"
                                       aria-valuemin="0" aria-valuemax="100" style="width:{{ user_score }}%">
                                           {{ user_score }}%
                                       </div>
                                     </div>
                             </div>
+                            <div class="col-md-1 col-xs-1">
+                                {{ user_accomplishment.get_score_of }}
+                            </div>
                         </div>
                         {% endif %}
                     {% endfor %}
-
-
-
                 </div>
             </section>
         </div>
