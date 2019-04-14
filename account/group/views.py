@@ -32,12 +32,9 @@ class GroupFormMixin(BootstrapModelFormMixin):
 
 
 class GroupUsersFormMixin(BootstrapModelFormMixin):
-    choices = ((None, "--------"), ("discipline", "Fachrichtung"))
-    type = forms.ChoiceField(choices=choices, label="Art", required=False)
-
     class Meta:
         model = Group
-        fields = ("name", "users", "type", )
+        fields = ("name", "users",)
         widgets = {
             'users': forms.CheckboxSelectMultiple,
         }
@@ -49,28 +46,6 @@ class GroupUsersFormMixin(BootstrapModelFormMixin):
             if Group.objects.filter(name__iexact=name).count() > 0:
                 self.add_error("name", "Eintrag bereits vorhanden")
         return name
-
-    def clean(self):
-        cleaned_data = super().clean()
-        print(f"FACHRICHTUNG: {cleaned_data.get('users')}")
-        users = cleaned_data.get("users")
-        users_with_discipline = users.annotate(
-            discipline_amount=Count(Case(When(groups_list__type__iexact="discipline", then=Value(1)),
-                                         output_field=IntegerField()))).filter(discipline_amount__gte=1)
-
-        if self.instance:
-            users_with_discipline = users_with_discipline.exclude(groups_list__pk=self.instance.pk)
-
-        users_with_discipline = users_with_discipline.distinct()
-
-        if users_with_discipline.count() > 0:
-            error_msg = "Folgende Nutzer sind bereits einer Fachrichtung zugewiesen: "
-            for user in users_with_discipline:
-                error_msg += f"{user}, "
-            error_msg = error_msg[:-1]
-            error_msg = error_msg[:-1]
-            self.add_error(None, error_msg)
-        return cleaned_data
 
 
 class GroupCreateView(LoginRequiredMixin, generic.CreateView):

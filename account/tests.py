@@ -50,7 +50,7 @@ class UserTestCase(TestCase):
     def test_group_creation(self):
         groups_count = Group.objects.count()
         with mixer.ctx(commit=False):
-            data = mixer.blend(Group, type="discipline").__dict__
+            data = mixer.blend(Group).__dict__
         response = self.client.post(reverse_lazy("account:new_group"), data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Group.objects.count(), groups_count+1)

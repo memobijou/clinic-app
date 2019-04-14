@@ -20,18 +20,20 @@
                 </div>
                 <div class="panel-body">
                      <p>Gesamtfortschritt</p>
-                     <div class="progress">
-                          <div class="progress-bar" role="progressbar" aria-valuenow="{{ current_score }}"
-                          aria-valuemin="0" aria-valuemax="100" style="width:{{ current_score }}%">
-                              {{ current_score }}%
-                          </div>
+                     <div class="col-md-11" style="padding:0px;">
+                         <div class="progress">
+                              <div class="progress-bar" role="progressbar" aria-valuenow="{{ current_score }}"
+                              aria-valuemin="0" aria-valuemax="100" style="width:{{ current_score }}%">
+                                  {{ current_score }}%
+                              </div>
+                        </div>
                     </div>
-                    {% for user_accomplishment, user_score in users_scores %}
+                    {% for user_accomplishment, user_score in subject_area_users_scores %}
                         <div class="row" style="padding-top:10px;">
                             <div class="col-md-2 col-xs-2">
                                  <span>{{ user_accomplishment.user }}</span>
                             </div>
-                            <div class="col-md-6 col-xs-6">
+                            <div class="col-md-5 col-xs-5">
                                      <div class="progress">
                                           <div class="progress-bar" role="progressbar" aria-valuenow="{{ user_score }}"
                                           aria-valuemin="0" aria-valuemax="100" style="width:{{ user_score }}%">
@@ -39,10 +41,13 @@
                                           </div>
                                     </div>
                             </div>
+                            <div class="col-md-1 col-xs-1">
+                                {{ user_accomplishment.get_score_of }}
+                            </div>
                         </div>
                     {% endfor %}
 
-                    {% for user_accomplishment, user_score in non_groups_users_scores %}
+                    {% for user_accomplishment, user_score in non_subject_area_users_scores %}
                         {% if user_score > 0 %}
                         <div class="row" style="padding-top:10px;">
                             <div class="col-md-2 col-xs-2">
@@ -90,9 +95,9 @@
                                 {{ form.full_score.errors }}
                             </p>
                             <div class="inline-checkboxes">
-                                <label for="{{ form.groups.id }}">Gruppen</label>
-                                {{ form.groups }}
-                                {{ form.groups.errors }}
+                                <label for="{{ form.subject_areas.id }}">Fachrichtungen</label>
+                                {{ form.subject_areas }}
+                                {{ form.subject_areas.errors }}
                             </div>
                             <br/>
                             <div class="text-right">

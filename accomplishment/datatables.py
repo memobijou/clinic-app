@@ -25,7 +25,9 @@ class AccomplishmentDatatables(DatatablesMixin):
         search_value = self.request.GET.get("search[value]")
         if search_value != "" and search_value is not None:
             self.queryset = self.queryset.filter(
-                Q(Q(name__icontains=search_value)))
+                Q(Q(name__icontains=search_value) | Q(subject_areas__title__icontains=search_value) |
+                  Q(users__first_name__icontains=search_value) | Q(users__last_name__icontains=search_value) |
+                  Q(full_score__icontains=search_value))).distinct()
 
     def get_ordered_queryset(self):
         order_column_index = self.request.GET.get("order[0][column]")
@@ -40,12 +42,14 @@ class AccomplishmentDatatables(DatatablesMixin):
     def get_data(self, page):
         data = {"results": [], "records_total": self.queryset.count()}
         for query in page:
-            groups_string = ""
-            groups = query.groups.all()
-            for group in query.groups.all():
-                groups_string += group.name + "<br/>"
+            subject_areas_string = ""
+            subject_areas = query.subject_areas.all()
+            for subject_area in subject_areas:
+                subject_areas_string += subject_area.title + "<br/>"
             users_string = ""
-            for user in User.objects.filter(groups_list__in=groups).distinct():
+            for user in query.users.all():
                 users_string += str(user) + "<br/>"
-            data["results"].append([f'<a href="{reverse_lazy("accomplishment:edit", kwargs={"pk": query.pk})}">Bearbeiten</a>', query.name, query.full_score, groups_string, users_string])
+            data["results"].append([
+                f'<a href="{reverse_lazy("accomplishment:edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
+                query.name, query.full_score, subject_areas_string, users_string])
         return data
