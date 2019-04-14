@@ -1,46 +1,35 @@
 from accomplishment.models import Accomplishment, UserAccomplishment
+from subject_area.models import SubjectArea
 from uniklinik.forms import BootstrapModelFormMixin
-from django import forms
-from account.models import Group
 from django.contrib.auth.models import User
+from django.db import transaction
+from django import forms
 
 
 class AccomplishmentFormMixin(BootstrapModelFormMixin):
-    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.filter(type__iexact="discipline"),
-                                            widget=forms.CheckboxSelectMultiple, required=False
-                                            )
+    subject_areas = forms.ModelMultipleChoiceField(
+        queryset=SubjectArea.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
 
     class Meta:
         model = Accomplishment
-        fields = ("name", "groups", "full_score")
+        fields = ("name", "full_score", "subject_areas",)
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # self.fields["groups"].widget
-        self.fields["full_score"].widget.attrs["step"] = 5
-
-    def clean_full_score(self):
-        full_score = self.cleaned_data.get("full_score")
-        full_score = int(full_score)
-        if full_score % 5 != 0:
-            self.add_error("full_score", "Die Punktezahl muss in fünfer Schritte angegeben werden")
-        return full_score
-
+    @transaction.atomic
     def save(self, commit=True, **kwargs):
         is_new_object = False
+
         if self.instance.pk is None:
             is_new_object = True
 
-        print(f"is_new_object: {is_new_object}")
         instance = super().save(commit)
-        users = User.objects.filter(groups_list__in=instance.groups.all()).distinct()
+        users = User.objects.filter(profile__subject_area__in=instance.subject_areas.all()).distinct()
 
+        # Das muss zu Fachrichtungen gemacht werden statt zu Gruppen
         if is_new_object is False:
             existing_users = UserAccomplishment.objects.filter(
                 user__in=users, accomplishment=self.instance).values_list("user__pk", flat=True).distinct()
-            print(f"{existing_users}")
             users = users.exclude(pk__in=existing_users)
 
         UserAccomplishment.objects.bulk_create(
-            [UserAccomplishment(user=user, accomplishment=instance, score=0) for user in users])
+           [UserAccomplishment(user=user, accomplishment=instance, score=0) for user in users])
         return instance

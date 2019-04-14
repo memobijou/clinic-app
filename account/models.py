@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 # Create your models here.
 
@@ -16,7 +16,6 @@ class Group(models.Model):
     name = models.CharField(null=True, blank=False, max_length=200)
     users = models.ManyToManyField(User, blank=True, related_name="groups_list", verbose_name="Mitglieder")
     tasks = models.ManyToManyField("taskmanagement.Task", blank=True, related_name="groups_list")
-    type = models.CharField(null=True, blank=True, max_length=200, verbose_name="Typ")
 
     def __str__(self):
         return f"{self.name}"
@@ -52,6 +51,12 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
+
+    # def save(self, force_insert=False, force_update=False, using=None,
+    #          update_fields=None):
+    #
+    #     print(f"HAHAHAAHAH {update_fields}")
+    #     return super().save(force_insert, force_update, using, update_fields)
 
 
 @receiver(post_save, sender=User)
