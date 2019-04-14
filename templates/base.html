@@ -52,7 +52,7 @@
 							<figure class="profile-picture">
                                 <img src="{% static 'octopus/assets/images/!logged-user.jpg' %}" alt="" class="img-circle" data-lock-picture="{% static 'octopus/assets/images/!logged-user.jpg' %}" />
 							</figure>
-							<div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@JSOFT.com">
+							<div class="profile-info" data-lock-name="John Doe" data-lock-email="">
                                 {% if request.user.first_name and request.user.last_name %}
 								    <span class="name">{{ request.user.first_name|default:"" }} {{ request.user.last_name|default:"" }}</span>
                                 {% else %}

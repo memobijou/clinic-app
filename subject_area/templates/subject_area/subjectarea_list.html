@@ -10,13 +10,15 @@
 {% endblock %}
 
 {% block content %}
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="text-right">
-                <a href="{% url 'subject_area:create' %}" class="btn btn-info">Neue Fachrichtung anlegen</a>
+    {% if request.user.is_superuser %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="text-right">
+                    <a href="{% url 'subject_area:create' %}" class="btn btn-info">Neue Fachrichtung anlegen</a>
+                </div>
             </div>
         </div>
-    </div>
+    {% endif %}
     <section class="panel">
         <header class="panel-heading">
             <div class="panel-actions">
