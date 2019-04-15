@@ -65,21 +65,70 @@ class UserTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(group.users.count(), group_users_count+5)
 
-    def test_login_api(self):
+    def test_rest_api_login(self):
         user = mixer.blend(User)
         password = "Password1¢"
         user.set_password(password)
         user.save()
-        print(reverse_lazy("api_account:user-login"))
         response = self.client.post(reverse_lazy("api_account:user-login"),
                                     data={"username": user.username, "password": password})
         self.assertEqual(response.status_code, 200)
         json_response = json.loads(response.content)
         self.assertEqual(user.pk, json_response.get("pk"))
 
-        print(f'besesn:: {reverse_lazy("api_account:user-login")}')
         response = self.client.post(reverse_lazy("api_account:user-login"),
                                     data={"username": user.username, "password": "WRONG PASSWORD"})
+        self.assertEqual(response.status_code, 400)
+
+    def test_rest_api_registration(self):
+        password = "@strongPassword"
+        data = {"username": "test_user", "password": password, "password2": password, "email": "peter@hotmailabc.com",
+                "first_name": "Peter", "last_name": "Schmidt"}
+        response = self.client.post(reverse_lazy("api_account:user-registration"), data=data)
+        self.assertEqual(response.status_code, 200)
+        json_response = json.loads(response.content)
+        self.assertNotEqual(json_response.get("pk"), None)
+        new_user = User.objects.get(pk=json_response.get("pk"))
+        self.assertTrue(new_user.check_password(password))
+        self.assertNotIn("password", json_response)
+        self.assertNotIn("password2", json_response)
+        print(f"hello boy: {json_response}")
+
+        # TEST VALIDATIONS
+
+        # Test Existing User error
+
+        response = self.client.post(reverse_lazy("api_account:user-registration"),
+                                    data=data)
+        self.assertEqual(response.status_code, 400)
+
+        # Test password similar to username error
+
+        data["username"] = "new_user"
+        data["email"] = "new_mail@hotmailiey.de"
+        test_data = {**data, "password": "new_user", "password2": "new_user"}
+
+        response = self.client.post(reverse_lazy("api_account:user-registration"), test_data)
+        self.assertEqual(response.status_code, 400)
+
+        # Test required fields errors
+
+        test_data = {**data}
+        test_data.pop("first_name")
+
+        response = self.client.post(reverse_lazy("api_account:user-registration"), data=test_data)
+        self.assertEqual(response.status_code, 400)
+
+        test_data = {**data}
+        test_data.pop("last_name")
+
+        response = self.client.post(reverse_lazy("api_account:user-registration"), data=test_data)
+        self.assertEqual(response.status_code, 400)
+
+        test_data = {**data}
+        test_data.pop("email")
+
+        response = self.client.post(reverse_lazy("api_account:user-registration"), data=test_data)
         self.assertEqual(response.status_code, 400)
 
     def test_rest_api_user_subject_area_assignment(self):

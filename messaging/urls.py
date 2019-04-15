@@ -1,5 +1,5 @@
 from django.urls import include, path
-from account.serializers import UserViewSet
+from account.viewsets import UserViewSet
 from rest_framework import routers
 
 # Routers provide an easy way of automatically determining the URL conf.
