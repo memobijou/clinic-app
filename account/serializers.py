@@ -1,14 +1,11 @@
-from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth.models import User
-from rest_framework import serializers, viewsets
+from rest_framework import serializers
 from account.models import Profile
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.decorators import action
-from django.shortcuts import get_object_or_404
 from subject_area.models import SubjectArea
 from subject_area.serializers import SubjectAreaSerializer
 from django.utils.functional import lazy
+import django.contrib.auth.password_validation as validators
+from django.core import exceptions
 
 
 class BasicUserSerializer(serializers.HyperlinkedModelSerializer):
@@ -59,50 +56,38 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
+class UserPasswordSerializer(serializers.ModelSerializer):
+    password2 = serializers.CharField()
+
+    class Meta:
+        model = User
+        fields = ('pk', 'username', "password", "password2", "email", "first_name", "last_name")
+        extra_kwargs = {"email": {"required": True, "allow_null": False},
+                        "first_name": {"required": True, "allow_null": False},
+                        "last_name": {"required": True, "allow_null": False}
+        }
+
+    def save(self):
+        data = {**self.validated_data}
+        data.pop("password2")
+        user = User(**data)
+        user.set_password(self.validated_data.get("password"))
+        user.save()
+        return user
+
+    def validate(self, data):
+        if data.get("password2") != data.get("password"):
+            raise serializers.ValidationError({"error": "Passwörter stimmen nicht überein"})
+        try:
+            password_validation_data = {**data}
+            password_validation_data.pop("password2")
+            validators.validate_password(password=data.get("password"), user=User(**password_validation_data))
+        except exceptions.ValidationError as e:
+            raise serializers.ValidationError({"error": list(e.messages)})
+        return data
+
+
 class SubjectAreaAssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ("subject_area",)
-
-
-# ViewSets define the view behavior.
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    pagination_class = PageNumberPagination
-
-    def get_queryset(self):
-        print(self.request.POST)
-        self.filter_by_pk()
-        return self.queryset
-
-    def filter_by_pk(self):
-        pk_filter_value = self.request.GET.get("pk")
-        if pk_filter_value is not None and pk_filter_value != "":
-            self.queryset = self.queryset.filter(pk=pk_filter_value)
-
-    @action(detail=False, methods=['POST'])
-    def login(self, request):
-        username = self.request.POST.get("username")
-        password = self.request.POST.get("password")
-        user = get_object_or_404(User, username=username)
-        is_valid_password = user.check_password(password)
-
-        if is_valid_password is True:
-            user_serializer = UserSerializer(instance=user)
-            return Response(user_serializer.data)
-        else:
-            return Response({"error": "invalid password or username"},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=True, methods=["PUT"], url_path="subject-area-assignment")
-    def subject_area_assignment(self, request, pk=None):
-        print(f"ahd wenn: {pk}")
-        user_instance = self.get_object()
-        profile_instance = user_instance.profile
-        serializer = SubjectAreaAssignmentSerializer(instance=profile_instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

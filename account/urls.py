@@ -2,7 +2,7 @@ from django.urls import path, include
 
 from account.group.serializers import GroupDatatables, ReadOnlyGroupViewSet, UserGroupViewSet
 from account.group.views import GroupListView, GroupCreateView, GroupUpdateView
-from account.serializers import UserViewSet
+from account.viewsets import UserViewSet
 from account.datatables import UserListDatatables
 from account.views import CreateUserView, UserListView, UserProfileView, ChangeUserPasswordView, UserEditView
 from rest_framework import routers
