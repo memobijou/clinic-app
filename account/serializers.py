@@ -65,13 +65,14 @@ class UserPasswordSerializer(serializers.ModelSerializer):
         extra_kwargs = {"email": {"required": True, "allow_null": False},
                         "first_name": {"required": True, "allow_null": False},
                         "last_name": {"required": True, "allow_null": False}
-        }
+                        }
 
     def save(self):
         data = {**self.validated_data}
         data.pop("password2")
         user = User(**data)
         user.set_password(self.validated_data.get("password"))
+        user.is_active = False
         user.save()
         return user
 

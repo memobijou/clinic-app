@@ -57,7 +57,7 @@ class UserTaskUpdateView(LoginRequiredMixin, generic.UpdateView):
 
     def get_success_url(self):
         return reverse_lazy(
-            "taskmanagement:edit_task", kwargs={"pk": self.kwargs.get("group_pk")}
+            "taskmanagement:edit_task", kwargs={"pk": self.object.pk}
         )
 
     def get_form(self, form_class=None):
@@ -106,19 +106,20 @@ class UserTaskUpdateView(LoginRequiredMixin, generic.UpdateView):
         return list(zip(tasks, forms))
 
 
-
-class GroupTaskDetailView(LoginRequiredMixin, generic.UpdateView):
+class TaskDetailView(LoginRequiredMixin, generic.UpdateView):
     template_name = "taskmanagement/task_detail.html"
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.get_context())
 
     def get_context(self):
-        instance = Group.objects.get(pk=self.kwargs.get("pk"))
+        instance = Task.objects.get(pk=self.kwargs.get("pk"))
         context = {"instance": instance, "tasks": self.get_tasks(instance)}
         return context
 
     def get_tasks(self, instance):
-        tasks = instance.tasks.all()
-        forms = [UserTaskFormMixin(instance=task, group=instance) for task in tasks]
-        return list(zip(tasks, forms))
+        groups = instance.groups_list.all()
+        forms = [UserTaskFormMixin(instance=instance, group=group, prefix=f"{group.pk}") for group in groups]
+        user_tasks = [UserTask.objects.filter(user__in=group.users.all(), task=instance) for group in groups]
+        print(user_tasks)
+        return list(zip(groups, user_tasks, forms))

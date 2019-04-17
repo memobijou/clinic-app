@@ -6,6 +6,7 @@ from django.db import models
 
 class Task(models.Model):
     name = models.CharField(null=True, blank=False, max_length=200)
+    description = models.TextField(null=True, blank=True, verbose_name="Beschreibung")
     users = models.ManyToManyField(to=User, blank=True, through="taskmanagement.UserTask",
                                    related_name="tasks", verbose_name="Benutzer")
 

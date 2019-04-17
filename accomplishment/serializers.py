@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import F, Q
 from rest_framework import serializers, viewsets, status
 from rest_framework.pagination import PageNumberPagination
 from accomplishment.models import Accomplishment, UserAccomplishment
@@ -33,7 +34,8 @@ class UserAccomplishmentSerializer(serializers.ModelSerializer):
 
 class AccomplishmentViewSet(viewsets.ModelViewSet):
     queryset = UserAccomplishment.objects.prefetch_related(
-        "accomplishment__users").select_related("accomplishment")
+        "accomplishment__users").select_related("accomplishment").exclude(
+        ~Q(user__in=F("accomplishment__subject_areas__profiles__user"))).distinct()
     serializer_class = UserAccomplishmentSerializer
     pagination_class = PageNumberPagination
     lookup_field = "accomplishment_id"

@@ -8,9 +8,14 @@ from datetime import datetime
 
 
 class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
+    month = serializers.SerializerMethodField()
+
+    def get_month(self, instance):
+        return str(instance.calendar_week_date.strftime('%B'))
+
     class Meta:
         model = DutyRoster
-        fields = ('pk', 'calendar_week_date', "file", "calendar_week",)
+        fields = ('pk', 'calendar_week_date', "file", "calendar_week", "month")
 
     def validate(self, data):
         today = datetime.now()

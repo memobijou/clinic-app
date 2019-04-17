@@ -128,3 +128,23 @@ class ChangeUserPasswordView(LoginRequiredMixin, View):
 
     def get_profile_url(self):
         return reverse_lazy("account:user_profile", kwargs={"pk": self.kwargs.get("pk")})
+
+
+class UserActivationView(generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == "POST":
+            items = request.POST.getlist("item")
+            users = User.objects.filter(id__in=items)
+            print(f"he: {users}")
+            users.update(is_active=True)
+            return HttpResponseRedirect(reverse_lazy("account:user_list"))
+
+
+class UserDeactivationView(generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == "POST":
+            items = request.POST.getlist("item")
+            users = User.objects.filter(id__in=items)
+            print(f"he: {users}")
+            users.update(is_active=False)
+            return HttpResponseRedirect(reverse_lazy("account:user_list"))

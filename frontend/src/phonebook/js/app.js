@@ -21,9 +21,6 @@ $(document).ready(function(){
        autoWidth: false,
        initComplete: function(settings, json) {
 	    const search = $(".dataTables_filter")
-        const search_input = $(".dataTables_filter input")
-
-        search_input.css("margin-left", "0.9em")
 
         search.removeClass("dataTables_filter")
         search.addClass("text-right")

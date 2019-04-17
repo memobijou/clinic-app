@@ -16,48 +16,35 @@
             </section>
         </div>
     </div>
-    {% for task, task_form in tasks %}
+    {% for group, user_tasks, task_form in tasks %}
         <section class="panel">
             <header class="panel-heading">
                 <div class="panel-actions">
                     <a href="#" class="fa fa-caret-down"></a>
                     <a href="#" class="fa fa-times"></a>
                 </div>
-                <h2 class="panel-title">{{ task.name }}</h2>
+                <h2 class="panel-title">{{ group.name }}</h2>
             </header>
 
             <div class="panel-body">
                 <div class="col-md-12">
-{#                    {% if instance.users.count > 0 %}#}
-{#                        <form method="POST" action="{% url 'taskmanagement:new_task_users' task_pk=task.pk group_pk=instance.pk %}">{% csrf_token %}#}
-{#                            {% if form.instance == task_form.instance %}#}
-{#                                {{ form.as_p }}#}
-{#                            {% else %}#}
-{#                                {{ task_form.as_p }}#}
-{#                            {% endif %}#}
+                    {% if user_tasks|length > 0 %}
+{#                        <form method="POST" action="{% url 'taskmanagement:new_task_users' task_pk=instance.pk group_pk=group.pk %}">{% csrf_token %}#}
+{#                            {{ task_form.as_p }}#}
 {#                            <button type="submit" class="btn btn-primary">Speichern</button>#}
 {#                        </form>#}
-{#                    {% endif %}#}
-                    {% with userstasks=task.usertasks.all %}
-                        {% if userstasks.count > 0 %}
-                            <!--<hr/>-->
-                            {% for usertask in userstasks %}
-                                {% for user in instance.users.all %}
-                                    {% if usertask.user == user %}
-                                        {{ usertask.user }}
-                                        {% if usertask.completed == True %}
-                                            <span class="glyphicon glyphicon-ok text-success"></span>
-                                        {% else %}
-                                            <span class="glyphicon glyphicon-remove text-danger"></span>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                            {% endfor %}
-                        {% else %}
-                            <br/>
-                            Diese Aufgabe wurde noch an keinen Benutzer erteilt
-                        {% endif %}
-                    {% endwith %}
+                        {% for usertask in user_tasks %}
+                            {{ usertask.user }}
+                            {% if usertask.completed == True %}
+                                <span class="glyphicon glyphicon-ok text-success"></span>
+                            {% else %}
+                                <span class="glyphicon glyphicon-remove text-danger"></span>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <br/>
+                        Diese Aufgabe wurde noch an keinen Benutzer erteilt
+                    {% endif %}
                 </div>
             </div>
         </section>
