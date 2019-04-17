@@ -92,3 +92,9 @@ class SubjectAreaAssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ("subject_area",)
+
+
+class DeviceTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ("device_token", )

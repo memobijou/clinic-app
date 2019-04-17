@@ -142,3 +142,17 @@ class UserTestCase(TestCase):
                                    data={"subject_area": new_subject_area.pk}, content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(User.objects.get(pk=user.pk).profile.subject_area.title, new_subject_area.title)
+
+    def test_rest_api_user_device_token_assignment(self):
+        user = mixer.blend(User)
+        old_device_token = "OLDDEVICETOKEN"
+        user.profile.device_token = old_device_token
+        user.save()
+        new_device_token = "NEWDEVICETOKEN"
+        print(reverse_lazy("api_account:user-device-token-assignment", kwargs={"pk": user.pk}))
+        response = self.client.put(reverse_lazy("api_account:user-device-token-assignment", kwargs={"pk": user.pk}),
+                                   data={"device_token": new_device_token}, content_type="application/json")
+        print(json.loads(response.content))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(User.objects.get(pk=user.pk).profile.device_token, new_device_token)
