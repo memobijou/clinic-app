@@ -5,7 +5,8 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from account.serializers import UserSerializer, SubjectAreaAssignmentSerializer, UserPasswordSerializer
+from account.serializers import UserSerializer, SubjectAreaAssignmentSerializer, UserPasswordSerializer, \
+    DeviceTokenSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -60,12 +61,25 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["PUT"], url_path="subject-area-assignment")
     def subject_area_assignment(self, request, pk=None):
-        print(f"ahd wenn: {pk}")
         user_instance = self.get_object()
         profile_instance = user_instance.profile
         serializer = SubjectAreaAssignmentSerializer(instance=profile_instance, data=request.data)
         if serializer.is_valid():
             serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["PUT"], url_path="device-token-assignment")
+    def device_token_assignment(self, request, pk=None):
+        print(f"ABCABCABC::::")
+        user_instance = self.get_object()
+        profile_instance = user_instance.profile
+        serializer = DeviceTokenSerializer(instance=profile_instance, data=request.data)
+
+        if serializer.is_valid():
+            instance = serializer.save()
+            print(f"SHANZE: {instance.pk} - {instance.device_token}")
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
