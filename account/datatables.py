@@ -56,10 +56,15 @@ class UserListDatatables(DatatablesMixin):
         return self.queryset
 
     def get_data(self, page):
-        data = {"results": [[f'<a href="{reverse_lazy("account:user_edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
+        ok_span = '<span class="glyphicon glyphicon-ok text-success"></span>'
+        not_ok_span = '<span class="glyphicon glyphicon-remove text-danger"></span>'
+
+        data = {"results": [[f'<input type="checkbox" style="cursor:pointer;" name="item" value={query.pk}>&nbsp&nbsp'
+                             f'<a href="{reverse_lazy("account:user_edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
                              query.username, query.first_name, query.last_name, query.email,
                              str(query.profile.mentor_name), query.profile.get_students_string(),
-                             getattr(getattr(query.profile, "subject_area", ""), "title", "")]
+                             getattr(getattr(query.profile, "subject_area", ""), "title", ""),
+                             ok_span if query.is_active is True else not_ok_span]
                             for query in page],
                 "records_total": self.queryset.count()}
         return data

@@ -31,7 +31,7 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Task
-        fields = ("pk", "name", "usertasks",)
+        fields = ("pk", "name", "description", "usertasks",)
 
 
 class GroupTaskSerializer(serializers.HyperlinkedModelSerializer):
@@ -58,22 +58,6 @@ class GroupTaskViewSet(viewsets.ModelViewSet):
         if len(group_ids) > 0:
             groups = Group.objects.filter(pk__in=group_ids).values("pk")
             self.queryset = self.queryset.filter(pk__in=groups)
-
-    #
-    # def filter_by_user_id(self):
-    #     user_id = self.request.GET.get("user_id")
-    #     if user_id is not None:
-    #         self.queryset = self.queryset.filter(users__in=user_id)
-    #
-    # def filter_by_name(self):
-    #     name = self.request.GET.get("name")
-    #     if name is not None:
-    #         self.queryset = self.queryset.filter(name__icontains=name)
-    #
-    # def filter_by_name_exact(self):
-    #     name = self.request.GET.get("name_exact")
-    #     if name is not None:
-    #         self.queryset = self.queryset.filter(name__iexact=name)
 
 
 class EndUserTaskSerializer(serializers.ModelSerializer):
@@ -106,9 +90,9 @@ class UserTaskViewSet(viewsets.ModelViewSet):
             self.queryset = self.queryset.filter(task__id__in=task_ids)
 
 
-class GroupTaskDatatables(DatatablesMixin):
-    queryset = Group.objects.all()
-    serializer_class = GroupTaskSerializer
+class TaskDatatables(DatatablesMixin):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
 
     def __init__(self):
         super().__init__()
@@ -137,25 +121,25 @@ class GroupTaskDatatables(DatatablesMixin):
     def get_data(self, page):
         results = []
         for query in page:
-            tasks = query.tasks.all()
             results.append([
-                f'<p><a href="{reverse_lazy("taskmanagement:edit_task", kwargs={"pk": query.pk})}">Ansicht</a></p>',
+                f'<p><a href="{reverse_lazy("taskmanagement:edit_task", kwargs={"pk": query.pk})}">Anzeigen</a></p>',
                 query.name,
-                self.get_tasks(tasks),
+                query.description,
+                self.get_groups(query),
                 self.get_users(query)
             ])
         data = {"results": results,
                 "records_total": self.queryset.count()}
         return data
 
-    def get_tasks(self, tasks):
-        tasks_html = ""
-        for query in tasks:
-            tasks_html += f'<p>{query.name}</p>'
-        return tasks_html
+    def get_groups(self, query):
+        groups_html = ""
+        for group in query.groups_list.values("name"):
+            groups_html += f'<p>{group.get("name")}</p>'
+        return groups_html
 
     def get_users(self, query):
-        tasks_users = User.objects.filter(groups_list__in=[query]).distinct()
+        tasks_users = query.users.all()
         tasks_users_html = ""
         for query in tasks_users:
             tasks_users_html += f'<p>{query.first_name} {query.last_name}</p>'

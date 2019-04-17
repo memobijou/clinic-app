@@ -19,7 +19,7 @@ window.german_translation =
       "sLengthMenu":      "_MENU_ Einträge anzeigen",
       "sLoadingRecords":  "Wird geladen ..",
       "sProcessing":      "Bitte warten ..",
-      "sSearch":          "Suchen",
+      "sSearch":          "Suchen ",
       "sZeroRecords":     "Keine Einträge vorhanden",
       "oPaginate": {
           "sFirst":       "Erste",

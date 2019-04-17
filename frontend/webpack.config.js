@@ -116,22 +116,7 @@ const accountUserListConfig = Object.assign({}, config, {
 		path: path.resolve(__dirname, "../static/dist/account/user_list/"),
 		filename: "[name].js",
 		publicPath: "/build/account/user_list/"
-	},
-	plugins: [
-		// ~/vendor/fullcalendar/3.10.0/lib/jquery.min.js
-		new webpack.ProvidePlugin({
-			//$: path.resolve(__dirname, "~/vendor/jquery/jquery.min.js"),
-			//jQuery: path.resolve(__dirname, "~/vendor/jquery/jquery.min.js")
-			//moment: path.resolve(__dirname, "src/vendor/moment/moment.min.js")
-			$: "jquery",
-			jQuery: "jquery"
-		}),
-	    new MiniCssExtractPlugin({  // Evtl sinnlos ? funktioniert auch ohne
-	      filename: "[name].css",
-    	  chunkFilename: "[id].css"
-    	})
-		//, new CleanWebpackPlugin(["dist"])
-	]
+	}
 })
 
 const accountGroupListConfig = Object.assign({}, config, {

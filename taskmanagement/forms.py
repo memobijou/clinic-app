@@ -13,7 +13,11 @@ class GroupTaskFormMixin(BootstrapModelFormMixin):
 
     class Meta:
         model = Task
-        fields = ("name", "groups", )
+        fields = ("name", "description", "groups", )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.fields['description'].widget.attrs['rows'] = 3
 
 
 class UserTaskFormMixin(BootstrapModelFormMixin):

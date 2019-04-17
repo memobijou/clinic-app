@@ -10,6 +10,10 @@
 {% endblock %}
 
 {% block js %}
+    <script>
+        var actions = {activation: "{% url 'account:user_activation' %}",
+                       deactivation: "{% url 'account:user_deactivation' %}"}
+    </script>
     <!-- Specific Page Vendor -->
     {% if settings.WEBPACK_DEV_SERVER is True %}
         <script src="http://{{ settings.PUBLIC_IP }}:8080/build/account/user_list/bundle.js"></script>
@@ -17,7 +21,5 @@
         <script src="{% static 'dist/account/user_list/bundle.js' %}"></script>
     {% endif %}
 
-    <script>
-    </script>
 
 {% endblock %}

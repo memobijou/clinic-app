@@ -1,8 +1,10 @@
 from django.db import models, transaction
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models import Q
+from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from accomplishment.models import Accomplishment, UserAccomplishment
+from taskmanagement.models import UserTask
 
 
 def get_name(self):
@@ -19,6 +21,22 @@ class Group(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+
+@receiver(m2m_changed, sender=Group.users.through)
+def users_listener(sender, instance: Group, action, **kwargs):
+    tasks = instance.tasks.all()
+    new_group_users = instance.users.all()
+
+    # HIER UNBEDINGT OPTIMIEREN WENN DATENSÄTZE MEHR WERDEN WIRD DAS SEHR LANGSAM
+
+    bulk_instances = []
+    for task in tasks:
+        for user in new_group_users:
+            if UserTask.objects.filter(task=task, user=user).exists() is False:
+                bulk_instances.append(UserTask(task=task, user=user))
+    print(f"QAF: {bulk_instances}")
+    UserTask.objects.bulk_create(bulk_instances)
 
 
 class Profile(models.Model):
