@@ -25,7 +25,7 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
         if sender_pk and receiver_pk not in ["", None]:
             self.queryset = self.queryset.filter(
                 Q(Q(Q(sender__pk=sender_pk) & Q(receiver__pk=receiver_pk)) |
-                  Q(Q(sender__pk=sender_pk) & Q(receiver__pk=receiver_pk))))
+                  Q(Q(sender__pk=receiver_pk) & Q(receiver__pk=sender_pk))))
         elif receiver_pk not in ["", None]:
             self.queryset = self.queryset.filter(receiver__pk=receiver_pk)
         else:
