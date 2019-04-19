@@ -15,7 +15,6 @@ class AccomplishmentTestCase(TestCase):
 
     def test_accomplishment_creation(self):
         accomplishments_count = Accomplishment.objects.count()
-
         subject_areas = [instance.pk for instance in mixer.cycle(2).blend(SubjectArea)]
 
         users = mixer.cycle(2).blend(User)
@@ -73,6 +72,8 @@ class AccomplishmentTestCase(TestCase):
         self.assertEqual(instance.subject_areas.all().count(), subject_areas.count())
         self.assertEqual(set(instance.users.values_list("pk", flat=True)), accomplishment_users)
 
+        # test changing of subject_areas
+
         new_subject_areas = [subject_area.pk for subject_area in mixer.cycle(3).blend(SubjectArea)]
         new_data["subject_areas"] = new_subject_areas
 
@@ -85,18 +86,30 @@ class AccomplishmentTestCase(TestCase):
 
         response = self.client.post(reverse_lazy("accomplishment:edit", kwargs={"pk": instance.pk}), data=new_data)
         self.assertEqual(response.status_code, 302)
+        old_user = next(iter(accomplishment_users))
+        response = self.client.get(reverse_lazy("api_accomplishment:accomplishment-detail",
+                                                kwargs={"accomplishment_id": instance.pk,
+                                                        "user_id": old_user}))
+
+        # hier darf der Nutzer nicht mehr auftauchen, da er nicht mehr zur Fachrichtung dazu gehört
+
+        self.assertEqual(response.status_code, 404, f"{json.loads(response.content)}")
 
         instance.refresh_from_db()
 
         self.assertEqual(len(new_subject_areas), instance.subject_areas.all().count())
         self.assertNotEqual(set(instance.users.values_list("pk", flat=True)), accomplishment_users)
 
-        example_user = instance.users.first()
+        # example user must be user from subject_area because non-subject-areas aren't listed on endpoint
+
+        example_user = instance.subject_areas.first().profiles.first().user
 
         for i in range(0, full_score):
             response = self.client.put(reverse_lazy("api_accomplishment:accomplishment-incrementation",
                                        kwargs={"user_id": example_user.id, "accomplishment_id": instance.id})
                                        )
+            self.assertEqual(response.status_code, 200)
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content).get("score"), full_score)
         instance.refresh_from_db()

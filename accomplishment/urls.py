@@ -11,4 +11,3 @@ urlpatterns = [
     path(r"", AccomplishmentListView.as_view(), name="list"),
     path(r"<int:pk>/edit", AccomplishmentUpdateView.as_view(), name="edit")
 ]
-
