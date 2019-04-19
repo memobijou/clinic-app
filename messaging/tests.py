@@ -18,5 +18,6 @@ class MessagingTestCase(TestCase):
         response = self.client.post(reverse_lazy(
             "api_messaging:messaging-sending", kwargs={"sender": user_1.pk, "receiver": user_2.pk}),
             data={"message": text_message})
+        print(f'hey: {reverse_lazy("api_messaging:messaging-sending", kwargs={"sender": user_1.pk, "receiver": user_2.pk})})')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content).get("message"), text_message)
