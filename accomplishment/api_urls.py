@@ -1,5 +1,5 @@
 from django.urls import path, include
-from accomplishment.serializers import AccomplishmentViewSet
+from accomplishment.viewsets import AccomplishmentViewSet
 from rest_framework import routers
 
 

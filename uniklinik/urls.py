@@ -38,6 +38,7 @@ urlpatterns = [
     path('api/v1/', include(('account.api_urls', "account"), namespace="api_account")),
     path('api/v1/', include(('phonebook.api_urls', "phonebook"), namespace="api_phonebook")),
     path('api/v1/', include(('subject_area.api_urls', "subject_area"), namespace="api_subject_area")),
+    path('api/v1/', include(('messaging.api_urls', "messaging"), namespace="api_messaging")),
 ]
 
 urlpatterns += [
