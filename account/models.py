@@ -101,14 +101,16 @@ class Profile(models.Model):
             push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
 
             try:
-                push_service.notify_single_device(
-                    registration_id=mentor.profile.device_token, message_title="Neuer Schüler",
-                    message_body=f"{student} wurde Ihnen als Schüler zugeteilt",
-                    sound="default")
-                push_service.notify_single_device(
-                    registration_id=student.profile.device_token, message_title=f"Neuer Mentor",
-                    message_body=f"{mentor} wurde Ihnen als Mentor zugeteilt",
-                    sound="default")
+                if hasattr(mentor, "profile"):
+                    push_service.notify_single_device(
+                        registration_id=mentor.profile.device_token, message_title="Neuer Schüler",
+                        message_body=f"{student} wurde Ihnen als Schüler zugeteilt",
+                        sound="default")
+                if hasattr(student, "profile"):
+                    push_service.notify_single_device(
+                        registration_id=student.profile.device_token, message_title=f"Neuer Mentor",
+                        message_body=f"{mentor} wurde Ihnen als Mentor zugeteilt",
+                        sound="default")
             except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
                 print(e)
 
