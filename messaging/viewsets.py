@@ -27,7 +27,12 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
                 Q(Q(Q(sender__pk=sender_pk) & Q(receiver__pk=receiver_pk)) |
                   Q(Q(sender__pk=receiver_pk) & Q(receiver__pk=sender_pk))))
         elif receiver_pk not in ["", None]:
-            self.queryset = self.queryset.filter(receiver__pk=receiver_pk)
+            self.queryset = self.queryset.filter(Q(receiver__pk=receiver_pk) | Q(sender__pk=receiver_pk))
+            user_ids = self.queryset.values_list("sender", flat=True).order_by("sender").distinct("sender")
+            print(f"why: {user_ids}")
+            self.queryset = self.queryset.filter(Q(receiver__pk=receiver_pk) | Q(sender__pk=receiver_pk)).order_by(
+                "receiver", "sender", "created_datetime").distinct("receiver", "sender")
+
         else:
             self.queryset = TextMessage.objects.none()
 
@@ -46,3 +51,32 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
+    serializer_class = TextMessageSerializer
+    queryset = TextMessage.objects.all()
+
+    def get_queryset(self):
+        self.filter_by_users()
+        return self.queryset
+
+    def filter_by_users(self):
+        receiver_pk = self.kwargs.get("receiver")
+
+        if receiver_pk not in ["", None]:
+            self.queryset = self.queryset.filter(Q(receiver__pk=receiver_pk) | Q(sender__pk=receiver_pk))
+        else:
+            self.queryset = TextMessage.objects.none()
+
+    @action(detail=False, methods=["GET"], url_path="latest-sender")
+    def latest_sender(self, request, receiver=None):
+        if receiver not in ["", None]:
+            self.queryset = self.queryset.filter(Q(receiver__pk=receiver) | Q(sender__pk=receiver)).order_by(
+                "receiver", "sender", "created_datetime").distinct("receiver", "sender")
+        else:
+            self.queryset = TextMessage.objects.none()
+        page = self.paginate_queryset(self.queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
