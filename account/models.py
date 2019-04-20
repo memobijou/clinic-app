@@ -1,10 +1,12 @@
-from django.db import models, transaction
+from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Q
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
+from pyfcm import FCMNotification
+from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError
 from accomplishment.models import Accomplishment, UserAccomplishment
 from taskmanagement.models import UserTask
+import os
 
 
 def get_name(self):
@@ -73,10 +75,14 @@ class Profile(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         subject_area_changed = None
+        mentor_changed = None
+
         if self.pk is not None:
             old_instance = Profile.objects.get(pk=self.pk)
             if old_instance.subject_area != self.subject_area:
                 subject_area_changed = True
+            if old_instance.mentor != self.mentor:
+                mentor_changed = True
 
         if self.pk is None or subject_area_changed is True:
             accomplishments = Accomplishment.objects.filter(subject_areas__pk=self.subject_area_id).exclude(
@@ -84,7 +90,27 @@ class Profile(models.Model):
             UserAccomplishment.objects.bulk_create(
                 [UserAccomplishment(accomplishment=accomplishment, user=self.user, score=0)
                  for accomplishment in accomplishments])
+
+        if mentor_changed is True:
+            self.send_push_notifcation_to_mentor_and_student(self.mentor, self)
         return super().save(force_insert, force_update, using, update_fields)
+
+    @staticmethod
+    def send_push_notifcation_to_mentor_and_student(mentor, student):
+        if os.environ.get("firebase_token"):
+            push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
+
+            try:
+                push_service.notify_single_device(
+                    registration_id=mentor.profile.device_token, message_title="Neuer Schüler",
+                    message_body=f"{student} wurde Ihnen als Schüler zugeteilt",
+                    sound="default")
+                push_service.notify_single_device(
+                    registration_id=student.profile.device_token, message_title=f"Neuer Mentor",
+                    message_body=f"{mentor} wurde Ihnen als Mentor zugeteilt",
+                    sound="default")
+            except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
+                print(e)
 
 
 @receiver(post_save, sender=User)
