@@ -40,7 +40,7 @@ class MessagingTestCase(TestCase):
 
         for row in json.loads(response.content).get("results"):
             sender_created_datetime = row.get("created_datetime")
-            print(f"band band: {sender_created_datetime}")
-            sender_messages = TextMessage.objects.filter(sender=row.get("sender").get("pk")).order_by("created_datetime")
+            sender_messages = TextMessage.objects.filter(
+                sender=row.get("sender").get("pk")).order_by("created_datetime")
             self.assertEqual(sender_created_datetime,
                              serializers.DateTimeField().to_representation(sender_messages.first().created_datetime))

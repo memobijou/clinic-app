@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from django.db.models import Q
+from django.db.models import Q, Subquery, OuterRef, Count, IntegerField
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -27,9 +27,6 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
                 Q(Q(Q(sender__pk=sender_pk) & Q(receiver__pk=receiver_pk)) |
                   Q(Q(sender__pk=receiver_pk) & Q(receiver__pk=sender_pk))))
         elif receiver_pk not in ["", None]:
-            self.queryset = self.queryset.filter(Q(receiver__pk=receiver_pk) | Q(sender__pk=receiver_pk))
-            user_ids = self.queryset.values_list("sender", flat=True).order_by("sender").distinct("sender")
-            print(f"why: {user_ids}")
             self.queryset = self.queryset.filter(Q(receiver__pk=receiver_pk) | Q(sender__pk=receiver_pk)).order_by(
                 "receiver", "sender", "created_datetime").distinct("receiver", "sender")
 
@@ -72,8 +69,18 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
     @action(detail=False, methods=["GET"], url_path="latest-sender")
     def latest_sender(self, request, receiver=None):
         if receiver not in ["", None]:
-            self.queryset = self.queryset.filter(Q(receiver__pk=receiver) | Q(sender__pk=receiver)).order_by(
-                "receiver", "sender", "created_datetime").distinct("receiver", "sender")
+            # self.queryset = self.queryset.filter(Q(receiver__pk=receiver) | Q(sender__pk=receiver)).order_by(
+            #    "receiver", "sender", "created_datetime").distinct("receiver", "sender")
+            # new subquery test
+            subquery = TextMessage.objects.filter(
+                Q(Q(sender__pk=OuterRef("sender"), receiver__pk=OuterRef("receiver")) |
+                  Q(sender__pk=OuterRef("receiver"), receiver__pk=OuterRef("sender")))
+            ).values("pk").order_by("created_datetime")[:1]
+            self.queryset = self.queryset.filter(Q(receiver__pk=receiver) | Q(sender__pk=receiver)).annotate(
+                latest_message_pk=Subquery(subquery)).order_by("latest_message_pk").distinct("latest_message_pk")
+            print(self.queryset)
+            for q in self.queryset:
+                print(q.latest_message_pk)
         else:
             self.queryset = TextMessage.objects.none()
         page = self.paginate_queryset(self.queryset)
