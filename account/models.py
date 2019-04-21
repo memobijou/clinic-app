@@ -96,25 +96,25 @@ class Profile(models.Model):
         return super().save(force_insert, force_update, using, update_fields)
 
     @staticmethod
-    def send_push_notifcation_to_mentor_and_student(mentor, student):
+    def send_push_notifcation_to_mentor_and_student(mentor, student_profile):
         if os.environ.get("firebase_token"):
             push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
+            try:
+                push_service.notify_single_device(
+                    registration_id=student_profile.device_token, message_title=f"Neuer Mentor",
+                    message_body=f"{mentor} wurde Ihnen als Mentor zugeteilt",
+                    sound="default")
+                print("success student")
+            except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
+                print(e)
 
             try:
                 if hasattr(mentor, "profile"):
                     push_service.notify_single_device(
                         registration_id=mentor.profile.device_token, message_title="Neuer Schüler",
-                        message_body=f"{student} wurde Ihnen als Schüler zugeteilt",
+                        message_body=f"{student_profile} wurde Ihnen als Schüler zugeteilt",
                         sound="default")
-            except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
-                print(e)
-
-            try:
-                if hasattr(student, "profile"):
-                    push_service.notify_single_device(
-                        registration_id=student.profile.device_token, message_title=f"Neuer Mentor",
-                        message_body=f"{mentor} wurde Ihnen als Mentor zugeteilt",
-                        sound="default")
+                    print("success mentor")
             except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
                 print(e)
 
