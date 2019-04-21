@@ -106,6 +106,10 @@ class Profile(models.Model):
                         registration_id=mentor.profile.device_token, message_title="Neuer Schüler",
                         message_body=f"{student} wurde Ihnen als Schüler zugeteilt",
                         sound="default")
+            except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
+                print(e)
+
+            try:
                 if hasattr(student, "profile"):
                     push_service.notify_single_device(
                         registration_id=student.profile.device_token, message_title=f"Neuer Mentor",
