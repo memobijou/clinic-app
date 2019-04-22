@@ -6,6 +6,9 @@ from subject_area.serializers import SubjectAreaSerializer
 from django.utils.functional import lazy
 import django.contrib.auth.password_validation as validators
 from django.core import exceptions
+import os
+from pyfcm import FCMNotification
+from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError
 
 
 class BasicUserSerializer(serializers.HyperlinkedModelSerializer):
@@ -58,10 +61,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserPasswordSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField()
+    device_token = serializers.CharField()
 
     class Meta:
         model = User
-        fields = ('pk', 'username', "password", "password2", "email", "first_name", "last_name")
+        fields = ('pk', 'username', "password", "password2", "email", "first_name", "last_name", "device_token")
         extra_kwargs = {"email": {"required": True, "allow_null": False},
                         "first_name": {"required": True, "allow_null": False},
                         "last_name": {"required": True, "allow_null": False}
@@ -69,23 +73,45 @@ class UserPasswordSerializer(serializers.ModelSerializer):
 
     def save(self):
         data = {**self.validated_data}
+        print(f"hopps: {data}")
+        device_token = data.pop("device_token")
         data.pop("password2")
         user = User(**data)
         user.set_password(self.validated_data.get("password"))
         user.is_active = False
         user.save()
+        user.profile.device_token = device_token
+        user.save()
+        self.send_push_notifcation_to_new_user(user)
         return user
 
     def validate(self, data):
         if data.get("password2") != data.get("password"):
             raise serializers.ValidationError({"error": "Passwörter stimmen nicht überein"})
         try:
+            print(f"hello: {data}")
             password_validation_data = {**data}
+            password_validation_data.pop("device_token")
             password_validation_data.pop("password2")
             validators.validate_password(password=data.get("password"), user=User(**password_validation_data))
         except exceptions.ValidationError as e:
             raise serializers.ValidationError({"error": list(e.messages)})
         return data
+
+    @staticmethod
+    def send_push_notifcation_to_new_user(user):
+        print(os.environ.get("firebase_token"))
+        if os.environ.get("firebase_token"):
+            push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
+            try:
+                r = push_service.notify_single_device(
+                    registration_id=user.profile.device_token, message_title=f"Registrierung erfolgreich",
+                    message_body=f"Sie müssen warten bis Ihr Account freigeschaltet wird",
+                    sound="default", data_message={"category": "registration"})
+                print(f"he: {r}")
+                print("success registration")
+            except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
+                print(e)
 
 
 class SubjectAreaAssignmentSerializer(serializers.ModelSerializer):

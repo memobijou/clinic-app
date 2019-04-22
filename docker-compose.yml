@@ -7,7 +7,6 @@ services:
       dockerfile: Dockerfile.webpack
     tty: true
     command: bash -c "ls && npm run build"
-
     volumes:
       - .:/clinic-app
     ports:
