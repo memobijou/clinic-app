@@ -75,7 +75,7 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
             subquery = TextMessage.objects.filter(
                 Q(Q(sender__pk=OuterRef("sender"), receiver__pk=OuterRef("receiver")) |
                   Q(sender__pk=OuterRef("receiver"), receiver__pk=OuterRef("sender")))
-            ).values("pk").order_by("created_datetime")[:1]
+            ).values("pk").order_by("-created_datetime")[:1]
             self.queryset = self.queryset.filter(Q(receiver__pk=receiver) | Q(sender__pk=receiver)).annotate(
                 latest_message_pk=Subquery(subquery)).order_by("latest_message_pk").distinct("latest_message_pk")
             print(self.queryset)
