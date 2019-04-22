@@ -110,7 +110,7 @@ def get_users_from_groups(groups):
     return users
 
 
-def send_push_notifications(users, title, message):
+def send_push_notifications(users, title, message, category):
     if os.environ.get("firebase_token"):
         push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
         registration_ids = []
@@ -120,7 +120,9 @@ def send_push_notifications(users, title, message):
         if len(registration_ids) > 0:
             try:
                 push_service.notify_multiple_devices(
-                    registration_ids=registration_ids, message_title=title, message_body=message, sound="default")
+                    registration_ids=registration_ids, message_title=title, message_body=message, sound="default",
+                    data_message={"category": category}
+                )
             except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
                 print(e)
 
@@ -156,7 +158,7 @@ class InfoboxView(LoginRequiredMixin, View):
             instance.promoter = request.user
             instance.save()
             users = get_users_from_groups(instance.groups.all())
-            send_push_notifications(users, instance.topic, instance.description)
+            send_push_notifications(users, instance.topic, instance.description, "infobox")
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
         else:
             return render(request, "appointment/appointment.html", self.get_context())
@@ -196,7 +198,7 @@ class ConferenceView(LoginRequiredMixin, View):
             instance.promoter = request.user
             instance.save()
             users = get_users_from_groups(instance.groups.all())
-            send_push_notifications(users, instance.topic, instance.description)
+            send_push_notifications(users, instance.topic, instance.description, "conference")
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
         else:
             return render(request, "appointment/appointment.html", self.get_context())
