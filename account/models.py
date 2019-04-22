@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save, m2m_changed
+from django.db.models.signals import post_save, m2m_changed, pre_save
 from django.dispatch import receiver
 from pyfcm import FCMNotification
 from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError
@@ -49,6 +49,7 @@ class Profile(models.Model):
     biography = models.TextField(null=True, blank=True, verbose_name="Über dich")
     subject_area = models.ForeignKey("subject_area.SubjectArea", null=True, blank=True, on_delete=models.SET_NULL,
                                      related_name="profiles")
+    confirmed = models.NullBooleanField()
 
     @property
     def mentor_name(self):
@@ -79,6 +80,7 @@ class Profile(models.Model):
 
         if self.pk is not None:
             old_instance = Profile.objects.get(pk=self.pk)
+
             if old_instance.subject_area != self.subject_area:
                 subject_area_changed = True
             if old_instance.mentor != self.mentor:
@@ -120,6 +122,31 @@ class Profile(models.Model):
                     print(f"he: {r}")
             except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
                 print(e)
+
+
+def send_push_notifcation_to_activated_user(user):
+    print(os.environ.get("firebase_token"))
+    if os.environ.get("firebase_token"):
+        push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
+        try:
+            r = push_service.notify_single_device(
+                registration_id=user.profile.device_token, message_title=f"Herzlich Willkommen",
+                message_body=f"Ihr Account wurde freigeschaltet",
+                sound="default", data_message={"category": "registration-activation"})
+            print(f"he: {r}")
+            print("success acctivation")
+        except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
+            print(e)
+
+
+@receiver(pre_save, sender=User)
+def send_activation_notification(sender, instance, **kwargs):
+    if instance.pk is not None:
+        old_user = User.objects.get(pk=instance.pk)
+        print(f"why: {old_user.is_active} --- {instance.is_active}")
+        if old_user.is_active is not True and instance.is_active is True:
+            print(f"love love")
+            send_push_notifcation_to_activated_user(instance)
 
 
 @receiver(post_save, sender=User)

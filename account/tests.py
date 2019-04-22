@@ -28,6 +28,23 @@ class UserTestCase(TestCase):
         self.assertEqual(response.status_code, 302)  # redirect to users overview
         self.assertEqual(User.objects.count(), users_count+1)
 
+    def test_user_edition(self):
+        device_token = "fajPobo-RVg:APA91bGWzDh5E2MXMRqzrnILuiPpcrbMWxSdI8dl2ninxyZ1hfZ3P6OwpU456XTTkA_osO" \
+                       "PyQDC74jsMatafHd7BHjlefYYxuHBOjyagjWuT9Lq85gCnq2Up_vVmMK2pgHBMsJLhr2eo"
+
+        user = mixer.blend(User, is_active=False)
+        user.profile.device_token = device_token
+        user.save()
+
+        self.assertEqual(user.profile.device_token, device_token)
+        self.assertEqual(user.is_active, False)
+
+        response = self.client.post(reverse_lazy("account:user_activation"), data={"item": [user.pk]})
+        self.assertEqual(response.status_code, 302)  # redirect to users overview
+
+        user.refresh_from_db()
+        self.assertEqual(user.is_active, True)
+
     def test_user_can_have_mentor(self):
         student = self.session_user
         mentor = mixer.blend(User)
@@ -82,13 +99,21 @@ class UserTestCase(TestCase):
 
     def test_rest_api_registration(self):
         password = "@strongPassword"
+        device_token = "abjPobo-RVg:APA91bGWzDh5E2MXMRqz3nILuiPpcrbMWxSdI8dl23inxyZ1hfZ3P6OwfU456XTTkA_osOPyQ" \
+                       "DC24jsMYtafHd7BHjlefYaxuHBOjyagjWuTfLq85gCnq2Up_vVuMK2pgHBMsJLhr2eo"
+        device_token = "fajPobo-RVg:APA91bGWzDh5E2MXMRqzrnILuiPpcrbMWxSdI8dl2ninxyZ1hfZ3P6OwpU456XTTkA_osO" \
+                       "PyQDC74jsMatafHd7BHjlefYYxuHBOjyagjWuT9Lq85gCnq2Up_vVmMK2pgHBMsJLhr2eo"
         data = {"username": "test_user", "password": password, "password2": password, "email": "peter@hotmailabc.com",
-                "first_name": "Peter", "last_name": "Schmidt"}
+                "first_name": "Peter", "last_name": "Schmidt",
+                "device_token": device_token}
+
         response = self.client.post(reverse_lazy("api_account:user-registration"), data=data)
         self.assertEqual(response.status_code, 200)
         json_response = json.loads(response.content)
         self.assertNotEqual(json_response.get("pk"), None)
+
         new_user = User.objects.get(pk=json_response.get("pk"))
+        self.assertEqual(device_token, new_user.profile.device_token)
         self.assertTrue(new_user.check_password(password))
         self.assertNotIn("password", json_response)
         self.assertNotIn("password2", json_response)
