@@ -1,6 +1,5 @@
-from abc import ABCMeta, abstractmethod
-
-from django.db.models import Q, Subquery, OuterRef, Count, IntegerField
+import os
+from django.db.models import Q, Subquery, OuterRef
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -8,6 +7,9 @@ from rest_framework import status
 from messaging.models import TextMessage
 from messaging.serializers import TextMessageSerializer
 from rest_framework.mixins import ListModelMixin
+from pyfcm import FCMNotification
+from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError
+from django.contrib.auth.models import User
 
 
 class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
@@ -45,9 +47,29 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
 
         if serializer.is_valid():
             serializer.save()
+
+            sender = User.objects.get(pk=sender)
+            receiver = User.objects.get(pk=receiver)
+            self.send_push_notification_to_receiver(message, sender, receiver)
+
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @staticmethod
+    def send_push_notification_to_receiver(message, sender, receiver):
+        print(os.environ.get("firebase_token"))
+        if os.environ.get("firebase_token"):
+            push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
+            try:
+                r = push_service.notify_single_device(
+                    registration_id=receiver.profile.device_token, message_title=f"{sender}",
+                    message_body=message,
+                    sound="default", data_message={"category": "messaging"})
+                print(f"he: {r}")
+                print("success chat")
+            except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
+                print(e)
 
 
 class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):

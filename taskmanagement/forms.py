@@ -8,7 +8,7 @@ from django import forms
 
 class GroupTaskFormMixin(BootstrapModelFormMixin):
     groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
-                                            widget=forms.CheckboxSelectMultiple
+                                            widget=forms.CheckboxSelectMultiple, label="Gruppen"
                                             )
 
     class Meta:
