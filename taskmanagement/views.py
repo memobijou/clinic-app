@@ -32,6 +32,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("taskmanagement:tasks_list")
     form_class = GroupTaskFormMixin
+    template_name = "taskmanagement/task_list.html"
 
     def form_valid(self, form):
         instance = form.save()
