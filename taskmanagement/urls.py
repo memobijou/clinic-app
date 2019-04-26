@@ -2,7 +2,8 @@ from django.urls import path, include
 from rest_framework import routers
 
 # Routers provide an easy way of automatically determining the URL conf.
-from taskmanagement.serializers import GroupTaskViewSet, TaskDatatables, UserTaskViewSet
+from taskmanagement.serializers import GroupTaskViewSet, UserTaskViewSet
+from taskmanagement.datatables import TaskDatatables
 from taskmanagement.views import TaskListView, TaskCreateView, UserTaskUpdateView, TaskDetailView
 
 group_task_router = routers.DefaultRouter()

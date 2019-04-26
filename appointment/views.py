@@ -321,3 +321,10 @@ class ConferenceUpdateView(LoginRequiredMixin, View):
         else:
             self.conference_form = ConferenceFormMixin()
         return self.conference_form
+
+
+class AppointmentDeleteView(View):
+    def post(self, request, *args, **kwargs):
+        items = request.GET.getlist("item")
+        Appointment.objects.filter(pk__in=items).delete()
+        return HttpResponseRedirect(reverse_lazy("appointment:planning"))

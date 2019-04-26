@@ -1,13 +1,9 @@
 from django.contrib.auth.models import User
-from django.db.models import Q
-from django.db.models.functions import Lower
 from rest_framework import serializers, viewsets
 from rest_framework.pagination import PageNumberPagination
 from account.models import Group
 from account.serializers import ProfileSerializer
 from taskmanagement.models import Task, UserTask
-from uniklinik.mixins import DatatablesMixin
-from django.urls import reverse_lazy
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -90,57 +86,3 @@ class UserTaskViewSet(viewsets.ModelViewSet):
             self.queryset = self.queryset.filter(task__id__in=task_ids)
 
 
-class TaskDatatables(DatatablesMixin):
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
-
-    def __init__(self):
-        super().__init__()
-        self.records_total = None
-        self.page_number = None
-        self.page_size = None
-
-    def get_filtered_queryset(self):
-        search_value = self.request.GET.get("search[value]")
-        if search_value != "" and search_value is not None:
-            self.queryset = self.queryset.filter(Q(name__icontains=search_value))
-        return self.queryset
-
-    def get_ordered_queryset(self):
-        order_column_index = self.request.GET.get("order[1][column]")
-        asc_or_desc = self.request.GET.get("order[1][dir]")
-        if order_column_index == "1":
-            if asc_or_desc == "asc":
-                self.queryset = self.queryset.order_by(Lower("name"))
-                print(f"whyyyy: {asc_or_desc} - {order_column_index} - {self.queryset} - {Group.objects.all()}")
-
-            else:
-                self.queryset = self.queryset.annotate(lower_name=Lower('name')).order_by("-name")
-        return self.queryset
-
-    def get_data(self, page):
-        results = []
-        for query in page:
-            results.append([
-                f'<p><a href="{reverse_lazy("taskmanagement:edit_task", kwargs={"pk": query.pk})}">Anzeigen</a></p>',
-                query.name,
-                query.description,
-                self.get_groups(query),
-                self.get_users(query)
-            ])
-        data = {"results": results,
-                "records_total": self.queryset.count()}
-        return data
-
-    def get_groups(self, query):
-        groups_html = ""
-        for group in query.groups_list.values("name"):
-            groups_html += f'<p>{group.get("name")}</p>'
-        return groups_html
-
-    def get_users(self, query):
-        tasks_users = query.users.all()
-        tasks_users_html = ""
-        for query in tasks_users:
-            tasks_users_html += f'<p>{query.first_name} {query.last_name}</p>'
-        return tasks_users_html

@@ -31,7 +31,7 @@
     <br/><br/>
         <div class="col-md-8 col-md-offset-2">
             <div class="text-center">
-                <button class="btn btn-info ac" id="appointment_btn" data-toggle="collapse" data-target="#demo">Neuer Termin
+                <button class="btn btn-info ac" id="appointment_btn" data-toggle="collapse" data-target="#demo">Neuer Eintrag
                     <i class="fa fa-fw fa-chevron-down" id="collapse_arrow"></i>
                 </button>
             </div>
@@ -39,10 +39,10 @@
                 <div class="tabs">
                     <ul class="nav nav-tabs nav-justified">
                         <li class="active">
-                            <a href="#popular10" data-toggle="tab" class="text-center"> Tasks</a>
+                            <a href="#popular10" data-toggle="tab" class="text-center"> Task</a>
                         </li>
                         <li>
-                            <a href="#recent10" data-toggle="tab" class="text-center">Konferenz</a>
+                            <a href="#recent10" data-toggle="tab" class="text-center">Termin</a>
                         </li>
                     </ul>
                     <div class="tab-content" style="background:#f9f9f9">
@@ -68,23 +68,23 @@
     <!-- Modal -->
     <div id="edit_infobox" class="modal fade" role="dialog">
       <div class="modal-dialog">
-        <form method="POST" id="edit_infobox_form">{% csrf_token %}
             <!-- Modal content-->
             <div class="modal-content">
-              <div class="modal-header" style="background-color:#f0ad4e;color:white;border-radius: 3px;">
-                <button type="button" style="color:black;" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Task bearbeiten</h4>
-              </div>
-              <div class="modal-body">
-                    {% include 'appointment/forms/edit_infocard_form.html' %}
-              </div>
-              <div class="modal-footer">
-                  <div style="float:left;">
-                      <button type="submit" class="btn" style="background-color:#f0ad4e;color:white;">Änderungen speichern</button>
+              <form method="POST" id="edit_infobox_form">{% csrf_token %}
+                  <div class="modal-header" style="background-color:#f0ad4e;color:white;border-radius: 3px;">
+                    <button type="button" style="color:black;" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Task bearbeiten</h4>
                   </div>
-              </div>
+                  <div class="modal-body">
+                        {% include 'appointment/forms/edit_infocard_form.html' %}
+                  </div>
+                  <div class="modal-footer">
+                      <div style="float:left;">
+                          <button type="submit" class="btn" style="background-color:#f0ad4e;color:white;">Änderungen speichern</button>
+                      </div>
+                  </div>
+              </form>
             </div>
-        </form>
       </div>
     </div>
 
@@ -97,7 +97,7 @@
             <div class="modal-content">
               <div class="modal-header" style="background-color:#428bca;color:white;border-radius: 3px;">
                 <button type="button" style="color:black;" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Konferenz bearbeiten</h4>
+                <h4 class="modal-title">Termin bearbeiten</h4>
               </div>
               <div class="modal-body">
                     {% include 'appointment/forms/edit_conference_form.html' %}
@@ -151,6 +151,8 @@
         var api_url = "{% url "appointment:appointment-calendar" %}";
         var edit_infobox_action_url = "{% url 'appointment:edit_infobox' pk=0 %}";
         var edit_conference_action_url = "{% url 'appointment:edit_conference' pk=0 %}";
+        var delete_url = "{% url 'appointment:delete' %}";
+        var csrf_token = "{{ csrf_token }}";
     </script>
     <!-- Specific Page Vendor -->
     {% if settings.WEBPACK_DEV_SERVER is True %}

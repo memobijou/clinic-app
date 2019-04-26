@@ -69,3 +69,9 @@ class AppointmentTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         appointment = Appointment.objects.first()
         self.assertNotEqual(appointment.topic, topic)
+
+    def test_infobox_deletion(self):
+        appointment = mixer.blend(Appointment, is_infobox=True, start_date="2019-03-01T01:23",
+                                  end_date="2019-03-01T03:23")
+        response = self.client.post(reverse_lazy("appointment:delete") + f"?item={appointment.pk}")
+        self.assertEqual(Appointment.objects.count(), 0)

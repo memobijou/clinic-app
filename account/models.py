@@ -10,7 +10,11 @@ import os
 
 
 def get_name(self):
-    return f"{self.first_name or ''} {self.last_name or ''}"
+    profile = self.profile
+    if profile and profile.title:
+        return f"{profile.title} {self.first_name or ''} {self.last_name or ''}"
+    else:
+        return f"{self.first_name or ''} {self.last_name or ''}"
 
 
 User.add_to_class("__str__", get_name)
@@ -41,6 +45,9 @@ def users_listener(sender, instance: Group, action, **kwargs):
     UserTask.objects.bulk_create(bulk_instances)
 
 
+title_choices = ((None, "--------"), ("Dr.", "Dr"),)
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_admin = models.NullBooleanField(verbose_name="Administrations Status")
@@ -49,20 +56,21 @@ class Profile(models.Model):
     biography = models.TextField(null=True, blank=True, verbose_name="Über dich")
     subject_area = models.ForeignKey("subject_area.SubjectArea", null=True, blank=True, on_delete=models.SET_NULL,
                                      related_name="profiles")
+    title = models.CharField(choices=title_choices, null=True, blank=True, max_length=200)
     confirmed = models.NullBooleanField()
 
     @property
     def mentor_name(self):
         if hasattr(self.mentor, "profile"):
             return self.mentor.profile
-        return "/"
+        return ""
 
     def get_students_string(self):
         students_string = ""
         for student in self.user.students.all():
             students_string += f"{str(student)}<br/>"
         if students_string == "":
-            students_string = "/"
+            students_string = ""
         return students_string
 
     def get_discipline(self):
@@ -71,7 +79,10 @@ class Profile(models.Model):
             return discipline.name
 
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}"
+        if self.title:
+            return f"{self.title} {self.user.first_name} {self.user.last_name}"
+        else:
+            return f"{self.user.first_name} {self.user.last_name}"
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):

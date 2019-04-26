@@ -59,9 +59,13 @@ class UserListDatatables(DatatablesMixin):
         ok_span = '<span class="glyphicon glyphicon-ok text-success"></span>'
         not_ok_span = '<span class="glyphicon glyphicon-remove text-danger"></span>'
 
-        data = {"results": [[f'<input type="checkbox" style="cursor:pointer;" name="item" value={query.pk}>&nbsp&nbsp'
-                             f'<a href="{reverse_lazy("account:user_edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
-                             query.username, query.first_name, query.last_name, query.email,
+        data = {"results": [[
+                             f'<p style="margin:0;padding:0;">'
+                             f'<a href="{reverse_lazy("account:user_edit", kwargs={"pk": query.pk})}">'
+                             f'Bearbeiten</a></p>'
+                             f'<p style="margin:0;padding:0;"><input type="checkbox" style="cursor:pointer;" '
+                             f'name="item" value={query.pk}></p>',
+                             query.profile.title, query.first_name, query.last_name, query.username, query.email,
                              str(query.profile.mentor_name), query.profile.get_students_string(),
                              getattr(getattr(query.profile, "subject_area", ""), "title", ""),
                              ok_span if query.is_active is True else not_ok_span]

@@ -4,6 +4,13 @@
     <h4 class="mb-xlg">Persönliche Informationen</h4>
     <fieldset>
         <div class="form-group">
+            <label class="col-md-3 control-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+            <div class="col-md-8">
+                {{ form.title.errors }}
+                {{ form.title }}
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-md-3 control-label" for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
             <div class="col-md-8">
                 {{ form.first_name.errors }}

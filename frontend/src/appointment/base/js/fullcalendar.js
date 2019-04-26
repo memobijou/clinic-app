@@ -93,7 +93,7 @@ $(document).ready(function(){
                                 }
 
                                 element.append("<i>" + title + "</i>");
-                                element.append("<p>" + date + "</p>")
+                                element.append("<p style='font-size:1.3em;'><b>" + date + "</b></p>")
 
                                 $(element).popover({
                                     html: "true",
@@ -149,6 +149,29 @@ $(document).ready(function(){
                                         // die 0 ist als Platzhalt weil event.pk erst nach python im frontend ausgeführt wird
                                         $('#edit_infobox_form').attr('action', action_url);
 
+                                       const delete_wrapper = document.createElement("div")
+                                       delete_wrapper.className = "text-right"
+                                       const delete_btn = document.createElement("button")
+                                       delete_btn.className = "btn btn-danger delete_btn"
+                                       delete_btn.innerText = "Eintrag löschen"
+                                       delete_btn.type = "button"
+                                       delete_wrapper.appendChild(delete_btn)
+
+                                       $('#edit_infobox .delete_btn').remove()
+
+                                       $('#edit_infobox .modal-footer ').append(delete_wrapper)
+
+                                       delete_btn.onclick = function(e){
+                                           this.disabled = true
+
+                                           $.post(delete_url + "?item=" + event.pk, {"csrfmiddlewaretoken": csrf_token})
+                                               .always(function(){
+                                                   location.reload();
+                                                   this.disabled = false
+                                               })
+                                       }
+
+
                                     }else if(is_conference){
                                         $('#edit_conference').modal();
 
@@ -178,6 +201,28 @@ $(document).ready(function(){
                                         action_url = action_url.replace("0", event.pk);
                                         // die 0 ist als Platzhalt weil event.pk erst nach python im frontend ausgeführt wird
                                         $('#edit_conference_form').attr('action', action_url);
+
+                                        const delete_wrapper = document.createElement("div")
+                                        delete_wrapper.className = "text-right"
+                                        const delete_btn = document.createElement("button")
+                                        delete_btn.className = "btn btn-danger delete_btn"
+                                        delete_btn.innerText = "Eintrag löschen"
+                                        delete_btn.type = "button"
+                                        delete_wrapper.appendChild(delete_btn)
+
+                                        $('#edit_conference .delete_btn').remove()
+
+                                        $('#edit_conference .modal-footer ').append(delete_wrapper)
+
+                                        delete_btn.onclick = function(e){
+                                            this.disabled = true
+
+                                            $.post(delete_url + "?item=" + event.pk, {"csrfmiddlewaretoken": csrf_token})
+                                                .always(function(){
+                                                    location.reload();
+                                                    this.disabled = false
+                                                })
+                                        }
 
                                     }
                                 };

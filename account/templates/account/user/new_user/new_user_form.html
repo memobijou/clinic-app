@@ -11,6 +11,13 @@
         <fieldset>
             <h4 class="mb-xlg">Persönliche Informationen</h4>
             <div class="form-group">
+                <label class="col-md-3 control-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+                <div class="col-md-8">
+                    {{ form.title.errors }}
+                    {{ form.title }}
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-md-3 control-label" for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
                 <div class="col-md-8">
                     {{ form.first_name.errors }}
@@ -50,26 +57,12 @@
             </div>
         </fieldset>
         <hr class="dotted tall">
-{#        <h4 class="">Rechte und Privilegien</h4>#}
-{#        <div class="form-group">#}
-{#            <label class="col-xs-3 control-label mt-xs pt-none">{{ form.is_superuser.label }}</label>#}
-{#            <div class="col-md-8">#}
-{#                {{ form.is_superuser.errors }}#}
-{#                <div class="checkbox-custom checkbox-default checkbox-inline mt-xs">#}
-{#                    {{ form.is_superuser }}#}
-{#                    <label for="profilePublic"></label>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#        <hr class="dotted tall">#}
         <h4 class="">Mentor</h4>
         <div class="form-group">
             <label class="col-xs-3 control-label mt-xs pt-none">{{ form.mentor.label }}</label>
             <div class="col-md-8">
                 {{ form.mentor.errors }}
-                <div class="checkbox-custom checkbox-default checkbox-inline mt-xs">
-                    {{ form.mentor }}
-                </div>
+                {{ form.mentor }}
             </div>
         </div>
         <hr class="dotted tall">
@@ -78,9 +71,7 @@
             <label class="col-xs-3 control-label mt-xs pt-none">{{ form.subject_area.label }}</label>
             <div class="col-md-8">
                 {{ form.subject_area.errors }}
-                <div class="checkbox-custom checkbox-default checkbox-inline mt-xs">
-                    {{ form.subject_area }}
-                </div>
+                {{ form.subject_area }}
             </div>
         </div>
 
