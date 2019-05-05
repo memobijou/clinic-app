@@ -12,7 +12,7 @@
                     </div>
 
                     <h2 class="panel-title">Ordnerstruktur</h2>
-                    {% include "filestorage/base/forms/form.html" %}
+
                 </header>
             </section>
         </div>
@@ -32,39 +32,98 @@
         }
     </style>
 
-    {% for directory in file_directories %}
-        <div class="row">
-            <div class="col-xs-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        <div class="panel-actions">
-                            <form method="POST" action="{% url 'filestorage:subscribe_filestorage' pk=directory.pk %}" style="padding:0;margin:0;display:inline;">{% csrf_token %}
-                                <button class="btn" style="background:transparent;">
-                                    <span class="glyphicon glyphicon-bullhorn {% if directory.announcement is True %} text-warning {% endif %}"></span>
-                                </button>
-                            </form>
-                            <a href="#" class="fa fa-caret-up"></a>
-                        </div>
-
-                        <h2 class="panel-title">{{ directory.name }}</h2>
-                    </header>
-                    <div class="panel-body" style="display:none;">
-                        <form action="{% url 'filestorage:file_upload' directory_pk=directory.pk %}"
-                              class="dropzone dz-square" id="dropzone-example-{{ directory.pk }}"
-                              enctype="multipart/form-data" style="border-style: dashed;">{% csrf_token %}
-{#                                <div class="dz-message" data-dz-message><span>#}
-{#                                 Datei hierher ziehen#}
-{#                                </span></div>#}
-                        </form>
-                        <br/>
-                        <div id="preview{{ directory.pk }}" class="dropzone col-md-12" style="border-width:thin;">
-
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="col-md-8 col-md-offset-2">
+                {% include "filestorage/base/forms/form.html" %}
+                <br/>
+                <div>
+                    <div class="col-xs-6"></div>
+                    <div class="col-xs-6" style="padding:0 0 25px 0;">
+                        <label>Aktion ausführen:</label>
+                        <div class="input-group">
+                          <select class="form-control" id="select_action">
+                            <option>--------</option>
+                            <option>Löschen</option>
+                          </select>
+                          <span class="input-group-btn">
+                              <button class="btn btn-primary" id="action_btn">Ausführen</button>
+                          </span>
                         </div>
                     </div>
-                </section>
+                </div>
+                <br/>
+                <table class="table table-bordered table-hover">
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <a href="{% url 'filestorage:tree' %}"><span {% if parent_directory %}class="glyphicon glyphicon-folder-close"{% else %} class="glyphicon glyphicon-folder-open"{% endif %}></span>&nbsp;&nbsp;&nbsp;...</a>
+                            </td>
+                            <td></td>
+                        </tr>
+                        {% if parent_directory and parent_directory.parent %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'filestorage:child_tree' parent_directory_pk=parent_directory.parent_id%}"><span class="glyphicon glyphicon-folder-close"></span>&nbsp;&nbsp;&nbsp;{{ parent_directory.parent.name }}</a>
+                                    </td>
+                                    <td align="right">
+                                        {% include 'filestorage/snippets/announcement.html' with directory=parent_directory.parent redirect_directory=parent_directory %}
+                                    </td>
+                                </tr>
+                        {% endif %}
+
+                        {% if parent_directory %}
+                                <tr id="dropzone">
+                                    <td id="dropzone_first_td">
+                                        <a href=""><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;&nbsp;{{ parent_directory.name }}</a>
+                                    </td>
+                                    <td align="right">
+                                        <div class="form-group">
+                                            <div class="btn-group" style="padding:0;">
+                                                <button class="btn" type="button" id="upload_btn" style="display:inline-block; border:none; text-decoration: none;padding: 0;margin: 0;background:transparent;"><span class="glyphicon glyphicon-cloud-upload"></span></button>
+                                            </div>
+                                            <div class="btn-group" style="padding:0;">
+                                                {% include 'filestorage/snippets/announcement.html' with directory=parent_directory redirect_directory=parent_directory %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                        {% endif %}
+
+                        {% for directory in file_directories %}
+                            <tr>
+                                <td><a href="{% url 'filestorage:child_tree' parent_directory_pk=directory.pk %}"><span class="glyphicon glyphicon-folder-close"></span>&nbsp;&nbsp;&nbsp;{{ directory.name }}</a></td>
+                                <td class="col-md-1" align="right">
+                                    {% include 'filestorage/snippets/announcement.html' with directory=directory redirect_directory=parent_directory %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        {% for file in parent_directory.files.all %}
+                            {% if file.file %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ file.file.url }}"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;&nbsp;{{ file.file.name }}</a>
+                                    </td>
+                                    <td align="right">
+                                        <div class="form-group">
+                                            <div class="btn-group" style="padding:0;">
+                                                <a href="{% url 'filestorage:file' pk=file.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                            </div>
+                                            <div class="btn-group" style="padding:0;">
+                                                <input class="action_checkbox" type="checkbox" value="{{ file.pk }}" name="item" style="display:inline-block; border:none; text-decoration: none;padding: 0;margin: 0;background:transparent;"/>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-    {% endfor %}
+    </div>
 {% endblock %}
 
 
@@ -72,33 +131,13 @@
 
 {% block js %}
     <script>
-        var directories = [];
-        {% for directory in file_directories %}
-            directories.push({name: "{{ directory.name }}", pk: "{{ directory.pk }}"});
-        {% endfor %}
-
-        var directory_files = {};
-        {% for directory in file_directories %}
-            var files = [];
-            directory_files["{{ directory.pk }}"] = files;
-            {% for file in directory.files.all %}
-                files.push(
-                    {
-                        name: "{{ file.file.name }}",
-                        size: "{{ file.file.size }}",
-                        pk: "{{ file.pk }}",
-                        url: "{{ file.file.url }}",
-                        version: "{{ file.version }}",
-                        edit_view_url: "{% url 'filestorage:file' pk=file.pk %}",
-                    }
-                );
-            {% endfor %}
-        {% endfor %}
-
         var url = "{% url "filestorage:files-detail" pk=0 %}";
-        var edit_url = "{% url 'filestorage:file' pk=0 %}"
+        var edit_url = "{% url 'filestorage:file' pk=0 %}";
+        {% if parent_directory %}
+            var upload_url = "{% url 'filestorage:file_upload' directory_pk=parent_directory.pk %}";
+            var delete_url = "{% url 'filestorage:delete_files' directory_pk=parent_directory.pk %}";
+        {% endif %}
         window.CSRF_TOKEN = "{{ csrf_token }}";
-
     </script>
     <!-- Specific Page Vendor -->
     {% if settings.WEBPACK_DEV_SERVER is True %}

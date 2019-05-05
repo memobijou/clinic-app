@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 
 
 class PhoneBookDatatables(DatatablesMixin):
-    queryset = PhoneBook.objects.all()
+    queryset = PhoneBook.objects.all().order_by("first_name")
     serializer_class = PhoneBookSerializer
 
     def __init__(self):
@@ -29,18 +29,40 @@ class PhoneBookDatatables(DatatablesMixin):
 
         if order_column_index == "1":
             if asc_or_desc == "asc":
-                self.queryset = self.queryset.extra(select={'lower_title': 'lower(title)'}).order_by('lower_title')
+                self.queryset = self.queryset.extra(
+                    select={'lower_last_name': 'lower(last_name)'}).order_by('lower_last_name')
             else:
-                self.queryset = self.queryset.extra(select={'lower_title': 'lower(title)'}).order_by('-lower_title')
+                self.queryset = self.queryset.extra(
+                    select={'lower_last_name': 'lower(last_name)'}).order_by('-lower_last_name')
         if order_column_index == "2":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.extra(
+                    select={'lower_first_name': 'lower(first_name)'}).order_by('lower_first_name')
+            else:
+                self.queryset = self.queryset.extra(
+                    select={'lower_first_name': 'lower(first_name)'}).order_by('-lower_first_name')
+        if order_column_index == "3":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.extra(
+                    select={'lower_title': 'lower(title)'}).order_by('lower_title')
+            else:
+                self.queryset = self.queryset.extra(
+                    select={'lower_title': 'lower(title)'}).order_by('-lower_title')
+        if order_column_index == "4":
             if asc_or_desc == "asc":
                 self.queryset = self.queryset.order_by('phone_number')
             else:
                 self.queryset = self.queryset.order_by('-phone_number')
+        if order_column_index == "5":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by('mobile_number')
+            else:
+                self.queryset = self.queryset.order_by('-mobile_number')
         return self.queryset
 
     def get_data(self, page):
         data = {"results": [[f'<a href="{reverse_lazy("phonebook:edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
-                             query.title, query.phone_number] for query in page],
+                             query.last_name, query.first_name, query.title, query.phone_number, query.mobile_number]
+                            for query in page],
                 "records_total": self.queryset.count()}
         return data

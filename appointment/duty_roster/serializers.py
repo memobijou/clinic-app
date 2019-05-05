@@ -5,41 +5,34 @@ from rest_framework.pagination import PageNumberPagination
 from appointment.duty_roster.utils import get_first_date_of_week_dates, get_week_dates
 from appointment.models import DutyRoster
 from datetime import datetime
+from django.utils.translation import ugettext as _
 
 
 class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
     month = serializers.SerializerMethodField()
+    month_input = serializers.CharField(write_only=True, label="Monat")
+    year_input = serializers.CharField(write_only=True, label="Jahr")
 
     def get_month(self, instance):
-        return str(instance.calendar_week_date.strftime('%B'))
+        if instance.calendar_week_date:
+            return _(str(instance.calendar_week_date.strftime('%B')))
 
     class Meta:
         model = DutyRoster
-        fields = ('pk', 'calendar_week_date', "file", "calendar_week", "month")
+        fields = ('pk', 'calendar_week_date', "file", "calendar_week", "month", "month_input", "year_input", )
 
     def validate(self, data):
-        today = datetime.now()
+        print(data)
+        month_input = int(data.pop("month_input"))
+        year_input = int(data.pop("year_input"))
+        date = datetime(day=5, month=month_input, year=year_input)
         duty_rosters = DutyRoster.objects.filter(
-            calendar_week_date__month=today.month, calendar_week_date__year=today.year)
+            calendar_week_date__month=date.month, calendar_week_date__year=date.year)
 
         if duty_rosters.count() > 0:
             duty_rosters.delete()
-        data["calendar_week_date"] = today
+        data["calendar_week_date"] = date
         return data
-
-    def filter_week_date(self, today):
-        print(f"yes: {today}")
-        week_dates = get_week_dates(today)
-        query_condition = Q()
-        for date in week_dates:
-            query_condition |= Q(
-                Q(calendar_week_date__day=date.day,
-                  calendar_week_date__month=date.month,
-                  calendar_week_date__year=date.year)
-            )
-        print(query_condition)
-        duty_rosters = DutyRoster.objects.filter(query_condition)
-        get_first_date_of_week_dates(week_dates)
 
 
 # ViewSets define the view behavior.

@@ -8,8 +8,11 @@ $(document).ready(function(){
 	  responsive: true,
       columnDefs: [
         {targets: 0, title: "", name: "", orderable: false},
-        {targets: 1, title: "Bezeichnung", name: "title"},
-        {targets: 2, title: "Rufnummer", name: "phone_number"},
+        {targets: 1, title: "Name", name: "last_name"},
+        {targets: 2, title: "Vorname", name: "first_name"},
+        {targets: 3, title: "Bezeichnung", name: "title"},
+        {targets: 4, title: "Telefonnummer", name: "phone_number"},
+        {targets: 5, title: "Handynummer", name: "mobile_number"},
       ],
 
        // Mit ajax funktioniert muss nur angepasst werden auf REST API

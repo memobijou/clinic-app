@@ -28,98 +28,148 @@ window.options_in_german = {
   'dictMaxFilesExceeded': 'Sie können keine weiteren Dateien mehr hochladen'
 };
 
-window.success_function = function(dropzone, file, response){
-    let version_spans = file.previewElement.getElementsByClassName("version-span")
-    let edit_spans = file.previewElement.getElementsByClassName("edit-span")
-    let download_spans = file.previewElement.getElementsByClassName("download-span")
 
-    let version_span = version_spans[0]
-    let edit_span = edit_spans[0]
-    let download_span = download_spans[0]
+const show_dropzone_html = `
+    <div style="position:relative;display:none;" id="show_dropzone">
+        <span id="hand_up" style="position:absolute;bottom:10px;left:15%;" class="glyphicon glyphicon-hand-up">
+        </span>
+        <span style="position:absolute;top:15px;left:5%;color:black;background:white;">Datei hier hochladen</span>
+    </div>`
 
-    version_span.innerHTML =  "<b>Version:</b> " + "1.00"
-    download_span.innerHTML = "<a href='" + response.file +"'>Herunterladen</a>"
-    edit_span.innerHTML = "<a href='" + edit_url.replace("0", response.pk) +"'>Bearbeiten</a>"
+$("#dropzone_first_td").append(show_dropzone_html)
+
+const show_dropzone_element = document.getElementById("show_dropzone")
+
+let interval = null;
+
+;["drag", "dragstart", "dragend", "dragleave", "dragenter", "dragover", "drop"].forEach(eventName => {
+  //droparea.addEventListener(eventName, preventDefaults, false)
+  $("body").on(eventName, preventDefaults);
+  $(show_dropzone_html).on(eventName, preventDefaults);
+})
+
+function preventDefaults (e) {
+  e=e||event;
+  e.preventDefault()
+  e.stopPropagation()
+  e.originalEvent.preventDefault();
+  e.originalEvent.stopPropagation();
+}
+
+;["drag", "dragstart", "dragenter", "dragover"].forEach(eventName => {
+    //droparea.addEventListener(eventName, preventDefaults, false)
+    $("body").on(eventName, function(e){
+          $("#dropzone").css("background", "#f5f5f5")
+          if($(show_dropzone_element).css("display") === "none"){
+              $(show_dropzone_element).css({"display": ''})
+          }
+                if(interval == null){
+          interval = setInterval(function(){
+              $("#hand_up").animate({
+                top: '-=5px'
+              }, 800);
+              $("#hand_up").animate({
+                top: '+=5px'
+              }, 800);
+          }, 500);
+      }
+      });
+})
+
+;["dragend", "dragleave", "drop"].forEach(eventName => {
+    //droparea.addEventListener(eventName, preventDefaults, false)
+    $("#dropzone_first_td").on(eventName, function (e) {
+        this.style.background = null;
+    });
+})
+
+;["dragend", "dragleave", "drop"].forEach(eventName => {
+    //droparea.addEventListener(eventName, preventDefaults, false)
+    $("body").on(eventName, function(e){
+          clearInterval(interval)
+          interval = null
+          $(show_dropzone_element).css("display", "none")
+          $("#dropzone").css("background", "")
+    });
+})
+
+
+const peform_upload = function(formData){
+    $.ajax({
+        url: window.upload_url,
+        method: "POST",
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: formData,
+    // other attributes of AJAX
+    })
+        .always(function(){
+            location.reload()
+        })
 
 }
 
-window.error_function = function(){
+;["drop"].forEach(eventName => {
+  //droparea.addEventListener(eventName, preventDefaults, false)
+  $("#dropzone_first_td").on(eventName, function(e){
+    let file = e.originalEvent.dataTransfer.files[0];
+    let formData = new FormData();
 
-}
-
-window.sending_function = function(formData){
-
-}
-
-$(document).ready(function(){
-    Dropzone.autoDiscover = false;
-
-    $.extend(window.Dropzone.prototype.defaultOptions, window.options_in_german);
-
-    let directory = null;
-    for(let i=0; i<directories.length; i++){
-        directory = directories[i]
-        new Dropzone(
-            //id of drop zone element 1
-                '#dropzone-example-' + directory.pk,  {
-                maxFilesize: window.maxFileSize,
-                addRemoveLinks: window.addRemoveLinks,
-                dictResponseError: 'Serverfehler',
-                autodiscover: false,
-                previewTemplate: window.template,
-                maxFiles: window.maxFiles,
-                parallelUploads: 1,
-                success: function(file, response){
-                    file["pk"] = response.pk;
-                    window.success_function(this, file, response);
-                },
-                init: function() {
-                    let version_spans = this.previewsContainer.getElementsByClassName("version-span")
-                    let edit_spans = this.previewsContainer.getElementsByClassName("edit-span")
-                    let download_spans = this.previewsContainer.getElementsByClassName("download-span")
-
-                    for(let j in directory_files[directory.pk.toString()]){
-                        let file = directory_files[directory.pk.toString()][j]
-                        let mockFile = { name: file.name, size: file.size, pk: file.pk, dataURL: file.url}
-                        this.emit("addedfile", mockFile)
-                        this.createThumbnailFromUrl(mockFile, file.url)
-                        this.emit("complete", mockFile)
-                        version_spans[j].innerHTML =  "<b>Version:</b> " + file.version.replace(",", ".")
-                        edit_spans[j].innerHTML = "<a href='" + file.edit_view_url +"'>Bearbeiten</a>"
-                        download_spans[j].innerHTML = "<a href='" + file.url +"'>Herunterladen</a>"
-
-                    }
-
-                    this.on("removedfile", function(file) {
-                        url = url.replace("0", file.pk);
-
-                        $.ajax({
-                           beforeSend: function(xhr, settings) {
-                                xhr.setRequestHeader("X-CSRFToken", window.CSRF_TOKEN);
-                           },
-                           url: url,
-                           type: 'DELETE'
-                        });
-                    });
-
-                    this.on(
-                        "sending", function(file, xhr, formData) {
-                            window.sending_function(formData);
-                        }
-                    )
+     //but for this example i will skip that
+    formData.append('file', file);
+    formData.append('csrfmiddlewaretoken', window.CSRF_TOKEN);
+    peform_upload(formData)
+  });
+})
 
 
-                    this.on(
-                        "error", window.error_function
-                    )
+$("#upload_btn").click(function(){
+    // Create an input element
+    let inputElement = document.createElement("input");
 
-                },
-                previewsContainer: '#preview' + directory.pk
+    // Set its type to file
+    inputElement.type = "file";
 
-            }
-        )
+    // Set accept to the file types you want the user to select.
+    // Include both the file extension and the mime type
+    //inputElement.accept = accept;
 
+    // set onchange event to call callback when user has selected file
+
+    let prepare_upload = function(){
+        let file = this.files[0]
+        let formData = new FormData()
+        formData.append('file', file)
+        formData.append('csrfmiddlewaretoken', window.CSRF_TOKEN)
+        peform_upload(formData)
     }
 
-    $("div").remove(".dz-progress");
+    inputElement.addEventListener("change", prepare_upload)
+
+    // dispatch a click event to open the file dialog
+    inputElement.dispatchEvent(new MouseEvent("click"));
+})
+
+
+$("#action_btn").click(function(e){
+    const selected_action = $('#select_action').find(":selected").text();
+    if(selected_action === "Löschen"){
+        const delete_ids = [];
+        $('.action_checkbox:checked').each(function() {
+            delete_ids.push($(this).val());
+        });
+
+        if(delete_ids.length > 0){
+            let query_string = "csrfmiddlewaretoken=" + window.CSRF_TOKEN
+            for(let index in delete_ids){
+                let id = delete_ids[index]
+                query_string = query_string + "&item=" + id
+            }
+
+            $.post(delete_url, query_string).always(function () {
+                location.reload(true)
+            })
+        }
+    }
 })

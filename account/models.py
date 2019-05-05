@@ -7,6 +7,7 @@ from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, 
 from accomplishment.models import Accomplishment, UserAccomplishment
 from taskmanagement.models import UserTask
 import os
+import random
 
 
 def get_name(self):
@@ -20,10 +21,15 @@ def get_name(self):
 User.add_to_class("__str__", get_name)
 
 
+def random_color():
+    return "#" + "%06x" % random.randint(0, 0xFFFFFF)
+
+
 class Group(models.Model):
     name = models.CharField(null=True, blank=False, max_length=200)
     users = models.ManyToManyField(User, blank=True, related_name="groups_list", verbose_name="Mitglieder")
     tasks = models.ManyToManyField("taskmanagement.Task", blank=True, related_name="groups_list")
+    color = models.CharField(default=random_color, max_length=200, verbose_name="Farbe")
 
     def __str__(self):
         return f"{self.name}"
