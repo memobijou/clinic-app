@@ -70,7 +70,7 @@ $(document).ready(function(){
       columnDefs: [
         //{targets: 0, title: "", name: "calendar_week", orderable: false},
         {targets: 0, title: "Monat", name: "calendar_week", orderable: false},
-        {targets: 1, title: "Terminplan", name: "file"},
+        {targets: 1, title: "Dienstplan", name: "file"},
 
       ],
 
@@ -114,6 +114,21 @@ $(document).ready(function(){
     $.extend(window.Dropzone.prototype.defaultOptions, options_in_german);
 
 
+    window.change_form_data = function(formData){
+        let month_input = document.getElementById("id_month").value
+        let year_input =document.getElementById("id_year").value
+
+        if(month_input){
+            formData.append("month_input", month_input)
+        }
+        if(year_input){
+            formData.append("year_input", year_input)
+        }
+
+    }
+
+
+
     Dropzone.autoDiscover = false;
 
     $("#duty_roster_dropzone").dropzone({
@@ -126,12 +141,16 @@ $(document).ready(function(){
       },
       //previewsContainer: '#preview',
       init: function(){
-
+            this.on(
+                "sending", function(file, xhr, formData) {
+                    window.change_form_data(formData);
+                }
+            )
       },
       success: function (file, response) {
         this.removeFile(file);
         location.reload()
-      }
+      },
 
     });
 })

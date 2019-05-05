@@ -17,10 +17,10 @@ def send_file_messages_through_firebase(file, is_new=True):
     if file.parent_directory.announcement is True:
         if is_new is True:
             title = f"Neue Datei in {file.parent_directory.name}"
-            message = f'"{file.file.name}" Version {round(file.version, 2)}'
+            message = f'"{file.file.name}" Version {file.version_with_point}'
         else:
             title = f"Update vorhanden in {file.parent_directory.name}"
-            message = f"{file.file.name} jetzt auf Version {round(file.version, 2)}"
+            message = f"{file.file.name} jetzt auf Version {file.version_with_point}"
         send_push_notifications(User.objects.all(), title, message, "filestorage")
         print(message)
         print(title)
@@ -88,21 +88,27 @@ class FileUploadUpdateView(IFileUploadView):
 
     def post(self, request, *args, **kwargs):
         self.file = get_object_or_404(File, pk=self.kwargs.get("file_pk"))
+        origin_file = self.file.file
         data = request.data
         version = self.request.POST.get("version")
-        if version == "":
+        name = self.request.POST.get("name")
+
+        if not version:
             self.file.version += Decimal(0.01)
-        print(f"empty ? {type(self.request.POST.get('version'))}")
+
         file_serializer = FileUpdateSerializer(data=data, instance=self.file)
 
         if file_serializer.is_valid():
-            print(f"hehe: {self.file.pk}")
-            print(f"haha: {request.FILES}")
+            origin_file.delete()
             version = request.POST.get("version")
-            print(f"hey: {version}")
+
             if version:
                 self.file.version = version
             self.file.file = request.FILES.get("file")
+
+            if name:
+                self.file.file.name = name
+
             self.file.save()
             send_file_messages_through_firebase(self.file, is_new=False)
             return Response(file_serializer.data, status=status.HTTP_201_CREATED)

@@ -1,0 +1,3 @@
+<form method="POST" {% if redirect_directory %}action="{% url 'filestorage:subscribe_filestorage' pk=directory.pk redirect_directory_pk=redirect_directory.pk  %}"{% else %} action="{% url 'filestorage:subscribe_filestorage' pk=directory.pk  %}"{% endif %}>{% csrf_token %}
+    <button class="btn" style="display:inline-block; border:none; text-decoration: none;padding: 0;margin: 0;background:transparent;"><span class="glyphicon glyphicon-bullhorn {% if directory.announcement is True %} text-warning {% endif %}"></span></button>
+</form>

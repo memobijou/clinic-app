@@ -14,7 +14,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Group
-        fields = ("pk", 'name', "users")
+        fields = ("pk", 'name', "users", "color", )
 
 
 class UserGroupSerializer(serializers.ModelSerializer):
@@ -107,6 +107,6 @@ class GroupDatatables(DatatablesMixin):
 
     def get_data(self, page):
         data = {"results": [[f'<p><a href="{reverse_lazy("account:edit_group", kwargs={"pk": query.pk})}">Bearbeiten</a></p>',
-                             query.name] for query in page],
+                             f'<i class="fa fa-circle" style="color:{query.color};"></i>&nbsp;&nbsp;<span>{query.name}</span>'] for query in page],
                 "records_total": self.queryset.count()}
         return data

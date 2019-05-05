@@ -1,7 +1,7 @@
 from django.test import TestCase
 from mixer.backend.django import mixer
 from django.contrib.auth.models import User
-from appointment.models import Appointment
+from appointment.models import Appointment, DutyRoster
 from django.urls import reverse_lazy
 from account.models import Group
 
@@ -69,3 +69,25 @@ class AppointmentTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         appointment = Appointment.objects.first()
         self.assertNotEqual(appointment.topic, topic)
+
+    def test_infobox_deletion(self):
+        appointment = mixer.blend(Appointment, is_infobox=True, start_date="2019-03-01T01:23",
+                                  end_date="2019-03-01T03:23")
+        response = self.client.post(reverse_lazy("appointment:delete") + f"?item={appointment.pk}")
+        self.assertEqual(Appointment.objects.count(), 0)
+
+
+class DutyRosterTestCase(TestCase):
+    def setUp(self):
+        self.session_user = mixer.blend(User)
+        self.client.force_login(self.session_user)
+
+    def test_duty_roster_upload(self):
+        year = 2019
+        month = 3
+        response = self.client.post(reverse_lazy("appointment:duty_roster-list"),
+                                    data={"month_input": month, "year_input": year})
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(DutyRoster.objects.count(), 1)
+        duty_roster_queryset = DutyRoster.objects.filter(calendar_week_date__month=month, calendar_week_date__year=year)
+        self.assertEqual(duty_roster_queryset.count(), 1)

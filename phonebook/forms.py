@@ -5,4 +5,4 @@ from uniklinik.forms import BootstrapModelFormMixin
 class PhoneBookForm(BootstrapModelFormMixin):
     class Meta:
         model = PhoneBook
-        fields = ("title", "phone_number", )
+        fields = ("last_name", "first_name", "title", "phone_number", "mobile_number", )

@@ -10,11 +10,17 @@ from rest_framework.mixins import ListModelMixin
 from pyfcm import FCMNotification
 from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError
 from django.contrib.auth.models import User
+from rest_framework.pagination import PageNumberPagination
+
+
+class CustomPagination(PageNumberPagination):
+    page_size = 10
 
 
 class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
     serializer_class = TextMessageSerializer
     queryset = TextMessage.objects.all()
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         self.filter_by_users()
@@ -62,6 +68,8 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
         if os.environ.get("firebase_token"):
             push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
             try:
+                if len(message) > 20:
+                    message = message[:20] + "..."
                 r = push_service.notify_single_device(
                     registration_id=receiver.profile.device_token, message_title=f"{sender}",
                     message_body=message,

@@ -6,7 +6,10 @@
 {% endblock %}
 
 {% block horizontal_nav_navigation %}
-    <li><span><a href="{% url 'filestorage:tree' %}">Dateiverwaltung</a></span></li>
+    <li><span><a href="{% url 'filestorage:tree' %}">Infobox</a></span></li>
+    {% if file.parent_directory_id %}
+    <li><span><a href="{% url 'filestorage:child_tree' parent_directory_pk=file.parent_directory_id %}">{{ file.parent_directory.name }}</a></span></li>
+    {% endif %}
 {% endblock %}
 
 
@@ -35,21 +38,35 @@
                     </div>
 
                     <h2 class="panel-title">{{ file.file.name }}</h2>
+
                 </header>
                 <div class="panel-body">
-                    <div class="col-md-12 col-xs-12">
-                        <div id="preview{{ file.parent_directory.pk }}" class="dropzone" style="border-width:thin;">
-                    </div>
-                    </div>
-
-                    <br/>
                     <div class="col-md-12 col-xs-12" style="padding-top:15px;">
                         <form action="{% url 'filestorage:file_upload_edit' file_pk=file.pk %}"
-                              class="dropzone dz-square" id="dropzone-example-{{ file.parent_directory.pk }}"
+                              class="dropzone dz-square" id="dropzone"
                               enctype="multipart/form-data" style="border-style: dashed;">{% csrf_token %}
                         </form>
+                        <br/>
+                        <div class="text-center">
+                            <a href="{{ file.file.url }}">{{ file.file.name }}</a>
+                            <p><b>Version: </b>{{ file.version_with_point }}</p>
+                            <p id="error_field" style="color:red;"></p>
+                            <div class="col-md-4 col-md-offset-4" style="padding: 0 0 15px 0;">
+                                <input id="version" name="version" class="form-control" style="text-align:center;" placeholder="Version ändern"/>
+                            </div>
+                            <div class="col-md-12" style="padding:0;">
+                                <p><b>Dateiname: </b>{{ file.file.name }}</p>
+                            </div>
+                            <div class="col-md-4 col-md-offset-4" style="padding: 0 0 15px 0;">
+                            <input id="file_name" name="name" class="form-control" style="text-align:center;" placeholder="Dateinamen ändern"/>
+                            </div>
+                            <br/>
+                            <object data="{{ file.file.url }}" type="application/pdf" width="100%" height="500px">
+                                PDF kann in diesem Browser nicht gerendert werden
+                            </object>
+                        </div>
                     </div>
-
+                    <br/>
                 </div>
             </section>
         </div>

@@ -71,6 +71,7 @@ class UserTestCase(TestCase):
         response = self.client.post(reverse_lazy("account:new_group"), data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Group.objects.count(), groups_count+1)
+        self.assertIsNotNone(Group.objects.first().color)
 
     def test_users_assignment_to_group(self):
         group = mixer.blend(Group)

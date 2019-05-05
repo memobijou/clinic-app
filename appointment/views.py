@@ -119,6 +119,8 @@ def send_push_notifications(users, title, message, category):
                 registration_ids.append(user.profile.device_token)
         if len(registration_ids) > 0:
             try:
+                if len(message) > 20:
+                    message = message[:20] + "..."
                 push_service.notify_multiple_devices(
                     registration_ids=registration_ids, message_title=title, message_body=message, sound="default",
                     data_message={"category": category}
@@ -243,6 +245,8 @@ class InfoboxUpdateView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         if self.edit_infobox_form.is_valid() is True:
             self.edit_infobox_form.save()
+            users = get_users_from_groups(self.object.groups.all())
+            send_push_notifications(users, self.object.topic, self.object.description, "infobox")
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
         else:
             print(f"king: {self.edit_infobox_form.errors}")
@@ -301,6 +305,8 @@ class ConferenceUpdateView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         if self.edit_conference_form.is_valid() is True:
             self.edit_conference_form.save()
+            users = get_users_from_groups(self.object.groups.all())
+            send_push_notifications(users, self.object.topic, self.object.description, "conference")
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
         else:
             return render(request, "appointment/appointment.html", {"edit_conference_form": self.edit_conference_form,
@@ -321,3 +327,10 @@ class ConferenceUpdateView(LoginRequiredMixin, View):
         else:
             self.conference_form = ConferenceFormMixin()
         return self.conference_form
+
+
+class AppointmentDeleteView(View):
+    def post(self, request, *args, **kwargs):
+        items = request.GET.getlist("item")
+        Appointment.objects.filter(pk__in=items).delete()
+        return HttpResponseRedirect(reverse_lazy("appointment:planning"))

@@ -8,14 +8,15 @@ $(document).ready(function(){
 	  responsive: true,
       columnDefs: [
         {targets: 0, title: "", name: "", orderable:false, type:"checkbox"},
-        {targets: 1, title: "Benutzername", name: "username"},
+        {targets: 1, title: "Titel", name: "title"},
         {targets: 2, title: "Vorname", name: "first_name"},
         {targets: 3, title: "Nachname", name: "last_name"},
-        {targets: 4, title: "Email", name: "email"},
-        {targets: 5, title: "Mentor", name: "mentor"},
-        {targets: 6, title: "Schüler", name: "students"},
-        {targets: 7, title: "Fachrichtung", name: "discipline"},
-        {targets: 8, title: "Aktiv", name: "is_active"}
+        {targets: 4, title: "Benutzername", name: "username"},
+        {targets: 5, title: "Email", name: "email"},
+        {targets: 6, title: "Mentor", name: "mentor"},
+        {targets: 7, title: "Schüler", name: "students"},
+        {targets: 8, title: "Fachrichtung", name: "discipline"},
+        {targets: 9, title: "Aktiv", name: "is_active"}
       ],
 
        // Mit ajax funktioniert muss nur angepasst werden auf REST API

@@ -79,6 +79,14 @@
                         <form class="form-horizontal" method="get">
                             <h4 class="mb-xlg">Persönliche Informationen</h4>
                             <fieldset>
+                                {% if object.profile.title %}
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Titel</label>
+                                        <div class="col-md-8">
+                                            <label class="control-label">{{ object.profile.title|default:"" }}</label>
+                                        </div>
+                                    </div>
+                                {% endif %}
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Vorname</label>
                                     <div class="col-md-8">

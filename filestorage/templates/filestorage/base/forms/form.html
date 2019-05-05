@@ -1,9 +1,43 @@
-<form method="POST">{% csrf_token %}
+<form method="POST" class="form-inline announcement_form">{% csrf_token %}
     <br/>
-    {{ directory_form.errors }}
-    {{ directory_form.name }}
-    <br/>
-    <div class="text-right">
-        <button class="btn btn-primary">Verzeichnis anlegen</button>
+    <div class="col-md-12" style="padding: 0 0 25px 0">
+        {{ directory_form.errors }}
+        <div class="col-md-9" style="padding:0;">
+            <input class="form-control" name="{{ directory_form.name.name }}" id="{{ directory_form.name.id_for_label }}" placeholder="Neues Verzeichnis anlegen"/>
+        </div>
+        <div class="col-md-3" style="padding:0;">
+            <button type="submit" id="submit_btn" class="btn btn-primary">Verzeichnis anlegen</button>
+        </div>
     </div>
 </form>
+
+<style>
+
+    #id_name {
+        width:100%;border-bottom-right-radius:0;border-top-right-radius:0;
+    }
+
+    #submit_btn {
+        width:100%;border-bottom-left-radius:0;border-top-left-radius:0;
+    }
+
+    @media only screen and (max-width: 1331px) {
+        .announcement_form .col-md-3 {
+            width:100%
+        }
+        .announcement_form .col-md-9 {
+            width:100%
+        }
+
+        #id_name {
+            border-bottom-right-radius:0;
+            border-bottom-left-radius:0;
+            border-top-right-radius:4px;
+        }
+        #submit_btn {
+            border-bottom-left-radius:4px;
+            border-top-left-radius:0;
+            border-top-right-radius:0;
+        }
+    }
+</style>
