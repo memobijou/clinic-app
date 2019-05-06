@@ -12,7 +12,7 @@ router = routers.DefaultRouter()
 router.register(r'', FileViewSet, basename="files")
 directory_router = routers.DefaultRouter()
 
-directory_router.register(r"directory", DirectoryViewSet)
+directory_router.register(r"directory", DirectoryViewSet, basename="directories")
 
 urlpatterns = [
     path(r'api/', include(directory_router.urls)),
