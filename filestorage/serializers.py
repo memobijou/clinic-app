@@ -5,12 +5,13 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status, serializers
-
+from django.urls import reverse_lazy, reverse
 from appointment.views import send_push_notifications
 from filestorage.models import File, FileDirectory
 from django.shortcuts import get_object_or_404
 from abc import ABCMeta, abstractmethod
 from decimal import Decimal
+from django.http import HttpRequest
 
 
 def send_file_messages_through_firebase(file, is_new=True):
@@ -151,18 +152,39 @@ class FileViewSet(viewsets.ModelViewSet):
 
 class FileDirectorySerializer(serializers.ModelSerializer):
     files = FileSerializer(many=True)
-    child_directories = serializers.HyperlinkedRelatedField(
-        view_name='filestorage:directories-detail',
-        lookup_field='pk',
-        many=True,
-        read_only=True
-    )
+    # child_directories = serializers.HyperlinkedRelatedField(
+    #     view_name='filestorage:directories-detail',
+    #     lookup_field='pk',
+    #     many=True,
+    #     read_only=True,
+    # )
+    child_directories = serializers.SerializerMethodField()
 
-    parent = serializers.HyperlinkedRelatedField(
-        view_name='filestorage:directories-detail',
-        lookup_field='pk',
-        read_only=True
-    )
+    def get_child_directories(self, value):
+        child_directories_queryset = value.child_directories.values("name", "pk")
+        for child_directory in child_directories_queryset:
+            request = self.context.get("request")
+            url = reverse("filestorage:directories-detail", kwargs={"pk": child_directory.get("pk")})
+            if request:
+                child_directory["link"] = request.build_absolute_uri(url)
+            else:
+                child_directory["link"] = url
+        result = [child_directories_queryset]
+        return result
+
+    parent = serializers.SerializerMethodField()
+
+    def get_parent(self, value):
+        if value.parent:
+            request = self.context.get("request")
+            url = reverse("filestorage:directories-detail", kwargs={"pk": value.parent.pk})
+            parent_dict = {"name": value.name, "pk": value.id}
+            if request:
+                parent_dict["link"] = request.build_absolute_uri(url)
+            else:
+                parent_dict["link"] = url
+            result = parent_dict
+            return result
 
     class Meta:
         model = FileDirectory
@@ -177,6 +199,9 @@ class DirectoryViewSet(viewsets.ModelViewSet):
     queryset = FileDirectory.objects.all()
     serializer_class = FileDirectorySerializer
     pagination_class = PageNumberPagination
+
+    def get_serializer_context(self):
+        return {"request": self.request}
 
     def get_queryset(self):
         self.queryset = super().get_queryset()
