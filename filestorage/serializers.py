@@ -151,10 +151,22 @@ class FileViewSet(viewsets.ModelViewSet):
 
 class FileDirectorySerializer(serializers.ModelSerializer):
     files = FileSerializer(many=True)
+    child_directories = serializers.HyperlinkedRelatedField(
+        view_name='filestorage:directories-detail',
+        lookup_field='pk',
+        many=True,
+        read_only=True
+    )
+
+    parent = serializers.HyperlinkedRelatedField(
+        view_name='filestorage:directories-detail',
+        lookup_field='pk',
+        read_only=True
+    )
 
     class Meta:
         model = FileDirectory
-        fields = ("pk", "name", "type", "files")
+        fields = ("pk", "name", "type", "files", "child_directories", "parent", )
 
     def save(self, **kwargs):
         super().save(**kwargs)
@@ -168,6 +180,8 @@ class DirectoryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         self.queryset = super().get_queryset()
+        if not self.kwargs.get("pk"):
+            self.queryset = self.queryset.filter(parent__isnull=True)
         self.filter_by_name()
         self.filter_by_name_exact()
         return self.queryset
