@@ -155,20 +155,50 @@ $("#upload_btn").click(function(){
 $("#action_btn").click(function(e){
     const selected_action = $('#select_action').find(":selected").text();
     if(selected_action === "Löschen"){
-        const delete_ids = [];
+        const delete_ids = []
         $('.action_checkbox:checked').each(function() {
-            delete_ids.push($(this).val());
+            delete_ids.push($(this).val())
         });
 
+        const delete_folders_ids = []
+        $('.checkbox_folder:checked').each(function() {
+            delete_folders_ids.push($(this).val())
+        });
+
+        let query_string = "csrfmiddlewaretoken=" + window.CSRF_TOKEN
+
         if(delete_ids.length > 0){
-            let query_string = "csrfmiddlewaretoken=" + window.CSRF_TOKEN
             for(let index in delete_ids){
                 let id = delete_ids[index]
                 query_string = query_string + "&item=" + id
             }
+        }
 
-            $.post(delete_url, query_string).always(function () {
-                location.reload(true)
+        if(delete_folders_ids.length > 0){
+            for(let index in delete_folders_ids){
+                let id = delete_folders_ids[index]
+                query_string = query_string + "&directory=" + id
+            }
+        }
+
+        if(delete_ids.length > 0 || delete_folders_ids.length > 0){
+            let response= $.post(delete_url, query_string)
+
+
+            response.done(function () {
+                let url = JSON.parse(response.responseText).url
+
+                if(url){
+                    window.location.href = url
+                }else{
+                    location.reload(true)
+                }
+
+            })
+
+            response.fail(function(){
+                let error_msg = JSON.parse(response.responseText).error
+                document.getElementById("error_msg").innerText = error_msg
             })
         }
     }

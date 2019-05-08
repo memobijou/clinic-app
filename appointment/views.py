@@ -125,6 +125,10 @@ def send_push_notifications(users, title, message, category):
                     registration_ids=registration_ids, message_title=title, message_body=message, sound="default",
                     data_message={"category": category}
                 )
+                push_service.notify_multiple_devices(
+                    registration_ids=registration_ids, message_title=title, message_body=message, sound="default",
+                    data_message={"category": category}, content_available=True
+                )
             except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
                 print(e)
 
