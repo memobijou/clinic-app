@@ -21,12 +21,10 @@
     <style>
         .dz-message {
             text-align: center;
-
         }
         .dz-success-mark {
             display:none;
         }
-
         .dz-error-mark{
             display:none;
         }
@@ -52,6 +50,7 @@
                         </div>
                     </div>
                 </div>
+                <p id="error_msg" style="padding:0;margin:0;color:red;"></p>
                 <br/>
                 <table class="table table-bordered table-hover">
                     <tbody>
@@ -60,7 +59,7 @@
                             <td>
                                 <a href="{% url 'filestorage:tree' %}"><span {% if parent_directory %}class="glyphicon glyphicon-folder-close"{% else %} class="glyphicon glyphicon-folder-open"{% endif %}></span>&nbsp;&nbsp;&nbsp;...</a>
                             </td>
-                            <td></td>
+                            <td class="col-md-2"></td>
                         </tr>
                         {% if parent_directory and parent_directory.parent %}
                                 <tr>
@@ -81,10 +80,15 @@
                                     <td align="right">
                                         <div class="form-group">
                                             <div class="btn-group" style="padding:0;">
-                                                <button class="btn" type="button" id="upload_btn" style="display:inline-block; border:none; text-decoration: none;padding: 0;margin: 0;background:transparent;"><span class="glyphicon glyphicon-cloud-upload"></span></button>
+                                                <button class="btn" type="button" id="upload_btn" style="display:inline-block; border:none; text-decoration: none;padding: 0;margin: 0;background:transparent;">
+                                                    <span class="glyphicon glyphicon-cloud-upload"></span>
+                                                </button>
                                             </div>
                                             <div class="btn-group" style="padding:0;">
                                                 {% include 'filestorage/snippets/announcement.html' with directory=parent_directory redirect_directory=parent_directory %}
+                                            </div>
+                                            <div class="btn-group" style="padding:0;">
+                                                <input class="checkbox_folder" type="checkbox" value="{{ parent_directory.pk }}" name="directory" style="display:inline-block; border:none; text-decoration: none;padding: 0;margin: 0;background:transparent;"/>
                                             </div>
                                         </div>
                                     </td>
@@ -94,8 +98,13 @@
                         {% for directory in file_directories %}
                             <tr>
                                 <td><a href="{% url 'filestorage:child_tree' parent_directory_pk=directory.pk %}"><span class="glyphicon glyphicon-folder-close"></span>&nbsp;&nbsp;&nbsp;{{ directory.name }}</a></td>
-                                <td class="col-md-1" align="right">
-                                    {% include 'filestorage/snippets/announcement.html' with directory=directory redirect_directory=parent_directory %}
+                                <td align="right">
+                                    <div class="btn-group">
+                                        {% include 'filestorage/snippets/announcement.html' with directory=directory redirect_directory=parent_directory %}
+                                    </div>
+                                    <div class="btn-group" style="padding:0;">
+                                        <input class="checkbox_folder" type="checkbox" value="{{ directory.pk }}" name="directory" style="display:inline-block; border:none; text-decoration: none;padding: 0;margin: 0;background:transparent;"/>
+                                    </div>
                                 </td>
                             </tr>
                         {% endfor %}

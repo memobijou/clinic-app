@@ -1,4 +1,5 @@
-from django.http import HttpResponseRedirect
+from django.db.models import Count, Q, F
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,6 +9,7 @@ from filestorage.models import FileDirectory, File
 from django.urls import reverse_lazy
 from abc import ABCMeta, abstractmethod
 from django.shortcuts import get_object_or_404
+import json
 
 
 class FileDirectoryBaseView(LoginRequiredMixin, View, metaclass=ABCMeta):
@@ -149,9 +151,59 @@ class DeleteFileView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         items = request.POST.getlist("item")
         directory = get_object_or_404(FileDirectory, pk=self.kwargs.get("directory_pk"))
-        files = File.objects.filter(parent_directory=directory, pk__in=items)
-        for file in files:
-            file.file.delete()
-        files.delete()
-        return HttpResponseRedirect(
-            reverse_lazy("filestorage:child_tree", kwargs={"parent_directory_pk": directory.pk}))
+        directory_ids = request.POST.getlist("directory")
+        parent_id = directory.parent_id
+        print(f"directory.parent_id {parent_id}")
+        print(f"heyyyyy::: {directory_ids}")
+
+        file_directories = FileDirectory.objects.filter(pk__in=directory_ids).annotate(
+            count_files=Count("files")).annotate(count_child_directories=Count("child_directories")).filter(
+            count_files=0, count_child_directories=0)
+
+        full_directories = FileDirectory.objects.filter(pk__in=directory_ids).annotate(
+            count_files=Count("files")).annotate(count_child_directories=Count("child_directories")).filter(
+            Q(Q(count_files__gt=0) | Q(count_child_directories__gt=0)))
+
+        full_directories_count = full_directories.count()
+
+        for d in full_directories:
+            print(f"d:: {d.count_files} {d.count_child_directories}")
+
+        print(f"full_directories_count:: {full_directories_count}")
+
+        if full_directories_count == 0:
+            files = File.objects.filter(parent_directory=directory, pk__in=items)
+            for file in files:
+                file.file.delete()
+            files.delete()
+            file_directories.delete()
+
+        try:
+            directory.refresh_from_db()
+            print(f"darf nicht !!!")
+            context = {
+                "url": str(reverse_lazy("filestorage:child_tree", kwargs={"parent_directory_pk": directory.pk}))
+            }
+            response = HttpResponse(json.dumps(context), content_type='application/json')
+            response.status_code = 200
+            return response
+        except FileDirectory.DoesNotExist as e:
+            if not parent_id:
+                context = {
+                    "url": str(reverse_lazy("filestorage:tree"))
+                }
+            else:
+                context = {
+                    "url": str(reverse_lazy("filestorage:child_tree", kwargs={"parent_directory_pk": parent_id}))
+                }
+            response = HttpResponse(json.dumps(context), content_type='application/json')
+            response.status_code = 200
+            return response
+        finally:
+            if full_directories_count > 0:
+                context = {
+                    "error": "Es können nur leere Ordner gelöscht werden. "
+                }
+                response = HttpResponse(json.dumps(context), content_type='application/json')
+                response.status_code = 400
+                return response
