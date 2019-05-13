@@ -58,7 +58,7 @@
                             {% for usertask in user_tasks %}
                                 <tr>
                                     <td>{{ usertask.user }}</td>
-                                    <td>{% for  group in usertask.user.groups_list.all %}{{ group }}{% endfor %}</td>
+                                    <td>{% for  group in usertask.user.groups_list.all %}{{ group }}&nbsp;{% endfor %}</td>
                                     <td align="right">
                                         {% if usertask.completed == True %}
                                             <span class="glyphicon glyphicon-ok text-success"></span>
