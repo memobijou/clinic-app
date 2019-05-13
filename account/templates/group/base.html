@@ -12,6 +12,7 @@
 {% block js %}
     <script>
         var api_url = "{% url 'account:group_datatables' %}";
+        var actions = {deletion: "{% url 'account:group_deletion' %}"}
     </script>
     <!-- Specific Page Vendor -->
     {% if settings.WEBPACK_DEV_SERVER is True %}

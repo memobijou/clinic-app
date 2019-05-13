@@ -106,7 +106,11 @@ class GroupDatatables(DatatablesMixin):
         return self.queryset
 
     def get_data(self, page):
-        data = {"results": [[f'<p><a href="{reverse_lazy("account:edit_group", kwargs={"pk": query.pk})}">Bearbeiten</a></p>',
-                             f'<i class="fa fa-circle" style="color:{query.color};"></i>&nbsp;&nbsp;<span>{query.name}</span>'] for query in page],
+        data = {"results": [[f'<p><a href="'
+                             f'{reverse_lazy("account:edit_group", kwargs={"pk": query.pk})}">Bearbeiten</a></p>'
+                             f'<p style="margin:0;padding:0;"><input type="checkbox" style="cursor:pointer;" '
+                             f'name="item" value={query.pk}></p>',
+                             f'<i class="fa fa-circle" style="color:{query.color};">'
+                             f'</i>&nbsp;&nbsp;<span>{query.name}</span>'] for query in page],
                 "records_total": self.queryset.count()}
         return data

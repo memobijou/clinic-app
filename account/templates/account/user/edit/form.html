@@ -1,122 +1,139 @@
-<section class="panel">
-    <form class="form-horizontal form-bordered" method="POST">{% csrf_token %}
+<form method="POST">{% csrf_token %}
+    <section class="panel">
+        <form class="form-horizontal form-bordered" method="POST">{% csrf_token %}
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="#" class="fa fa-caret-down"></a>
+                </div>
+                <h2 class="panel-title">Benutzerdaten ändern</h2>
+            </header>
+            <div class="panel-body">
+            {{ form.non_field_errors }}
+            <fieldset>
+                <h4 class="mb-xlg">Persönliche Informationen</h4>
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+                    <div class="col-md-8">
+                        {{ form.title.errors }}
+                        {{ form.title }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                    <div class="col-md-8">
+                        {{ form.first_name.errors }}
+                        {{ form.first_name }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                    <div class="col-md-8">
+                        {{ form.last_name.errors }}
+                        {{ form.last_name }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                    <div class="col-md-8">
+                        {{ form.username.errors }}
+                        {{ form.username }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                    <div class="col-md-8">
+                        {{ form.email.errors }}
+                        {{ form.email }}
+                    </div>
+                </div>
+            </fieldset>
+            <hr class="dotted tall">
+            <h4 class="mb-xlg">Über die Person</h4>
+            <fieldset>
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="profileBio">Biografie</label>
+                    <div class="col-md-8">
+                        <textarea class="form-control" rows="3" id="profileBio"></textarea>
+                    </div>
+                </div>
+            </fieldset>
+            <hr class="dotted tall">
+            <h4 class="">Mentor</h4>
+            <div class="form-group">
+                <label class="col-xs-3 control-label mt-xs pt-none">{{ form.mentor.label }}</label>
+                <div class="col-md-8">
+                    {{ form.mentor.errors }}
+                    {{ form.mentor }}
+                </div>
+            </div>
+            <hr class="dotted tall">
+            <h4 class="">Fachrichtung</h4>
+            <div class="form-group">
+                <label class="col-xs-3 control-label mt-xs pt-none">{{ form.subject_area.label }}</label>
+                <div class="col-md-8">
+                    {{ form.subject_area.errors }}
+                    {{ form.subject_area }}
+                </div>
+            </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row" style="padding-left:0;padding-right:0;margin-left:0;margin-right:0;">
+                    <div class="col-md-11 text-right">
+                        <button class="btn btn-primary">Änderungen speichern</button>
+                    </div>
+                </div>
+            </footer>
+        </form>
+    </section>
+</form>
+
+<form method="POST" action="{% url 'account:change_user_password' pk=object.pk %}">{% csrf_token %}
+    <section class="panel">
         <header class="panel-heading">
             <div class="panel-actions">
                 <a href="#" class="fa fa-caret-down"></a>
             </div>
-            <h2 class="panel-title">Benutzerdaten ändern</h2>
+            <h2 class="panel-title">Passwort zurücksetzen</h2>
         </header>
         <div class="panel-body">
-        {{ form.non_field_errors }}
-        <fieldset>
-            <h4 class="mb-xlg">Persönliche Informationen</h4>
-            <div class="form-group">
-                <label class="col-md-3 control-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
-                <div class="col-md-8">
-                    {{ form.title.errors }}
-                    {{ form.title }}
+            <fieldset class="mb-xl">
+                <div class="form-group">
+                    {{ password_form.new_password1.errors }}
+                    <label class="col-md-3 control-label" for="{{ password_form.new_password1.id_for_label }}">{{ password_form.new_password1.label }}</label>
+                    <div class="col-md-8">
+                        {{ password_form.new_password1 }}
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-3 control-label" for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
-                <div class="col-md-8">
-                    {{ form.first_name.errors }}
-                    {{ form.first_name }}
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="{{ password_form.new_password2.id_for_label }}">{{ password_form.new_password2.label }}</label>
+                    <div class="col-md-8">
+                        {{ password_form.new_password2.errors }}
+                        {{ password_form.new_password2 }}
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-3 control-label" for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
-                <div class="col-md-8">
-                    {{ form.last_name.errors }}
-                    {{ form.last_name }}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-3 control-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
-                <div class="col-md-8">
-                    {{ form.username.errors }}
-                    {{ form.username }}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-3 control-label" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
-                <div class="col-md-8">
-                    {{ form.email.errors }}
-                    {{ form.email }}
-                </div>
-            </div>
-        </fieldset>
-        <hr class="dotted tall">
-        <h4 class="mb-xlg">Über die Person</h4>
-        <fieldset>
-            <div class="form-group">
-                <label class="col-md-3 control-label" for="profileBio">Biografie</label>
-                <div class="col-md-8">
-                    <textarea class="form-control" rows="3" id="profileBio"></textarea>
-                </div>
-            </div>
-        </fieldset>
-        <hr class="dotted tall">
-{#        <h4 class="">Rechte und Privilegien</h4>#}
-{#        <div class="form-group">#}
-{#            <label class="col-xs-3 control-label mt-xs pt-none">{{ form.is_superuser.label }}</label>#}
-{#            <div class="col-md-8">#}
-{#                {{ form.is_superuser.errors }}#}
-{#                <div class="checkbox-custom checkbox-default checkbox-inline mt-xs">#}
-{#                    {{ form.is_superuser }}#}
-{#                    <label for="profilePublic"></label>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#        <hr class="dotted tall">#}
-        <h4 class="">Mentor</h4>
-        <div class="form-group">
-            <label class="col-xs-3 control-label mt-xs pt-none">{{ form.mentor.label }}</label>
-            <div class="col-md-8">
-                {{ form.mentor.errors }}
-                {{ form.mentor }}
-            </div>
+            </fieldset>
         </div>
-        <hr class="dotted tall">
-        <h4 class="">Fachrichtung</h4>
-        <div class="form-group">
-            <label class="col-xs-3 control-label mt-xs pt-none">{{ form.subject_area.label }}</label>
-            <div class="col-md-8">
-                {{ form.subject_area.errors }}
-                {{ form.subject_area }}
+        <footer class="panel-footer">
+            <div class="row" style="padding-left:0;padding-right:0;margin-left:0;margin-right:0;">
+                <div class="col-md-11 text-right">
+                    <button class="btn btn-primary">Änderungen speichern</button>
+                </div>
             </div>
-        </div>
+        </footer>
+    </section>
+</form>
 
-        <hr class="dotted tall">
-
-        <h4 class="mb-xlg">Passwort zurücksetzen</h4>
-        <fieldset class="mb-xl">
-            <div class="form-group">
-                {{ form.password1.errors }}
-                <label class="col-md-3 control-label" for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
-                <div class="col-md-8">
-                    {{ form.password1 }}
-                </div>
+{% with students=object.students.all %}
+    {% if students.count > 0 %}
+        <section class="panel">
+            <div class="panel-heading">
+                <h2 class="panel-title">Schüler</h2>
             </div>
-            <div class="form-group">
-                <label class="col-md-3 control-label" for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
-                <div class="col-md-8">
-                    {{ form.password2.errors }}
-                    {{ form.password2 }}
-                </div>
+            <div class="panel-body">
+                {% for student in students %}
+                    <span style="padding:15px;">{{ student }}</span>
+                {% endfor %}
             </div>
-        </fieldset>
-        </div>
-        <div class="panel-footer">
-            <div class="row">
-                <div class="col-md-9 col-md-offset-3">
-                        <div class="col-md-12">
-                            <div class="text-right">
-                                <button type="submit" class="btn btn-primary">Änderungen speichern</button>
-                            </div>
-                        </div>
-                </div>
-            </div>
-        </div>
-    </form>
-</section>
+        </section>
+    {% endif %}
+{% endwith %}

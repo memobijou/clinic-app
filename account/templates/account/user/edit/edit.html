@@ -12,25 +12,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="col-lg-12">
-        <form method="POST">{% csrf_token %}
-            {% include 'account/user/edit/form.html' %}
-        </form>
+    <div class="col-md-12">
+        {% include 'account/user/edit/form.html' %}
     </div>
-    {% with students=object.students.all %}
-        {% if students.count > 0 %}
-            <div class="col-lg-12">
-                <section class="panel">
-                    <div class="panel-heading">
-                        <h2 class="panel-title">Schüler</h2>
-                    </div>
-                    <div class="panel-body">
-                        {% for student in students %}
-                            <span style="padding:15px;">{{ student }}</span>
-                        {% endfor %}
-                    </div>
-                </section>
-            </div>
-        {% endif %}
-    {% endwith %}
 {% endblock %}

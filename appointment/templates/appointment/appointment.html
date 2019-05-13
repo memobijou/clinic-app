@@ -36,24 +36,8 @@
                 </button>
             </div>
             <div id="demo" class="collapse" style="padding-top:25px;">
-                <div class="tabs">
-                    <ul class="nav nav-tabs nav-justified">
-                        <li class="active">
-                            <a href="#popular10" data-toggle="tab" class="text-center"> Task</a>
-                        </li>
-                        <li>
-                            <a href="#recent10" data-toggle="tab" class="text-center">Termin</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content" style="background:#f9f9f9">
-                        <div id="popular10" class="tab-pane active">
-                            {% include 'appointment/forms/infocard_form.html' %}
-                        </div>
-
-                        <div id="recent10" class="tab-pane">
-                            {% include 'appointment/forms/conference_form.html' %}
-                        </div>
-                    </div>
+                <div id="recent10" class="tab-pane">
+                    {% include 'appointment/forms/conference_form.html' %}
                 </div>
             </div>
         </div>

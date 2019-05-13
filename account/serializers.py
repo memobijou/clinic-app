@@ -12,9 +12,11 @@ from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, 
 
 
 class BasicUserSerializer(serializers.HyperlinkedModelSerializer):
+    title = serializers.CharField(source="profile.title")
+
     class Meta:
         model = User
-        fields = ('pk', 'username', 'first_name', 'last_name', "email", "is_superuser", )
+        fields = ('pk', "title",  'username', 'first_name', 'last_name', "email", "is_superuser", )
 
 
 class BasicProfileSerializer(serializers.HyperlinkedModelSerializer):

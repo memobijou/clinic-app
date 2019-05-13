@@ -1,8 +1,5 @@
-from django.db.models import Q
 from rest_framework import serializers, viewsets
 from rest_framework.pagination import PageNumberPagination
-
-from appointment.duty_roster.utils import get_first_date_of_week_dates, get_week_dates
 from appointment.models import DutyRoster
 from datetime import datetime
 from django.utils.translation import ugettext as _
@@ -10,6 +7,7 @@ from django.utils.translation import ugettext as _
 
 class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
     month = serializers.SerializerMethodField()
+    year = serializers.SerializerMethodField()
     month_input = serializers.CharField(write_only=True, label="Monat")
     year_input = serializers.CharField(write_only=True, label="Jahr")
 
@@ -17,9 +15,13 @@ class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
         if instance.calendar_week_date:
             return _(str(instance.calendar_week_date.strftime('%B')))
 
+    def get_year(self, instance):
+        if instance.calendar_week_date:
+            return _(str(instance.calendar_week_date.strftime('%Y')))
+
     class Meta:
         model = DutyRoster
-        fields = ('pk', 'calendar_week_date', "file", "calendar_week", "month", "month_input", "year_input", )
+        fields = ('pk', 'calendar_week_date', "file", "calendar_week", "month", "year", "month_input", "year_input", )
 
     def validate(self, data):
         print(data)

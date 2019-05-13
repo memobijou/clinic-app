@@ -10,6 +10,9 @@ class Task(models.Model):
     users = models.ManyToManyField(to=User, blank=True, through="taskmanagement.UserTask",
                                    related_name="tasks", verbose_name="Benutzer")
 
+    start_datetime = models.DateTimeField(null=True, verbose_name="Startdatum", blank=True)
+    end_datetime = models.DateTimeField(null=True, verbose_name="Enddatum", blank=True)
+
     def __str__(self):
         return f"{self.name}"
 

@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
@@ -9,7 +9,6 @@ from django.contrib.auth.models import User
 from django.views import View
 from abc import ABCMeta, abstractmethod
 from account.forms import CustomUserCreationForm, ProfileFormMixin, CustomPasswordChangeForm, EditForm
-from account.models import Profile
 
 
 class CreateUserView(LoginRequiredMixin, generic.CreateView):
@@ -88,18 +87,29 @@ class UserEditView(UserEditBaseView):
         return reverse_lazy("account:user_edit", kwargs={"pk": self.kwargs.get("pk")})
 
 
-class ChangeUserPasswordView(LoginRequiredMixin, View):
-    template_name = "account/user/profile/profile.html"
+class BaseChangePasswordView(LoginRequiredMixin, View):
+    @property
+    @abstractmethod
+    def template_name(self):
+        pass
+
+    @abstractmethod
+    def get_form(self):
+        pass
+
+    @abstractmethod
+    def get_success_url(self):
+        pass
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.password_form = None
         self.object = None
         self.form = None
-        self.password_form = None
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.method == "GET":
-            return HttpResponseRedirect(self.get_profile_url())
+            return HttpResponseRedirect(self.get_success_url())
         self.object = User.objects.get(pk=self.kwargs.get("pk"))
         self.password_form = self.get_password_form()
         self.form = self.get_form()
@@ -108,13 +118,9 @@ class ChangeUserPasswordView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         if self.password_form.is_valid() is True:
             self.password_form.save()
-            return HttpResponseRedirect(self.get_profile_url())
+            return HttpResponseRedirect(self.get_success_url())
         else:
             return render(request, self.template_name, self.get_context())
-
-    def get_form(self):
-        self.form = ProfileFormMixin(instance=self.object)
-        return self.form
 
     def get_password_form(self):
         if self.request.method == "POST":
@@ -127,8 +133,27 @@ class ChangeUserPasswordView(LoginRequiredMixin, View):
         context = {"object": self.object, "password_form": self.password_form, "form": self.form}
         return context
 
-    def get_profile_url(self):
+
+class ChangeProfilePasswordView(BaseChangePasswordView):
+    template_name = "account/user/profile/profile.html"
+
+    def get_form(self):
+        self.form = ProfileFormMixin(instance=self.object)
+        return self.form
+
+    def get_success_url(self):
         return reverse_lazy("account:user_profile", kwargs={"pk": self.kwargs.get("pk")})
+
+
+class ChangeUserPasswordView(BaseChangePasswordView):
+    template_name = "account/user/edit/edit.html"
+
+    def get_form(self):
+        self.form = EditForm(instance=self.object)
+        return self.form
+
+    def get_success_url(self):
+        return reverse_lazy("account:user_edit", kwargs={"pk": self.kwargs.get("pk")})
 
 
 class UserActivationView(generic.View):
@@ -154,4 +179,15 @@ class UserDeactivationView(generic.View):
             for user in users:
                 user.is_active = False
                 user.save()
+            return HttpResponseRedirect(reverse_lazy("account:user_list"))
+
+
+class UserDeletionView(generic.View):
+    @transaction.atomic
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == "POST":
+            items = request.POST.getlist("item")
+            users = User.objects.filter(id__in=items, is_superuser=False)
+            print(f"he: {users}")
+            users.delete()
             return HttpResponseRedirect(reverse_lazy("account:user_list"))

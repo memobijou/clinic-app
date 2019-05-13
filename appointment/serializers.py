@@ -2,10 +2,8 @@ from django.db.models import F
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
-
 from account.group.serializers import GroupSerializer
-from appointment.models import Appointment, DutyRoster
+from appointment.models import Appointment
 import datetime
 
 
@@ -34,7 +32,7 @@ class AppointmentSerializer(serializers.HyperlinkedModelSerializer):
 
 # ViewSets define the view behavior.
 class AppointmentViewSet(viewsets.ModelViewSet):
-    queryset = Appointment.objects.all()
+    queryset = Appointment.objects.all().order_by("start_date", "end_date")
     serializer_class = AppointmentSerializer
     pagination_class = PageNumberPagination
 

@@ -12,7 +12,9 @@
 {% block js %}
     <script>
         var actions = {activation: "{% url 'account:user_activation' %}",
-                       deactivation: "{% url 'account:user_deactivation' %}"}
+                       deactivation: "{% url 'account:user_deactivation' %}",
+                       deletion: "{% url 'account:user_deletion' %}"
+                      }
     </script>
     <!-- Specific Page Vendor -->
     {% if settings.WEBPACK_DEV_SERVER is True %}

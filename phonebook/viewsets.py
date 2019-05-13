@@ -7,7 +7,7 @@ from django.db.models import Q
 
 class PhoneBookViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = PhoneBookSerializer
-    queryset = PhoneBook.objects.all()
+    queryset = PhoneBook.objects.all().order_by("last_name")
 
     def get_queryset(self):
         q = self.request.GET.get("q")
