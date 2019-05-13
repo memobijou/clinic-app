@@ -65,6 +65,17 @@ class Profile(models.Model):
     title = models.CharField(choices=title_choices, null=True, blank=True, max_length=200)
     confirmed = models.NullBooleanField()
 
+    appointment_badges = models.IntegerField(default=0, blank=True)
+    messaging_badges = models.IntegerField(default=0, blank=True)
+    duty_roster_badges = models.IntegerField(default=0, blank=True)
+    phonebook_badges = models.IntegerField(default=0, blank=True)
+    filestorage_badges = models.IntegerField(default=0, blank=True)
+    task_badges = models.IntegerField(default=0, blank=True)
+
+    def get_total_badges(self):
+        return self.appointment_badges + self.messaging_badges + self.duty_roster_badges + self.phonebook_badges \
+               + self.filestorage_badges + self.task_badges
+
     @property
     def mentor_name(self):
         if hasattr(self.mentor, "profile"):

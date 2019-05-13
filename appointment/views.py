@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.db.models import F
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views import View
@@ -12,6 +13,7 @@ import pyfcm
 from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError
 import os
 from uniklinik.forms import BootstrapModelFormMixin
+from account.models import Profile
 
 
 class InfoboxFormMixin(BootstrapModelFormMixin):
@@ -114,22 +116,28 @@ def send_push_notifications(users, title, message, category):
     if os.environ.get("firebase_token"):
         push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
         registration_ids = []
-        for user in users:
+        badges_totals = {}
+        for user in users.prefetch_related("profile"):
             if user.profile.device_token is not None:
                 registration_ids.append(user.profile.device_token)
+                badges_totals[user.id] = user.profile.get_total_badges()
         if len(registration_ids) > 0:
             try:
                 if len(message) > 20:
                     message = message[:20] + "..."
                 push_service.notify_multiple_devices(
                     registration_ids=registration_ids, message_title=title, message_body=message, sound="default",
-                    data_message={"category": category}
+                    data_message={"category": category, "badges_totals": badges_totals}
                 )
 
                 # silent push
                 push_service.notify_multiple_devices(
-                    registration_ids=registration_ids, data_message={"category": category}, content_available=True
+                    registration_ids=registration_ids,
+                    data_message={"category": category, "badges_totals": badges_totals}, content_available=True
                 )
+
+                Profile.objects.filter(user__in=users).update(appointment_badges=F("appointment_badges")+1)
+
             except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
                 print(e)
 

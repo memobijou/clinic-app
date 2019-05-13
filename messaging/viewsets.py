@@ -74,6 +74,8 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
                     registration_id=receiver.profile.device_token, message_title=f"{sender}",
                     message_body=message,
                     sound="default", data_message={"category": "messaging"})
+                receiver.profile.messaging_badges += 1
+                receiver.profile.save()
                 print(f"he: {r}")
                 print("success chat")
             except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:

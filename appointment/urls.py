@@ -3,7 +3,7 @@ from rest_framework import routers
 
 from appointment.duty_roster.datatables import DutyRosterDatatables
 from appointment.duty_roster.views import DutyRosterView
-from appointment.serializers import AppointmentViewSet
+from appointment.viewsets import AppointmentViewSet
 from appointment.views import AppointmentView, InfoboxView, ConferenceView, InfoboxUpdateView, ConferenceUpdateView, \
     AppointmentDeleteView
 from appointment.duty_roster.serializers import DutyRosterViewSet
