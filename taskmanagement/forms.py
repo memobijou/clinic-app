@@ -61,14 +61,20 @@ class EditTaskForm(BootstrapModelFormMixin):
     @transaction.atomic
     def save(self, commit=True):
         users = self.cleaned_data.pop("users")
-        users_before_save = self.instance.users.all()
+        user_ids_before_save = list(self.instance.users.values_list("pk", flat=True))
+        user_ids_after_save = list(users.values_list("pk", flat=True))
+
         instance = super().save(commit=True)
         UserTask.objects.filter(task=instance).exclude(user__in=users).delete()
         UserTask.objects.bulk_create([UserTask(user=user, task=instance) for user in
                                       users.exclude(usertasks__task=instance).distinct()])
-        instance.refresh_from_db()
-        users_deleted = users_before_save.exclude(pk__in=instance.users.values_list("pk", flat=True))
-        new_users = instance.users.exclude(pk__in=users_before_save.values_list("pk", flat=True))
+
+        users_deleted = User.objects.filter(pk__in=user_ids_before_save).exclude(pk__in=user_ids_after_save)
+        print(f"GELÖSCHT: {users_deleted}")
+
+        new_users = User.objects.filter(pk__in=user_ids_after_save).exclude(pk__in=user_ids_before_save)
+        print(f"NEUE NUTZER: {new_users}")
+
         send_push_notifications(users_deleted, f"AUFGEHOBEN: {instance.name}", instance.description,
                                 "task")
         send_push_notifications(new_users, f"{instance.name}", instance.description, "task")
