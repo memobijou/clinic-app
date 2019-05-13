@@ -17,6 +17,11 @@ class TaskViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     serializer_class = TaskSerializer
     pagination_class = PageNumberPagination
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["user_id"] = self.kwargs.get("user_id")
+        return context
+
     def get_queryset(self):
         if self.kwargs.get("user_id"):
             self.queryset = self.queryset.filter(users__id=self.kwargs.get("user_id")).distinct()
