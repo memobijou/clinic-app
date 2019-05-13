@@ -51,7 +51,7 @@ def users_listener(sender, instance: Group, action, **kwargs):
     UserTask.objects.bulk_create(bulk_instances)
 
 
-title_choices = ((None, "--------"), ("Dr.", "Dr"),)
+title_choices = ((None, "--------"), ("Dr.", "Dr."), ("PD Dr.", "PD Dr."), ("Prof. Dr.", "Prof. Dr."))
 
 
 class Profile(models.Model):

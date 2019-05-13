@@ -15,29 +15,54 @@
             <section class="panel">
                 <header class="panel-heading">
                     <div class="panel-actions">
-                        <a href="#"></a>
+                        <a href="#" class="fa fa-caret-up"></a>
+                        <a href="#" class="fa fa-times"></a>
                     </div>
-
                     <h2 class="panel-title">Neue Aufgabe</h2>
-                    <form method="POST" action="{% url 'taskmanagement:new_task' %}">{% csrf_token %}
-                        <br/>
-                        {{ form.name }}
-                        {{ form.name.errors }}
-                        <br/>
-                        {{ form.description }}
-                        {{ form.description.errors }}
-                        <br/>
-                        <div class="checkbox-wrapper">
-                            {{ form.groups.label }}
-                            {{ form.groups }}
-                            {{ form.groups.errors }}
-                        </div>
-                        <br/>
-                        <div class="text-right">
+                </header>
+                <form method="POST" action="{% url 'taskmanagement:new_task' %}">{% csrf_token %}
+                    <div class="panel-body task_form_panel" style="display:none;">
+                            <div class="col-md-6">
+                                {{ form.name.label_tag }}
+                                {{ form.name }}
+                                {{ form.name.errors }}
+                                <br/>
+                                {{ form.description.label_tag }}
+                                {{ form.description }}
+                                {{ form.description.errors }}
+                                <br/>
+                                {{ form.start_datetime.label }}
+                                {{ form.start_datetime }}
+                                {{ form.start_datetime.errors }}
+                                <br/>
+                                {{ form.end_datetime.label }}
+                                {{ form.end_datetime }}
+                                {{ form.end_datetime.errors }}
+                                <br/>
+                                <div class="checkbox-wrapper">
+                                    {{ form.groups.label }}
+                                    {{ form.groups }}
+                                    {{ form.groups.errors }}
+                                </div>
+                                <br/>
+                                <button class="btn btn-info" id="show_user_checkboxes_btn" type="button">
+                                    Benutzer auswählen <span class="fa fa-caret-up"></span>
+                                </button>
+                                <div id="user_checkboxes" style="display:none;">
+                                    <br/>
+                                    <div class="checkbox-wrapper">
+                                        {{ form.users }}
+                                        {{ form.users.errors }}
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="panel-footer task_form_panel" style="display:none;">
+                        <div class="text-right" style="padding:0 25px 0 25px;">
                             <button class="btn btn-primary">Aufgabe anlegen</button>
                         </div>
-                    </form>
-                </header>
+                    </div>
+                </form>
             </section>
         </div>
     </div>

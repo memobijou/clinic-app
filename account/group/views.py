@@ -1,4 +1,6 @@
+from django.db import transaction
 from django.db.models import Case, When, Value, IntegerField, Count
+from django.http import HttpResponseRedirect
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from account.models import Group
@@ -61,3 +63,14 @@ class GroupUpdateView(LoginRequiredMixin, generic.UpdateView):
 
     def get_object(self, queryset=None):
         return Group.objects.get(pk=self.kwargs.get("pk"))
+
+
+class GroupDeletionView(generic.View):
+    @transaction.atomic
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == "POST":
+            items = request.POST.getlist("item")
+            groups = Group.objects.filter(id__in=items)
+            print(f"he: {groups}")
+            groups.delete()
+            return HttpResponseRedirect(reverse_lazy("account:group_list"))

@@ -45,6 +45,13 @@ class UserTestCase(TestCase):
         user.refresh_from_db()
         self.assertEqual(user.is_active, True)
 
+    def test_user_deletion(self):
+        user = mixer.blend(User, is_active=False)
+        user_2 = mixer.blend(User, is_active=False)
+        response = self.client.post(reverse_lazy("account:user_deletion"), data={"item": [user.pk, user_2.pk]})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(User.objects.count(), 1)
+
     def test_user_can_have_mentor(self):
         student = self.session_user
         mentor = mixer.blend(User)
@@ -53,6 +60,16 @@ class UserTestCase(TestCase):
         response = self.client.post(reverse_lazy("account:user_profile", kwargs={"pk": student.pk}), data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(student.mentor, mentor.pk)
+
+    def test_profile_password_changed(self):
+        data = {"new_password1": "Password1¢", "new_password2": "Password1¢", **self.session_user.__dict__}
+        response = self.client.post(reverse_lazy(
+            "account:change_profile_password", kwargs={"pk": self.session_user.pk}), data)
+        self.assertEqual(response.status_code, 302)
+        self.client.logout()
+        self.client.login(username=self.session_user.username, password="Password1¢")
+        response = self.client.get(reverse_lazy("account:change_user_password", kwargs={"pk": self.session_user.pk}))
+        self.assertEqual(response.status_code, 302)
 
     def test_user_password_changed(self):
         data = {"new_password1": "Password1¢", "new_password2": "Password1¢", **self.session_user.__dict__}
@@ -72,6 +89,13 @@ class UserTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Group.objects.count(), groups_count+1)
         self.assertIsNotNone(Group.objects.first().color)
+
+    def test_group_deletion(self):
+        group = mixer.blend(Group)
+        group_2 = mixer.blend(Group)
+        response = self.client.post(reverse_lazy("account:group_deletion"), data={"item": [group.pk, group_2.pk]})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Group.objects.count(), 0)
 
     def test_users_assignment_to_group(self):
         group = mixer.blend(Group)

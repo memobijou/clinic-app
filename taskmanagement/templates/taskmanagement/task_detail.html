@@ -1,61 +1,90 @@
-{% extends 'base.html' %}
+{% extends 'taskmanagement/base.html' %}
 {% load static %}
 
 {% block horizontal_nav_title %}
-    <h2>Aufgaben {{ instance }}</h2>
+    <h2>Aufgaben {{ object }}</h2>
 {% endblock %}
 
 {% block horizontal_nav_navigation %}
-    <li><span>Aufgaben {{ instance }}</span></li>
+    <li><a href="{% url 'taskmanagement:tasks_list' %}"><span>Aufgabenübersicht</span></a></li>
+    <li><a href=""><span>Aufgabe {{ object }}</span></a></li>
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-12">
-            <section class="panel">
-            </section>
-        </div>
-    </div>
-    {% for group, user_tasks, task_form in tasks %}
+    <form method="POST">{% csrf_token %}
         <section class="panel">
             <header class="panel-heading">
                 <div class="panel-actions">
-                    <a href="#" class="fa fa-caret-down"></a>
+                    <a href="#" class="fa fa-caret-up"></a>
                     <a href="#" class="fa fa-times"></a>
                 </div>
-                <h2 class="panel-title">{{ group.name }}</h2>
+                <h2 class="panel-title">Änderungen vornehmen</h2>
             </header>
+            <div class="panel-body task_form_panel" style="display:none;">
+                <div class="col-md-6">
+                    {{ form.as_p }}
+                </div>
+            </div>
+            <div class="panel-footer task_form_panel" style="display:none;">
+                <div class="text-right" style="padding: 0 25px 0 25px;">
+                    <button class="btn btn-primary" type="submit">Änderungen speichern</button>
+                </div>
+            </div>
+        </section>
+    </form>
 
-            <div class="panel-body">
-                <div class="col-md-12">
+
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="panel-actions">
+                <a href="#" class="fa fa-caret-down"></a>
+                <a href="#" class="fa fa-times"></a>
+            </div>
+            <h2 class="panel-title">{{ object.name }}</h2>
+        </header>
+
+        <div class="panel-body">
+            <div class="col-xs-6">
+                <table class="table">
                     {% if user_tasks|length > 0 %}
-{#                        <form method="POST" action="{% url 'taskmanagement:new_task_users' task_pk=instance.pk group_pk=group.pk %}">{% csrf_token %}#}
-{#                            {{ task_form.as_p }}#}
-{#                            <button type="submit" class="btn btn-primary">Speichern</button>#}
-{#                        </form>#}
-                        {% for usertask in user_tasks %}
-                            {{ usertask.user }}
-                            {% if usertask.completed == True %}
-                                <span class="glyphicon glyphicon-ok text-success"></span>
-                            {% else %}
-                                <span class="glyphicon glyphicon-remove text-danger"></span>
-                            {% endif %}
-                        {% endfor %}
+                        <thead>
+                            <tr>
+                                <th class="col-xs-2">Person</th>
+                                <th class="col-xs-3">Gruppen</th>
+                                <th style="text-align:right;" class="col-xs-1">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for usertask in user_tasks %}
+                                <tr>
+                                    <td>{{ usertask.user }}</td>
+                                    <td>{% for  group in usertask.user.groups_list.all %}{{ group }}{% endfor %}</td>
+                                    <td align="right">
+                                        {% if usertask.completed == True %}
+                                            <span class="glyphicon glyphicon-ok text-success"></span>
+                                        {% else %}
+                                            <span class="glyphicon glyphicon-remove text-danger"></span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                        </tbody>
                     {% else %}
                         <br/>
                         Diese Aufgabe wurde noch an keinen Benutzer erteilt
                     {% endif %}
-                </div>
+                </table>
             </div>
-        </section>
-    {% endfor %}
+        </div>
+    </section>
 <!-- end: page -->
     <style>
-    ul {
+    form ul {
       padding-left:0;
       list-style: none;
     }
-    li {
+    form li {
       display: inline;
       padding-right:25px;
     }

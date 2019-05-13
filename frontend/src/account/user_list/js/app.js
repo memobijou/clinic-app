@@ -46,7 +46,8 @@ $(document).ready(function(){
             <select class="form-control input-sm" id="select_action" style="min-width:160px;">
                 <option value="">---------</option>
                 <option value="activation">Benutzer aktivieren</option>    
-                <option value="deactivation">Benutzer deaktivieren</option>    
+                <option value="deactivation">Benutzer deaktivieren</option>
+                <option value="deletion">Benutzer löschen</option> 
             </select>
             <button class="btn btn-primary" id="peform_action_btn">Ausführen</button>
         </label>

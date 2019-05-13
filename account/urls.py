@@ -1,11 +1,11 @@
 from django.urls import path, include
 
 from account.group.serializers import GroupDatatables, ReadOnlyGroupViewSet, UserGroupViewSet
-from account.group.views import GroupListView, GroupCreateView, GroupUpdateView
+from account.group.views import GroupListView, GroupCreateView, GroupUpdateView, GroupDeletionView
 from account.viewsets import UserViewSet
 from account.datatables import UserListDatatables
-from account.views import CreateUserView, UserListView, UserProfileView, ChangeUserPasswordView, UserEditView, \
-    UserActivationView, UserDeactivationView
+from account.views import CreateUserView, UserListView, UserProfileView, ChangeProfilePasswordView, UserEditView, \
+    UserActivationView, UserDeactivationView, UserDeletionView, ChangeUserPasswordView
 from rest_framework import routers
 from django.contrib.auth import views as auth_views
 
@@ -27,10 +27,13 @@ urlpatterns = [
     path(r'users/', UserListView.as_view(), name='user_list'),
     path(r'users/<int:pk>/profile', UserProfileView.as_view(), name='user_profile'),
     path(r'users/<int:pk>/edit', UserEditView.as_view(), name='user_edit'),
+    path(r'users/<int:pk>/profile/reset-password', ChangeProfilePasswordView.as_view(), name='change_profile_password'),
     path(r'users/<int:pk>/reset-password', ChangeUserPasswordView.as_view(), name='change_user_password'),
     path(r'groups/', GroupListView.as_view(), name='group_list'),
     path(r'group/new/', GroupCreateView.as_view(), name='new_group'),
+    path(r'group/deletion/', GroupDeletionView.as_view(), name='group_deletion'),
     path(r'group/<int:pk>/edit/', GroupUpdateView.as_view(), name='edit_group'),
     path(r'users/activation', UserActivationView.as_view(), name='user_activation'),
     path(r'users/deactivation', UserDeactivationView.as_view(), name='user_deactivation'),
+    path(r'users/deletion', UserDeletionView.as_view(), name='user_deletion'),
 ]

@@ -1,10 +1,13 @@
 import '~/taskmanagement/css/main.css';
 import "~/base/js/app.js"
 import "~/base/js/datatables.js"
-
+import "~/vendor/bootstrap-datetimepicker/4.17.47/build/css/bootstrap-datetimepicker.css"
+import "script-loader!~/vendor/moment/moment.min.js"
+import "script-loader!~/vendor/bootstrap-datetimepicker/4.17.47/build/js/bootstrap-datetimepicker.min.js"
 
 $(document).ready(function(){
-	var dt = $('#datatable-default').DataTable( {
+	// Datatables
+    var dt = $('#datatable-default').DataTable( {
 	  language: german_translation,
 	  responsive: true,
       columnDefs: [
@@ -35,5 +38,36 @@ $(document).ready(function(){
         },
         "order": [[1, 'asc']]
 	} )
+
+    // Datetimepicker
+    $('.datetimepicker').datetimepicker(
+            {
+                locale: 'de',
+                widgetPositioning:{
+                    horizontal: 'auto',
+                    vertical: 'bottom',
+                }
+            }
+    );
+
+
+    let button_show_inner_html = "Benutzer auswählen <span class=\"fa fa-caret-down\"></span>"
+    let button_hide_inner_html = "Benutzer auswählen <span class=\"fa fa-caret-up\"></span>"
+
+    let user_checkboxes_wrapper = document.getElementById("user_checkboxes")
+    $("#show_user_checkboxes_btn").click(function(){
+        if(user_checkboxes_wrapper.style.display === "none"){
+            user_checkboxes_wrapper.style.display = ""
+            this.innerHTML = button_show_inner_html
+        }else{
+            user_checkboxes_wrapper.style.display = "none"
+            this.innerHTML = button_hide_inner_html
+        }
+    })
+
+
+    if($(".errorlist:first").length > 0){
+        $(".task_form_panel").css("display", "")
+    }
 
 })
