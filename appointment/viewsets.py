@@ -44,9 +44,10 @@ class AppointmentViewSet(viewsets.ModelViewSet):
             self.queryset = self.queryset.filter(
                 start_date__range=(start_date, end_date), end_date__range=(start_date, end_date))
 
-        user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
-        user.profile.appointment_badges = 0
-        user.profile.save()
+        if self.kwargs.get("user_id"):
+            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
+            user.profile.appointment_badges = 0
+            user.profile.save()
         return self.queryset
 
     def filter_by_group_name(self):
