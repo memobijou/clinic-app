@@ -66,7 +66,7 @@ class EditTaskForm(BootstrapModelFormMixin):
         UserTask.objects.filter(task=instance).exclude(user__in=users).delete()
         UserTask.objects.bulk_create([UserTask(user=user, task=instance) for user in
                                       users.exclude(usertasks__task=instance).distinct()])
-
+        instance.refresh_from_db()
         users_deleted = users_before_save.exclude(pk__in=instance.users.values_list("pk", flat=True))
         new_users = instance.users.exclude(pk__in=users_before_save.values_list("pk", flat=True))
         send_push_notifications(users_deleted, f"AUFGEHOBEN: {instance.name}", instance.description,
