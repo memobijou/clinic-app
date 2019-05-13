@@ -121,11 +121,19 @@
 										</ul>
 									</li>
 
-                                    <li class="nav nav-children">
-										<a href="{% url 'appointment:planning' %}">
+                                    <li class="nav-parent">
+										<a>
 											<i class="fa fa-calendar" aria-hidden="true"></i>
-											<span>Terminplanung</span>
+											<span>Aufgabe-/Terminplanung</span>
 										</a>
+										<ul class="nav nav-children">
+											<li>
+												<a href="{% url 'appointment:planning' %}"><i class="fa fa-calendar" aria-hidden="true"></i> Terminplanung</a>
+											</li>
+                                            <li>
+												<a href="{% url 'taskmanagement:tasks_list' %}"><i class="fa fa-check-square-o" aria-hidden="true"></i> Aufgaben</a>
+											</li>
+										</ul>
 									</li>
 
                                     <li class="nav nav-children">
@@ -215,14 +223,17 @@
 								<div data-plugin-datepicker data-plugin-skin="dark" ></div>
 
 								<ul>
+								    {% for task in global_tasks %}
 									<li>
-										<time datetime="2014-04-19T00:00+00:00">19.04.2019</time>
-										<span>Konferenz</span>
+                                        {% if task.end_datetime %}
+                                            <time datetime="{{ task.end_datetime }}">{{ task.end_datetime }}</time>
+                                        {% endif %}
+										<span><a style="color:white;" href="{% url 'taskmanagement:edit_task' pk=task.pk %}">{{ task.name }}</a></span>
+                                        <p>{{ task.description }}</p>
+                                        <p style="color:white;">{{ task.completed_count }}/{{ task.users_count }}</p>
 									</li>
-                                    <li>
-										<time datetime="2014-04-19T00:00+00:00">22.04.2019</time>
-										<span>Vorstellung</span>
-									</li>
+                                    <hr/>
+                                    {% endfor %}
 								</ul>
 							</div>
 					</div>
