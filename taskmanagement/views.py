@@ -1,14 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
-from django.db.models import Q
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.views import generic
 
 from taskmanagement.forms import CreateTaskForm, EditTaskForm
-from taskmanagement.models import Task, UserTask
-# Create your views here.
-from account.models import Group
+from taskmanagement.models import Task
 from django.urls import reverse_lazy
 
 
@@ -33,18 +28,6 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("taskmanagement:tasks_list")
     form_class = CreateTaskForm
     template_name = "taskmanagement/task_list.html"
-
-    def form_valid(self, form):
-        users = form.cleaned_data.pop("users")
-        new_groups = form.cleaned_data.get("groups")
-        instance = form.save()
-
-        for new_group in new_groups:
-            instance.groups_list.add(new_group)
-        print(new_groups)
-        group_users = User.objects.filter(Q(groups_list__in=new_groups) | Q(id__in=users)).distinct()
-        UserTask.objects.bulk_create([UserTask(user=user, task=instance) for user in group_users])
-        return super().form_valid(form)
 
 
 class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):

@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
+from django.db.models import Q
 
+from appointment.views import send_push_notifications
 from uniklinik.forms import BootstrapModelFormMixin
 from taskmanagement.models import Task, UserTask
 from account.models import Group
@@ -27,6 +29,20 @@ class CreateTaskForm(BootstrapModelFormMixin):
         self.fields["end_datetime"].widget.attrs["class"] += " datetimepicker"
         self.fields["end_datetime"].widget.attrs["style"] = " width:50%;"
 
+    @transaction.atomic
+    def save(self, commit=True):
+        users = self.cleaned_data.pop("users")
+        instance = super().save(commit=True)
+        new_groups = self.cleaned_data.get("groups")
+
+        for new_group in new_groups:
+            instance.groups_list.add(new_group)
+
+        all_users = User.objects.filter(Q(groups_list__in=new_groups) | Q(id__in=users)).distinct()
+        UserTask.objects.bulk_create([UserTask(user=user, task=instance) for user in all_users])
+        send_push_notifications(all_users, instance.name, instance.description, "task")
+        return instance
+
 
 class EditTaskForm(BootstrapModelFormMixin):
     users = forms.ModelMultipleChoiceField(queryset=User.objects.all(),
@@ -44,9 +60,16 @@ class EditTaskForm(BootstrapModelFormMixin):
 
     @transaction.atomic
     def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.save()
-        users = self.cleaned_data.get("users")
+        users = self.cleaned_data.pop("users")
+        users_before_save = self.instance.users.all()
+        instance = super().save(commit=True)
         UserTask.objects.filter(task=instance).exclude(user__in=users).delete()
         UserTask.objects.bulk_create([UserTask(user=user, task=instance) for user in
                                       users.exclude(usertasks__task=instance).distinct()])
+
+        users_deleted = users_before_save.exclude(pk__in=instance.users.values_list("pk", flat=True))
+        new_users = instance.users.exclude(pk__in=users_before_save.values_list("pk", flat=True))
+        send_push_notifications(users_deleted, f"AUFGEHOBEN: {instance.name}", instance.description,
+                                "task")
+        send_push_notifications(new_users, f"{instance.name}", instance.description, "task")
+        return instance
