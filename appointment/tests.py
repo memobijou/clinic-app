@@ -1,9 +1,12 @@
 from django.test import TestCase
 from mixer.backend.django import mixer
 from django.contrib.auth.models import User
+from account.models import Profile
 from appointment.models import Appointment, DutyRoster
 from django.urls import reverse_lazy
 from account.models import Group
+from appointment.views import send_push_notifications
+from unittest import mock
 
 
 class AppointmentTestCase(TestCase):
@@ -46,6 +49,23 @@ class AppointmentTestCase(TestCase):
                                   end_date="2019-03-01T03:23")
         response = self.client.post(reverse_lazy("appointment:delete") + f"?item={appointment.pk}")
         self.assertEqual(Appointment.objects.count(), 0)
+
+    @mock.patch('pyfcm.FCMNotification.notify_multiple_devices', return_value={})
+    def test_appointment_push_notification_badges(self, notify_multiple_devices_function):
+        users = mixer.cycle(5).blend(User)
+        Profile.objects.filter(user__in=users).update(device_token="somedevicetoken")
+
+        for user in users:
+            self.assertEqual(user.profile.appointment_badges, 0)
+
+        send_push_notifications(User.objects.all(), "Test notification", "Test Message", "appointment")
+
+        for user in User.objects.all():
+            self.assertEqual(user.profile.appointment_badges, 1)
+            response = self.client.get(reverse_lazy("api_appointment:appointment-list", kwargs={"user_id": user.id}))
+            self.assertEqual(response.status_code, 200)
+            user.refresh_from_db()
+            self.assertEqual(user.profile.appointment_badges, 0)
 
 
 class DutyRosterTestCase(TestCase):

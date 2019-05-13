@@ -37,10 +37,15 @@ class ProfileSerializer(serializers.ModelSerializer):
     subject_area_id = serializers.ChoiceField(
         source="subject_area.pk", allow_null=True, label="Fachrichtung (subject_area_id)",
         choices=lazy(get_subject_area_choices, tuple)())
+    total_badges = serializers.SerializerMethodField()
+
+    def get_total_badges(self, instance):
+        return instance.get_total_badges()
 
     class Meta:
         model = Profile
-        fields = ("title", "is_admin", "mentor", "device_token", "subject_area", "subject_area_id", )
+        fields = ("title", "is_admin", "mentor", "device_token", "subject_area", "subject_area_id",
+                  "appointment_badges", "total_badges",)
         read_only_fields = ('is_admin',)
 
 
