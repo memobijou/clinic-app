@@ -153,19 +153,18 @@ class FileViewSet(viewsets.ModelViewSet):
 
 class FileDirectorySerializer(serializers.ModelSerializer):
     files = FileSerializer(many=True)
-    # child_directories = serializers.HyperlinkedRelatedField(
-    #     view_name='filestorage:directories-detail',
-    #     lookup_field='pk',
-    #     many=True,
-    #     read_only=True,
-    # )
     child_directories = serializers.SerializerMethodField()
 
     def get_child_directories(self, value):
         child_directories_queryset = value.child_directories.values("name", "pk")
         for child_directory in child_directories_queryset:
             request = self.context.get("request")
-            url = reverse("api_filestorage:directories-detail", kwargs={"pk": child_directory.get("pk")})
+            user_id = self.context.get("user_id")
+            if user_id:
+                url = reverse("api_filestorage:directories-detail", kwargs={"pk": child_directory.get("pk"),
+                                                                            "user_id": user_id})
+            else:
+                url = reverse("filestorage:directories-detail", kwargs={"pk": child_directory.get("pk")})
             if request:
                 child_directory["link"] = request.build_absolute_uri(url)
             else:
@@ -178,7 +177,7 @@ class FileDirectorySerializer(serializers.ModelSerializer):
     def get_parent(self, value):
         if value.parent:
             request = self.context.get("request")
-            url = reverse("filestorage:directories-detail", kwargs={"pk": value.parent.pk})
+            url = reverse("api_filestorage:directories-detail", kwargs={"pk": value.parent.pk})
             parent_dict = {"name": value.name, "pk": value.id}
             if request:
                 parent_dict["link"] = request.build_absolute_uri(url)
@@ -230,7 +229,7 @@ class UserDirectoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, vie
     pagination_class = PageNumberPagination
 
     def get_serializer_context(self):
-        return {"request": self.request}
+        return {"request": self.request, "user_id": self.kwargs.get("user_id")}
 
     def get_queryset(self):
         self.queryset = super().get_queryset()
