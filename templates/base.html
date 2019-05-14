@@ -222,11 +222,13 @@
                                             <time datetime="{{ task.end_datetime }}">{{ task.end_datetime }}</time>
                                         {% endif %}
 										<span><a style="color:white;" href="{% url 'taskmanagement:edit_task' pk=task.pk %}">{{ task.name }}</a></span>
-                                        <p>{{ task.description }}</p>
-                                        <p style="color:white;">Benutzer:</p>
-                                        {% for usertask in task.usertasks.all %}
-                                            {{ usertask.user }}&nbsp {% if usertask.completed %}<span class="glyphicon glyphicon-ok" style="color:green;"></span>{% else %}<span class="glyphicon glyphicon-remove" style="color:red;"></span>{% endif %}
-                                        {% endfor %}
+                                            <p>{{ task.description }}</p>
+                                            {% if task.userstasks.all %}
+                                            <p style="color:white;">Benutzer:</p>
+                                            {% for usertask in task.usertasks.all %}
+                                                {{ usertask.user }}&nbsp {% if usertask.completed %}<span class="glyphicon glyphicon-ok" style="color:green;"></span>{% else %}<span class="glyphicon glyphicon-remove" style="color:red;"></span>{% endif %}
+                                            {% endfor %}
+                                        {% endif %}
                                         <div class="text-right">
                                             <p style="color:white;"><span class="badge label-primary">{{ task.completed_count }}/{{ task.users_count }}</span></p>
                                         </div>
