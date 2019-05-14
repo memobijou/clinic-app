@@ -10,6 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 
 
 class TaskViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
@@ -25,6 +26,10 @@ class TaskViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     def get_queryset(self):
         if self.kwargs.get("user_id"):
             self.queryset = self.queryset.filter(users__id=self.kwargs.get("user_id")).distinct()
+            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
+            user.profile.task_badges = 0
+            user.profile.save()
+
         if self.request.GET.get("sort") == "new":
             self.queryset = self.queryset.order_by("-id")
         elif self.request.GET.get("sort") == "deadline":
