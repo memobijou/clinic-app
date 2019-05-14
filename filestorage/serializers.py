@@ -151,20 +151,6 @@ class FileViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class FileListViewSet(mixins.ListModelMixin, GenericViewSet):
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
-    pagination_class = PageNumberPagination
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        if self.kwargs.get("user_id"):
-            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
-            user.profile.filestorage_badges = 0
-            user.profile.save()
-        return queryset
-
-
 class FileDirectorySerializer(serializers.ModelSerializer):
     files = FileSerializer(many=True)
     # child_directories = serializers.HyperlinkedRelatedField(
@@ -224,6 +210,40 @@ class DirectoryViewSet(viewsets.ModelViewSet):
             self.queryset = self.queryset.filter(parent__isnull=True)
         self.filter_by_name()
         self.filter_by_name_exact()
+        return self.queryset
+
+    def filter_by_name(self):
+        name = self.request.GET.get("name")
+        if name is not None:
+            self.queryset = self.queryset.filter(name__icontains=name)
+
+    def filter_by_name_exact(self):
+        name = self.request.GET.get("name_exact")
+        if name is not None:
+            self.queryset = self.queryset.filter(name__iexact=name)
+
+
+# ViewSets define the view behavior.
+class DirectoryListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = FileDirectory.objects.all()
+    serializer_class = FileDirectorySerializer
+    pagination_class = PageNumberPagination
+
+    def get_serializer_context(self):
+        return {"request": self.request}
+
+    def get_queryset(self):
+        self.queryset = super().get_queryset()
+
+        if not self.kwargs.get("pk"):
+            self.queryset = self.queryset.filter(parent__isnull=True)
+        self.filter_by_name()
+        self.filter_by_name_exact()
+
+        if self.kwargs.get("user_id"):
+            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
+            user.profile.filestorage_badges = 0
+            user.profile.save()
         return self.queryset
 
     def filter_by_name(self):
