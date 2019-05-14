@@ -3,8 +3,9 @@ from mixer.backend.django import mixer
 from django.contrib.auth.models import User
 from taskmanagement.models import Task, UserTask
 from django.urls import reverse_lazy
-from account.models import Group
-# Create your tests here.
+from account.models import Group, Profile
+from unittest import mock
+from taskmanagement.utils import send_push_notifications
 
 
 class TaskManagementTestCase(TestCase):
@@ -67,3 +68,24 @@ class TaskManagementTestCase(TestCase):
         users_count += len(user_ids)
         data = {"name": "Task", "description": "Aufgabenbeschreibung", "groups": groups, "users": user_ids}
         return users, groups, users_count, tasks_count, data
+
+    @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
+    @mock.patch('pyfcm.FCMNotification.notify_multiple_devices', return_value={})
+    def test_task_push_notification_badges(
+            self, notify_single_device_function, notify_multiple_devices_function):
+        users = mixer.cycle(5).blend(User)
+        Profile.objects.filter(user__in=users).update(device_token="somedevicetoken")
+
+        for user in users:
+            self.assertEqual(user.profile.task_badges, 0)
+
+        send_push_notifications(User.objects.all(), "Test notification", "Test Message", "appointment")
+
+        for user in User.objects.filter(id__in=[user.id for user in users]):
+            print(f"test: {user.profile.appointment_badges}")
+            self.assertEqual(user.profile.task_badges, 1)
+            response = self.client.get(reverse_lazy("api_taskmanagement:taskmanagement-list",
+                                                    kwargs={"user_id": user.id}))
+            self.assertEqual(response.status_code, 200)
+            user.refresh_from_db()
+            self.assertEqual(user.profile.task_badges, 0)

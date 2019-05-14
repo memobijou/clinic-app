@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
 
-from appointment.views import send_push_notifications
+from taskmanagement.utils import send_push_notifications
 from uniklinik.forms import BootstrapModelFormMixin
 from taskmanagement.models import Task, UserTask
 from account.models import Group
