@@ -5,6 +5,9 @@ from filestorage.models import FileDirectory
 from mixer.backend.django import mixer
 from django.contrib.auth.models import User
 from filestorage.models import File
+from unittest import mock
+from account.models import Profile
+from filestorage.utils import send_push_notifications
 
 
 class FilestorageTestCase(TestCase):
@@ -62,3 +65,22 @@ class FilestorageTestCase(TestCase):
         self.assertEqual(response.status_code, 201)
         file.refresh_from_db()
         self.assertEqual(file.file.name, new_file_name)
+
+    @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
+    @mock.patch('pyfcm.FCMNotification.notify_multiple_devices', return_value={})
+    def test_filestorage_push_notification_badges(
+            self, notify_single_device_function, notify_multiple_devices_function):
+        users = mixer.cycle(5).blend(User)
+        Profile.objects.filter(user__in=users).update(device_token="somedevicetoken")
+
+        for user in users:
+            self.assertEqual(user.profile.filestorage_badges, 0)
+
+        send_push_notifications(User.objects.all(), "Test notification", "Test Message", "filestorage")
+
+        for user in User.objects.filter(id__in=[user.id for user in users]):
+            self.assertEqual(user.profile.filestorage_badges, 1)
+            response = self.client.get(reverse_lazy("api_filestorage:files-list", kwargs={"user_id": user.id}))
+            self.assertEqual(response.status_code, 200)
+            user.refresh_from_db()
+            self.assertEqual(user.profile.filestorage_badges, 0)
