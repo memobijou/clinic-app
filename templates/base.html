@@ -213,8 +213,7 @@
 						<div class="sidebar-right-wrapper">
 
 							<div class="sidebar-widget widget-calendar">
-								<h6>Ausstehende Aufgaben</h6>
-								<div data-plugin-datepicker data-plugin-skin="dark" ></div>
+								<h4 style="color:white;">Ausstehende Aufgaben</h4>
 
 								<ul>
 								    {% for task in global_tasks %}
@@ -224,9 +223,15 @@
                                         {% endif %}
 										<span><a style="color:white;" href="{% url 'taskmanagement:edit_task' pk=task.pk %}">{{ task.name }}</a></span>
                                         <p>{{ task.description }}</p>
-                                        <p style="color:white;">{{ task.completed_count }}/{{ task.users_count }}</p>
+                                        <p style="color:white;">Benutzer:</p>
+                                        {% for usertask in task.usertasks.all %}
+                                            {{ usertask.user }}&nbsp {% if usertask.completed %}<span class="glyphicon glyphicon-ok" style="color:green;"></span>{% else %}<span class="glyphicon glyphicon-remove" style="color:red;"></span>{% endif %}
+                                        {% endfor %}
+                                        <div class="text-right">
+                                            <p style="color:white;"><span class="badge label-primary">{{ task.completed_count }}/{{ task.users_count }}</span></p>
+                                        </div>
 									</li>
-                                    <hr/>
+                                    <hr style="border-top: 1px solid #323232;"/>
                                     {% endfor %}
 								</ul>
 							</div>
