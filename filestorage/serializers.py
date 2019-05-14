@@ -165,7 +165,7 @@ class FileDirectorySerializer(serializers.ModelSerializer):
         child_directories_queryset = value.child_directories.values("name", "pk")
         for child_directory in child_directories_queryset:
             request = self.context.get("request")
-            url = reverse("filestorage:directories-detail", kwargs={"pk": child_directory.get("pk")})
+            url = reverse("api_filestorage:directories-detail", kwargs={"pk": child_directory.get("pk")})
             if request:
                 child_directory["link"] = request.build_absolute_uri(url)
             else:
@@ -224,7 +224,7 @@ class DirectoryViewSet(viewsets.ModelViewSet):
 
 
 # ViewSets define the view behavior.
-class DirectoryListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class UserDirectoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = FileDirectory.objects.all()
     serializer_class = FileDirectorySerializer
     pagination_class = PageNumberPagination
