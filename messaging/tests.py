@@ -5,6 +5,9 @@ from django.urls import reverse_lazy
 import json
 from rest_framework import serializers
 from messaging.models import TextMessage
+from unittest import mock
+from account.models import Profile
+from messaging.utils import send_push_notification_to_receiver
 
 
 class MessagingTestCase(TestCase):
@@ -44,3 +47,20 @@ class MessagingTestCase(TestCase):
                 sender=row.get("sender").get("pk")).order_by("-created_datetime")
             self.assertEqual(sender_created_datetime,
                              serializers.DateTimeField().to_representation(sender_messages.first().created_datetime))
+
+    @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
+    def test_messaging_push_notification_badges(self, notify_single_device_function):
+        sender = mixer.blend(User)
+        receiver = mixer.blend(User)
+        Profile.objects.filter(user__in=[sender, receiver]).update(device_token="somedevicetoken")
+
+        self.assertEqual(receiver.profile.messaging_badges, 0)
+
+        send_push_notification_to_receiver("Test Message", sender, receiver)
+
+        self.assertEqual(receiver.profile.messaging_badges, 1)
+        response = self.client.get(reverse_lazy(
+            "api_messaging:messaging-list", kwargs={"receiver": receiver.id, "sender": sender.id}))
+        self.assertEqual(response.status_code, 200)
+        receiver.refresh_from_db()
+        self.assertEqual(receiver.profile.messaging_badges, 0)
