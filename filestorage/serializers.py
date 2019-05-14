@@ -5,13 +5,14 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status, serializers
-from django.urls import reverse_lazy, reverse
-from appointment.views import send_push_notifications
+from django.urls import reverse
+from rest_framework.viewsets import GenericViewSet
+from filestorage.utils import send_push_notifications
 from filestorage.models import File, FileDirectory
 from django.shortcuts import get_object_or_404
 from abc import ABCMeta, abstractmethod
 from decimal import Decimal
-from django.http import HttpRequest
+from rest_framework import mixins
 
 
 def send_file_messages_through_firebase(file, is_new=True):
@@ -148,6 +149,20 @@ class FileViewSet(viewsets.ModelViewSet):
         file.delete()
         print(f"???: {file.pk}")
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class FileListViewSet(mixins.ListModelMixin, GenericViewSet):
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.kwargs.get("user_id"):
+            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
+            user.profile.filestorage_badges = 0
+            user.profile.save()
+        return queryset
 
 
 class FileDirectorySerializer(serializers.ModelSerializer):
