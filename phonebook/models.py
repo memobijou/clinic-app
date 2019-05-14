@@ -6,7 +6,9 @@ from django.urls import reverse_lazy
 class PhoneBook(models.Model):
     last_name = models.CharField(null=True, blank=True, max_length=200, verbose_name="Name")
     first_name = models.CharField(null=True, blank=True, max_length=200, verbose_name="Vorname")
-    title = models.CharField(null=True, blank=True, max_length=200, verbose_name="Bezeichnung")
+    title = models.CharField(null=True, blank=True, max_length=200, verbose_name="Bezeichnung",
+                             help_text='*Um den Kontakt für die Nutzer auszublenden tragen Sie "SPERRE" '
+                                       'für die Bezeichnung ein')
     phone_number = models.CharField(null=True, blank=True, max_length=200, verbose_name="Rufnummer")
     mobile_number = models.CharField(null=True, blank=True, max_length=200, verbose_name="Handynummer")
 
