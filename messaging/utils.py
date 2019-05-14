@@ -15,13 +15,23 @@ def send_push_notification_to_receiver(message, sender, receiver):
             Profile.objects.filter(user=receiver).update(messaging_badges=F("messaging_badges") + 1)
             if len(message) > 20:
                 message = message[:20] + "..."
+
+            registration_id = receiver.profile.device_token
+
             r = push_service.notify_single_device(
-                registration_id=receiver.profile.device_token, message_title=f"{sender}",
+                registration_id=registration_id, message_title=f"{sender}",
                 message_body=message,
                 sound="default", data_message={"category": "messaging"}, badge=receiver.profile.get_total_badges())
             receiver.profile.messaging_badges += 1
             receiver.profile.save()
             print(f"he: {r}")
             print("success chat")
+
+            # silent push
+            push_service.notify_single_device(
+                registration_id=registration_id,
+                data_message={"category": "messaging", "sender": sender.id, "receiver": receiver.id},
+                content_available=True
+            )
         except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
             print(e)
