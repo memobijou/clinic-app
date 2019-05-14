@@ -117,27 +117,36 @@ def send_push_notifications(users, title, message, category):
         push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
         registration_ids = []
         badges_totals = {}
-        for user in users.prefetch_related("profile"):
+        users = users.prefetch_related("profile")
+        push_user_ids = []
+
+        for user in users:
             if user.profile.device_token is not None:
                 registration_ids.append(user.profile.device_token)
-                badges_totals[user.id] = user.profile.get_total_badges()
+                push_user_ids.append(user.id)
+
+        Profile.objects.filter(user_id__in=push_user_ids).update(appointment_badges=F("appointment_badges") + 1)
+
+        for user in User.objects.filter(id__in=push_user_ids):
+            if user.profile.device_token is not None:
+                badges_totals[user.profile.device_token] = user.profile.get_total_badges()
+
         if len(registration_ids) > 0:
             try:
                 if len(message) > 20:
                     message = message[:20] + "..."
-                push_service.notify_multiple_devices(
-                    registration_ids=registration_ids, message_title=title, message_body=message, sound="default",
-                    data_message={"category": category, "badges_totals": badges_totals}
-                )
+
+                for registration_id in registration_ids:
+                    push_service.notify_single_device(
+                        registration_id=registration_id, message_title=title, message_body=message, sound="default",
+                        data_message={"category": category}, badge=badges_totals.get(registration_id)
+                    )
 
                 # silent push
                 push_service.notify_multiple_devices(
                     registration_ids=registration_ids,
-                    data_message={"category": category, "badges_totals": badges_totals}, content_available=True
+                    data_message={"category": category}, content_available=True
                 )
-
-                Profile.objects.filter(user__in=users).update(appointment_badges=F("appointment_badges")+1)
-
             except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
                 print(e)
 

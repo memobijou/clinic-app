@@ -50,8 +50,10 @@ class AppointmentTestCase(TestCase):
         response = self.client.post(reverse_lazy("appointment:delete") + f"?item={appointment.pk}")
         self.assertEqual(Appointment.objects.count(), 0)
 
+    @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
     @mock.patch('pyfcm.FCMNotification.notify_multiple_devices', return_value={})
-    def test_appointment_push_notification_badges(self, notify_multiple_devices_function):
+    def test_appointment_push_notification_badges(
+            self, notify_single_device_function, notify_multiple_devices_function):
         users = mixer.cycle(5).blend(User)
         Profile.objects.filter(user__in=users).update(device_token="somedevicetoken")
 
@@ -60,7 +62,8 @@ class AppointmentTestCase(TestCase):
 
         send_push_notifications(User.objects.all(), "Test notification", "Test Message", "appointment")
 
-        for user in User.objects.all():
+        for user in User.objects.filter(id__in=[user.id for user in users]):
+            print(f"test: {user.profile.appointment_badges}")
             self.assertEqual(user.profile.appointment_badges, 1)
             response = self.client.get(reverse_lazy("api_appointment:appointment-list", kwargs={"user_id": user.id}))
             self.assertEqual(response.status_code, 200)
