@@ -10,8 +10,8 @@ from filestorage.views import FileView
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'', FileViewSet, basename="files")
-directory_router = routers.DefaultRouter()
 
+directory_router = routers.DefaultRouter()
 directory_router.register(r"directory", DirectoryViewSet, basename="directories")
 
 urlpatterns = [
