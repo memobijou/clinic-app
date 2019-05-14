@@ -80,7 +80,7 @@ class FilestorageTestCase(TestCase):
 
         for user in User.objects.filter(id__in=[user.id for user in users]):
             self.assertEqual(user.profile.filestorage_badges, 1)
-            response = self.client.get(reverse_lazy("api_filestorage:files-list", kwargs={"user_id": user.id}))
+            response = self.client.get(reverse_lazy("api_filestorage:directories-list", kwargs={"user_id": user.id}))
             self.assertEqual(response.status_code, 200)
             user.refresh_from_db()
             self.assertEqual(user.profile.filestorage_badges, 0)
