@@ -9,6 +9,7 @@ from django.db.models.functions import Concat
 from django.db.models import Value, CharField
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
 
 
 class AppointmentViewSet(viewsets.ModelViewSet):
@@ -18,10 +19,20 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         self.queryset = super().get_queryset()
+        self.queryset = self.filter()
+
         today = datetime.datetime.now()
+
         self.queryset = self.queryset.exclude(
             Q(Q(end_date__year__lt=today.year) | Q(end_date__month__lt=today.month) | Q(end_date__day__lt=today.day)))
 
+        if self.kwargs.get("user_id"):
+            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
+            user.profile.appointment_badges = 0
+            user.profile.save()
+        return self.queryset
+
+    def filter(self):
         self.filter_by_infobox_or_conference()
         self.filter_by_group_name()
         self.filter_by_group_pks()
@@ -47,11 +58,6 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
             self.queryset = self.queryset.filter(
                 start_date__range=(start_date, end_date), end_date__range=(start_date, end_date))
-
-        if self.kwargs.get("user_id"):
-            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
-            user.profile.appointment_badges = 0
-            user.profile.save()
         return self.queryset
 
     def filter_by_group_name(self):
@@ -79,5 +85,8 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, name="calendar")
     def calendar(self, request):
+        self.queryset = Appointment.objects.all()
+        self.queryset = self.filter()
         self.pagination_class = None
-        return super().list(request)
+        serializer = self.get_serializer(self.queryset, many=True)
+        return Response(serializer.data)
