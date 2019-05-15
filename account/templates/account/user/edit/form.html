@@ -91,11 +91,11 @@
     <section class="panel">
         <header class="panel-heading">
             <div class="panel-actions">
-                <a href="#" class="fa fa-caret-down"></a>
+                <a href="#" class="fa fa-caret-up"></a>
             </div>
             <h2 class="panel-title">Passwort zurücksetzen</h2>
         </header>
-        <div class="panel-body">
+        <div class="panel-body" style="display:none;">
             <fieldset class="mb-xl">
                 <div class="form-group">
                     {{ password_form.new_password1.errors }}
@@ -113,10 +113,10 @@
                 </div>
             </fieldset>
         </div>
-        <footer class="panel-footer">
+        <footer class="panel-footer" style="display:none;">
             <div class="row" style="padding-left:0;padding-right:0;margin-left:0;margin-right:0;">
                 <div class="col-md-11 text-right">
-                    <button class="btn btn-primary">Änderungen speichern</button>
+                    <button class="btn btn-primary">Passwort zurücksetzen</button>
                 </div>
             </div>
         </footer>
