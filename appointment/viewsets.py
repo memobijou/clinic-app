@@ -9,7 +9,6 @@ from django.db.models.functions import Concat
 from django.db.models import Value, CharField
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from datetime import datetime
 
 
 class AppointmentViewSet(viewsets.ModelViewSet):
@@ -19,7 +18,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         self.queryset = super().get_queryset()
-        today = datetime.now()
+        today = datetime.datetime.now()
         self.queryset = self.queryset.exclude(
             Q(Q(end_date__year__lt=today.year) | Q(end_date__month__lt=today.month) | Q(end_date__day__lt=today.day)))
 
