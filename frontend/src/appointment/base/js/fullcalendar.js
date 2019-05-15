@@ -4,7 +4,6 @@ $(document).ready(function(){
 
       $('#calendar').fullCalendar({
         // put your options and callbacks here
-
               locale: 'de',
               themeSystem: 'bootstrap3',
               weekNumbers: true,
@@ -62,17 +61,33 @@ $(document).ready(function(){
                                 element.find(".fc-time").remove();
                                 var promoter_name = event.promoter_name || "";
                                 var start_date = moment(event.start_date, "YYYY-MM-DD hh:mm").toDate();
+
                                 var start_minutes = parseInt(start_date.getMinutes());
                                 if(start_date.getMinutes() < 10){
                                     start_minutes = "0" + start_date.getMinutes()
                                 }
-                                var start_time = start_date.getHours() + ":" + start_minutes;
+                                var start_hours = parseInt(start_date.getHours());
+                                if(start_date.getHours() < 10){
+                                    start_hours = "0" + start_date.getHours()
+                                }
+
+                                var start_time = start_hours + ":" + start_minutes;
+
                                 var end_date = moment(event.end_date, "YYYY-MM-DD hh:mm").toDate();
+
                                 var end_minutes = parseInt(end_date.getMinutes());
+
                                 if(end_date.getMinutes() < 10){
                                     end_minutes = "0" + end_date.getMinutes()
                                 }
-                                var end_time = end_date.getHours() + ":" + end_minutes;
+
+                                let end_hours = parseInt(end_date.getHours());
+
+                                if(end_date.getHours() < 10){
+                                    end_hours = "0" + end_date.getHours()
+                                }
+
+                                var end_time = end_hours + ":" + end_minutes;
                                 var date = start_time + "-" + end_time + " Uhr";
 
 
