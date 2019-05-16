@@ -27,5 +27,7 @@ urlpatterns = [
     path(r'subscribe-filestorage/<int:pk>/', FilestorageSubscribeAnnouncement.as_view(), name="subscribe_filestorage"),
     path(r'subscribe-filestorage/<int:pk>/<int:redirect_directory_pk>/', FilestorageSubscribeAnnouncement.as_view(),
          name="subscribe_filestorage"),
-    path(r'<int:directory_pk>/delete', DeleteFileView.as_view(), name="delete_files")
+    path(r'<int:directory_pk>/delete', DeleteFileView.as_view(), name="delete_files"),
+    path(r'delete/', DeleteFileView.as_view(), name="delete_files")
+
 ]
