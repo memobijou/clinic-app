@@ -110,23 +110,27 @@
                         {% endfor %}
 
                         {% for file in parent_directory.files.all %}
-                            {% if file.file %}
-                                <tr>
-                                    <td>
+                            <tr>
+                                <td>
+                                    {% if file.file %}
                                         <a href="{{ file.file.url }}"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;&nbsp;{{ file.file.name }}</a>
-                                    </td>
-                                    <td align="right">
-                                        <div class="form-group">
+                                    {% else %}
+                                        Fehlerhafte Datei
+                                    {% endif %}
+                                </td>
+                                <td align="right">
+                                    <div class="form-group">
+                                        {% if file.file %}
                                             <div class="btn-group" style="padding:0;">
                                                 <a href="{% url 'filestorage:file' pk=file.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
                                             </div>
-                                            <div class="btn-group" style="padding:0;">
-                                                <input class="action_checkbox" type="checkbox" value="{{ file.pk }}" name="item" style="display:inline-block; border:none; text-decoration: none;padding: 0;margin: 0;background:transparent;"/>
-                                            </div>
+                                        {% endif %}
+                                        <div class="btn-group" style="padding:0;">
+                                            <input class="action_checkbox" type="checkbox" value="{{ file.pk }}" name="item" style="display:inline-block; border:none; text-decoration: none;padding: 0;margin: 0;background:transparent;"/>
                                         </div>
-                                    </td>
-                                </tr>
-                            {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -145,6 +149,8 @@
         {% if parent_directory %}
             var upload_url = "{% url 'filestorage:file_upload' directory_pk=parent_directory.pk %}";
             var delete_url = "{% url 'filestorage:delete_files' directory_pk=parent_directory.pk %}";
+        {% else %}
+            var delete_url = "{% url 'filestorage:delete_files' %}";
         {% endif %}
         window.CSRF_TOKEN = "{{ csrf_token }}";
     </script>

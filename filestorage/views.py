@@ -150,11 +150,12 @@ class DownloadSubscribeAnnouncement(BaseSubscribeAnnouncement):
 class DeleteFileView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         items = request.POST.getlist("item")
-        directory = get_object_or_404(FileDirectory, pk=self.kwargs.get("directory_pk"))
+        if self.kwargs.get("directory_pk"):
+            directory = get_object_or_404(FileDirectory, pk=self.kwargs.get("directory_pk"))
+        else:
+            directory = None
+
         directory_ids = request.POST.getlist("directory")
-        parent_id = directory.parent_id
-        print(f"directory.parent_id {parent_id}")
-        print(f"heyyyyy::: {directory_ids}")
 
         file_directories = FileDirectory.objects.filter(pk__in=directory_ids).annotate(
             count_files=Count("files")).annotate(count_child_directories=Count("child_directories")).filter(
@@ -166,44 +167,61 @@ class DeleteFileView(LoginRequiredMixin, View):
 
         full_directories_count = full_directories.count()
 
-        for d in full_directories:
-            print(f"d:: {d.count_files} {d.count_child_directories}")
+        parent_id = None
+        if directory:
+            parent_id = directory.parent_id
 
-        print(f"full_directories_count:: {full_directories_count}")
+        self.delete_files_and_directories(full_directories_count, directory, items, file_directories)
 
+        return self.return_http_response(directory, parent_id, full_directories_count)
+
+    @staticmethod
+    def delete_files_and_directories(full_directories_count, directory, items, file_directories):
         if full_directories_count == 0:
-            files = File.objects.filter(parent_directory=directory, pk__in=items)
+            if directory:
+                files = File.objects.filter(parent_directory=directory, pk__in=items)
+            else:
+                files = File.objects.filter(parent_directory__isnull=True, pk__in=items)
             for file in files:
                 file.file.delete()
             files.delete()
             file_directories.delete()
 
+    def return_http_response(self, directory, parent_id, full_directories_count):
+        if not directory:
+            if full_directories_count > 0:
+                return self.return_http_error_response()
+            else:
+                return self.return_success_response(parent_id)
+
         try:
             directory.refresh_from_db()
-            print(f"darf nicht !!!")
-            context = {
-                "url": str(reverse_lazy("filestorage:child_tree", kwargs={"parent_directory_pk": directory.pk}))
-            }
-            response = HttpResponse(json.dumps(context), content_type='application/json')
-            response.status_code = 200
-            return response
+            return self.return_success_response(directory.id)
         except FileDirectory.DoesNotExist as e:
-            if not parent_id:
-                context = {
-                    "url": str(reverse_lazy("filestorage:tree"))
-                }
-            else:
-                context = {
-                    "url": str(reverse_lazy("filestorage:child_tree", kwargs={"parent_directory_pk": parent_id}))
-                }
-            response = HttpResponse(json.dumps(context), content_type='application/json')
-            response.status_code = 200
-            return response
+            return self.return_success_response(parent_id)
         finally:
             if full_directories_count > 0:
-                context = {
-                    "error": "Es können nur leere Ordner gelöscht werden. "
-                }
-                response = HttpResponse(json.dumps(context), content_type='application/json')
-                response.status_code = 400
-                return response
+                return self.return_http_error_response()
+
+    @staticmethod
+    def return_http_error_response():
+            context = {
+                "error": "Es können nur leere Ordner gelöscht werden. "
+            }
+            response = HttpResponse(json.dumps(context), content_type='application/json')
+            response.status_code = 400
+            return response
+
+    @staticmethod
+    def return_success_response(parent_id):
+        if not parent_id:
+            context = {
+                "url": str(reverse_lazy("filestorage:tree"))
+            }
+        else:
+            context = {
+                "url": str(reverse_lazy("filestorage:child_tree", kwargs={"parent_directory_pk": parent_id}))
+            }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 200
+        return response
