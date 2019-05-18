@@ -1,7 +1,6 @@
 from django.db.models import Q
 from django.db.models.functions import Lower
 from django.urls import reverse_lazy
-
 from account.models import Group
 from taskmanagement.models import Task
 from taskmanagement.serializers import TaskSerializer
@@ -40,7 +39,10 @@ class TaskDatatables(DatatablesMixin):
         results = []
         for query in page:
             results.append([
-                f'<p><a href="{reverse_lazy("taskmanagement:edit_task", kwargs={"pk": query.pk})}">Anzeigen</a></p>',
+                f'<p style="margin:0;padding:0;"><a href='
+                f'"{reverse_lazy("taskmanagement:edit_task", kwargs={"pk": query.pk})}">Anzeigen</a></p>' +
+                f'<p style="margin:0;padding:0;"><input type="checkbox" style="cursor:pointer;" '
+                f'name="item" value={query.pk}></p>',
                 query.name,
                 query.description,
                 self.get_groups(query),

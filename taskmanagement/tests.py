@@ -1,11 +1,11 @@
 from django.test import TestCase
 from mixer.backend.django import mixer
-from django.contrib.auth.models import User
 from taskmanagement.models import Task, UserTask
 from django.urls import reverse_lazy
 from account.models import Group, Profile
 from unittest import mock
 from taskmanagement.utils import send_push_notifications
+from django.contrib.auth.models import User
 
 
 class TaskManagementTestCase(TestCase):
@@ -68,6 +68,13 @@ class TaskManagementTestCase(TestCase):
         users_count += len(user_ids)
         data = {"name": "Task", "description": "Aufgabenbeschreibung", "groups": groups, "users": user_ids}
         return users, groups, users_count, tasks_count, data
+
+    def test_task_deletion(self):
+        tasks = mixer.cycle(5).blend(Task)
+        response = self.client.post(reverse_lazy("taskmanagement:delete_task"),
+                                    data={"item": [task.id for task in tasks]})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Task.objects.count(), 0)
 
     @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
     @mock.patch('pyfcm.FCMNotification.notify_multiple_devices', return_value={})

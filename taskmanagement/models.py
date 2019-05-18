@@ -1,6 +1,5 @@
-from django.contrib.auth.models import User
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 
@@ -21,7 +20,7 @@ class Task(models.Model):
 
 
 class UserTask(models.Model):
-    task = models.ForeignKey("taskmanagement.Task", null=True, on_delete=models.SET_NULL, related_name="usertasks")
+    task = models.ForeignKey("taskmanagement.Task", null=True, on_delete=models.CASCADE, related_name="usertasks")
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="usertasks")
     completed = models.NullBooleanField(null=True, blank=True, verbose_name="Abgeschloßen")
 

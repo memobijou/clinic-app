@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from django.db.models.functions import Lower

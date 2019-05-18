@@ -1,9 +1,9 @@
 from accomplishment.models import Accomplishment, UserAccomplishment
 from subject_area.models import SubjectArea
 from uniklinik.forms import BootstrapModelFormMixin
-from django.contrib.auth.models import User
 from django.db import transaction
 from django import forms
+from django.contrib.auth.models import User
 
 
 class AccomplishmentFormMixin(BootstrapModelFormMixin):

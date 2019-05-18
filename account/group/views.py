@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.db.models import Case, When, Value, IntegerField, Count
 from django.http import HttpResponseRedirect
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,7 +6,6 @@ from account.models import Group
 from django import forms
 from django.urls import reverse_lazy
 from uniklinik.forms import BootstrapModelFormMixin
-from django.contrib.auth.models import User
 
 
 class GroupListView(LoginRequiredMixin, generic.ListView):

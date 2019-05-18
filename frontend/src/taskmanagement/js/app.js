@@ -70,4 +70,34 @@ $(document).ready(function(){
         $(".task_form_panel").css("display", "")
     }
 
+    let select_html = `
+        &nbsp;&nbsp;
+        <label>
+            <select class="form-control input-sm" id="select_action" style="min-width:160px;">
+                <option value="">---------</option>
+                <option value="deletion">Aufgaben löschen</option>    
+            </select>
+            <button class="btn btn-primary" id="peform_action_btn">Ausführen</button>
+        </label>
+    `
+
+    $("#datatable-default_length").html($("#datatable-default_length").html() + select_html);
+
+	$("#datatable-default_length").parent().removeClass().addClass("col-sm-8")
+    $("#datatable-default_filter").parent().removeClass().addClass("col-sm-4")
+
+
+    $("#select_action").on("change", function(){
+        if(this.value == ""){
+            $("#peform_action_btn").attr("disabled", "")
+        }else{
+            $("#peform_action_btn").removeAttr("disabled", "")
+        }
+        $("#action_form").attr("action", actions[this.value])
+    })
+
+    if($("#select_action option:selected").val() == ""){
+        $("#peform_action_btn").attr("disabled", "")
+    }
+
 })

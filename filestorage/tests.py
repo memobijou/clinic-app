@@ -3,10 +3,10 @@ from django.urls import reverse_lazy
 # Create your tests here.
 from filestorage.models import FileDirectory
 from mixer.backend.django import mixer
-from django.contrib.auth.models import User
 from filestorage.models import File
 from unittest import mock
 from account.models import Profile
+from django.contrib.auth.models import User
 from filestorage.utils import send_push_notifications
 
 

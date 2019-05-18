@@ -75,14 +75,16 @@
             <h2 class="panel-title">Aufgaben Übersicht</h2>
         </header>
 
-        <div class="panel-body">
-            <div class="col-md-12">
-                <table class="table table-bordered table-striped table-hover" id="datatable-default">
-                    <tbody>
-                    </tbody>
-                </table>
+        <form id="action_form" method="POST">{% csrf_token %}
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <table class="table table-bordered table-striped table-hover" id="datatable-default">
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        </form>
     </section>
 <!-- end: page -->
 {% endblock %}

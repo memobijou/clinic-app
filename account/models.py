@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, UserManager
 from django.db.models.signals import post_save, m2m_changed, pre_save
 from django.dispatch import receiver
 from pyfcm import FCMNotification
@@ -8,6 +8,11 @@ from accomplishment.models import Accomplishment, UserAccomplishment
 from taskmanagement.models import UserTask
 import os
 import random
+
+
+class CustomUserManager(UserManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(profile__removed=False)
 
 
 def get_name(self):
@@ -19,6 +24,7 @@ def get_name(self):
 
 
 User.add_to_class("__str__", get_name)
+User.add_to_class("objects", CustomUserManager())
 
 
 def random_color():
@@ -64,7 +70,7 @@ class Profile(models.Model):
                                      related_name="profiles")
     title = models.CharField(choices=title_choices, null=True, blank=True, max_length=200)
     confirmed = models.NullBooleanField()
-
+    removed = models.BooleanField(default=False)
     appointment_badges = models.IntegerField(default=0, blank=True)
     messaging_badges = models.IntegerField(default=0, blank=True)
     duty_roster_badges = models.IntegerField(default=0, blank=True)

@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
 from account.models import Profile
 from subject_area.models import SubjectArea
@@ -9,6 +8,7 @@ from django.core import exceptions
 import os
 from pyfcm import FCMNotification
 from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError
+from django.contrib.auth.models import User
 
 
 class BasicUserSerializer(serializers.HyperlinkedModelSerializer):

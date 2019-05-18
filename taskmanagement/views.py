@@ -1,10 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views import generic
-
 from taskmanagement.forms import CreateTaskForm, EditTaskForm
 from taskmanagement.models import Task
 from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
+from django.views import View
 
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
@@ -48,3 +49,11 @@ class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("taskmanagement:edit_task", kwargs={"pk": self.get_object().pk})
+
+
+class TaskDeleteView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        items = request.POST.getlist("item")
+        print(f"abc abc: {items}")
+        Task.objects.filter(pk__in=items).delete()
+        return HttpResponseRedirect(reverse_lazy("taskmanagement:tasks_list"))

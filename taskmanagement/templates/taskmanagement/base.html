@@ -12,6 +12,7 @@
 {% block js %}
     <script>
         var api_url = "{% url 'taskmanagement:group_task_datatables' %}";
+        var actions = {deletion: "{% url 'taskmanagement:delete_task' %}"}
     </script>
     <!-- Specific Page Vendor -->
     {% if settings.WEBPACK_DEV_SERVER is True %}
