@@ -23,8 +23,6 @@ def send_push_notification_to_receiver(message, sender, receiver):
                 message_body=message,
                 sound="default", data_message={"category": "messaging", "sender": sender.id, "receiver": receiver.id},
                 badge=receiver.profile.get_total_badges())
-            receiver.profile.messaging_badges += 1
-            receiver.profile.save()
             print(f"he: {r}")
             print("success chat")
 
