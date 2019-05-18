@@ -16,7 +16,7 @@ class Task(models.Model):
         return f"{self.name}"
 
     class Meta:
-        ordering = ("pk", )
+        ordering = ("-pk", )
 
 
 class UserTask(models.Model):
