@@ -1,15 +1,12 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
 from mixer.backend.django import mixer
 from django.urls import reverse_lazy
 from account.models import Group
 import json
-from django.core.serializers.json import DjangoJSONEncoder
-
-
 # Create your tests here.
 # admitStudent_MissingMandatoryFields_FailToAdmit
 from subject_area.models import SubjectArea
+from django.contrib.auth.models import User
 
 
 class UserTestCase(TestCase):
@@ -50,7 +47,7 @@ class UserTestCase(TestCase):
         user_2 = mixer.blend(User, is_active=False)
         response = self.client.post(reverse_lazy("account:user_deletion"), data={"item": [user.pk, user_2.pk]})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(User.objects.filter(profile__removed=True).count(), 0)
 
     def test_user_can_have_mentor(self):
         student = self.session_user

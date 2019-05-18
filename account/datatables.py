@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.urls import reverse_lazy
-
 from account.serializers import UserSerializer
 from uniklinik.mixins import DatatablesMixin
 

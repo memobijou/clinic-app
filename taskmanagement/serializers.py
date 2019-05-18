@@ -1,6 +1,5 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
-
+from django.contrib.auth.models import User
 from account.serializers import ProfileSerializer
 from taskmanagement.models import Task, UserTask
 

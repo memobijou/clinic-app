@@ -9,7 +9,6 @@ from appointment.models import Appointment
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from pyfcm import FCMNotification
-import pyfcm
 from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError
 import os
 from uniklinik.forms import BootstrapModelFormMixin

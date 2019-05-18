@@ -7,9 +7,10 @@ from appointment.models import Appointment
 from appointment.serializers import AppointmentSerializer
 from django.db.models.functions import Concat
 from django.db.models import Value, CharField
-from django.contrib.auth.models import User
+from account.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from django.contrib.auth.models import User
 
 
 class AppointmentViewSet(viewsets.ModelViewSet):

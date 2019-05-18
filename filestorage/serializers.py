@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
@@ -13,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from abc import ABCMeta, abstractmethod
 from decimal import Decimal
 from rest_framework import mixins
+from django.contrib.auth.models import User
 
 
 def send_file_messages_through_firebase(file, is_new=True):

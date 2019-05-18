@@ -1,11 +1,11 @@
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from django.contrib.auth.models import User
 from django import forms
 from django.db import transaction
-
+from account.models import User
 from account.models import title_choices
 from subject_area.models import SubjectArea
 from uniklinik.forms import BootstrapModelFormMixin
+from django.contrib.auth.models import User
 
 
 class CustomUserCreationForm(UserCreationForm):
