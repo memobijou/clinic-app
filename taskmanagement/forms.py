@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 
 class CreateTaskForm(BootstrapModelFormMixin):
     groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), widget=forms.CheckboxSelectMultiple,
-                                            label="Gruppen")
+                                            label="Gruppen", required=False)
     users = forms.ModelMultipleChoiceField(queryset=User.objects.all(),
                                            widget=forms.CheckboxSelectMultiple,
                                            label="Benutzer", required=False)
