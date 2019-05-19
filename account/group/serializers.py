@@ -37,23 +37,23 @@ class ReadOnlyGroupViewSet(viewsets.ModelViewSet):
 
     def filter_by_user_id(self):
         user_id = self.request.GET.get("user_id")
-        if user_id is not None:
-            self.queryset = self.queryset.filter(users__id__in=user_id)
+        if user_id:
+            self.queryset = self.queryset.filter(users__id=user_id)
 
     def filter_by_name(self):
         name = self.request.GET.get("name")
-        if name is not None:
+        if name:
             self.queryset = self.queryset.filter(name__icontains=name)
 
     def filter_by_name_exact(self):
         name = self.request.GET.get("name_exact")
-        if name is not None:
+        if name:
             self.queryset = self.queryset.filter(name__iexact=name)
 
     def filter_by_type(self):
-        type = self.request.GET.get("type")
-        if type is not None:
-            self.queryset = self.queryset.filter(type__iexact=type)
+        type_ = self.request.GET.get("type")
+        if type_:
+            self.queryset = self.queryset.filter(type__iexact=type_)
 
 
 # ViewSets define the view behavior.
