@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, Case, When, Value, IntegerField
 from django.urls import reverse_lazy
 from account.serializers import UserSerializer
 from uniklinik.mixins import DatatablesMixin
@@ -34,10 +34,17 @@ class UserListDatatables(DatatablesMixin):
         asc_or_desc = self.request.GET.get("order[0][dir]")
         print(f"what: {order_column_index}")
         if order_column_index == "1":
+            self.queryset = self.queryset.annotate(empty_title=Case(
+                When(profile__title=u'', then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+                )
+            )
             if asc_or_desc == "asc":
-                self.queryset = self.queryset.order_by(Lower("profile__title"))
+                self.queryset = self.queryset.order_by("empty_title", Lower("profile__title"))
             else:
-                self.queryset = self.queryset.annotate(lower_title=Lower('profile__title')).order_by("-lower_title")
+                self.queryset = self.queryset.annotate(lower_title=Lower('profile__title')).order_by(
+                    "-empty_title", "-lower_title")
 
         elif order_column_index == "2":
             if asc_or_desc == "asc":
