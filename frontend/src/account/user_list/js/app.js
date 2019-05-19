@@ -52,10 +52,47 @@ $(document).ready(function(){
             <button class="btn btn-primary" id="peform_action_btn">Ausführen</button>
         </label>
     `
-    $("#datatable-default_length").html($("#datatable-default_length").html() + select_html);
 
-	$("#datatable-default_length").parent().removeClass().addClass("col-sm-8")
-    $("#datatable-default_filter").parent().removeClass().addClass("col-sm-4")
+    let create_action_tag = function(options){
+        let select_action = document.createElement("label")
+        let select_tag = document.createElement("select")
+        select_tag.className = "form-control input-sm"
+        select_tag.id = "select_action"
+        select_tag.style.minWidth = "160px"
+        select_action.appendChild(select_tag)
+        let option = document.createElement("option")
+        option.innerHTML = "---------"
+        option.value = ""
+        select_tag.appendChild(option)
+        for(let i=0; i<options.length; i++){
+            option = document.createElement("option")
+            option.innerHTML = options[i][1]
+            option.value = options[i][0]
+            select_tag.appendChild(option)
+        }
+        let action_btn = document.createElement("button")
+        action_btn.className = "btn btn-primary btn-sm"
+        action_btn.id = "peform_action_btn"
+        action_btn.innerHTML = "Ausführen"
+        let input_group = document.createElement("div")
+        input_group.className = "input-group"
+        let input_group_btn = document.createElement("div")
+        input_group_btn.className = "input-group-btn"
+        input_group_btn.appendChild(action_btn)
+        input_group.appendChild(select_tag)
+        input_group.appendChild(input_group_btn)
+        select_action.appendChild(input_group)
+        select_action.style.paddingTop = "5px"
+        return select_action
+    }
+
+    let options = [["activation", "Benutzer aktivieren"], ["deactivation", "Benutzer deaktivieren"],
+    ["deletion", "Benutzer löschen"]]
+
+    let select_action = create_action_tag(options)
+
+
+    $("#datatable-default_length").parent().append(select_action);
 
 
     $("#select_action").on("change", function(){

@@ -70,22 +70,41 @@ $(document).ready(function(){
         $(".task_form_panel").css("display", "")
     }
 
-    let select_html = `
-        &nbsp;&nbsp;
-        <label>
-            <select class="form-control input-sm" id="select_action" style="min-width:160px;">
-                <option value="">---------</option>
-                <option value="deletion">Aufgaben löschen</option>    
-            </select>
-            <button class="btn btn-primary" id="peform_action_btn">Ausführen</button>
-        </label>
-    `
+    let create_action_tag = function(){
+        let select_action = document.createElement("label")
+        let select_tag = document.createElement("select")
+        select_tag.className = "form-control input-sm"
+        select_tag.id = "select_action"
+        select_tag.style.minWidth = "160px"
+        select_action.appendChild(select_tag)
+        let option = document.createElement("option")
+        option.innerHTML = "---------"
+        option.value = ""
+        select_tag.appendChild(option)
+        option = document.createElement("option")
+        option.value = "deletion"
+        option.innerHTML = "Aufgaben löschen"
+        select_tag.appendChild(option)
+        let action_btn = document.createElement("button")
+        action_btn.className = "btn btn-primary btn-sm"
+        action_btn.id = "peform_action_btn"
+        action_btn.innerHTML = "Ausführen"
+        let input_group = document.createElement("div")
+        input_group.className = "input-group"
+        let input_group_btn = document.createElement("div")
+        input_group_btn.className = "input-group-btn"
+        input_group_btn.appendChild(action_btn)
+        input_group.appendChild(select_tag)
+        input_group.appendChild(input_group_btn)
+        select_action.appendChild(input_group)
+        select_action.style.paddingTop = "5px"
+        return select_action
+    }
 
-    $("#datatable-default_length").html($("#datatable-default_length").html() + select_html);
+    let select_action = create_action_tag()
 
-	$("#datatable-default_length").parent().removeClass().addClass("col-sm-8")
-    $("#datatable-default_filter").parent().removeClass().addClass("col-sm-4")
 
+    $("#datatable-default_length").parent().append(select_action);
 
     $("#select_action").on("change", function(){
         if(this.value == ""){
