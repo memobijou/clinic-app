@@ -18,21 +18,31 @@ class TaskDatatables(DatatablesMixin):
         self.page_size = None
 
     def get_filtered_queryset(self):
-        search_value = self.request.GET.get("search[value]")
-        if search_value != "" and search_value is not None:
-            self.queryset = self.queryset.filter(Q(name__icontains=search_value))
+        whole_search_value = self.request.GET.get("search[value]")
+        search_values = whole_search_value.split(" ")
+        for search_value in search_values:
+            if search_value:
+                self.queryset = self.queryset.filter(
+                    Q(Q(name__icontains=search_value) | Q(description__icontains=search_value)
+                      | Q(groups_list__name__icontains=search_value) |
+                      Q(users__profile__title__icontains=search_value) | Q(users__first_name__icontains=search_value)
+                      | Q(users__last_name__icontains=search_value))).distinct()
         return self.queryset
 
     def get_ordered_queryset(self):
-        order_column_index = self.request.GET.get("order[1][column]")
-        asc_or_desc = self.request.GET.get("order[1][dir]")
+        order_column_index = self.request.GET.get("order[0][column]")
+        asc_or_desc = self.request.GET.get("order[0][dir]")
         if order_column_index == "1":
             if asc_or_desc == "asc":
                 self.queryset = self.queryset.order_by(Lower("name"))
-                print(f"whyyyy: {asc_or_desc} - {order_column_index} - {self.queryset} - {Group.objects.all()}")
-
             else:
                 self.queryset = self.queryset.annotate(lower_name=Lower('name')).order_by("-name")
+        if order_column_index == "2":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by(Lower("description"))
+            else:
+                self.queryset = self.queryset.annotate(lower_description=Lower('description')).order_by(
+                    "-lower_description")
         return self.queryset
 
     def get_data(self, page):
