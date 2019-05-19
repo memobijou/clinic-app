@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 
 
 class Accomplishment(models.Model):
+    class Meta:
+        ordering = ("-id", )
+
     name = models.CharField(max_length=200, null=True, blank=False, verbose_name="Bezeichnung")
     full_score = models.IntegerField(null=True, blank=False, verbose_name="Gesamtpunktezahl")
     users = models.ManyToManyField(User, blank=True, through="accomplishment.UserAccomplishment",

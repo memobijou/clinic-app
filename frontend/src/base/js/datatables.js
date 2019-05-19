@@ -49,4 +49,4 @@ window.german_translation =
               "1": "1 Spalte kopiert"
           }
       }
-  }
+    }

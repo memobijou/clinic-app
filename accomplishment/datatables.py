@@ -21,21 +21,29 @@ class AccomplishmentDatatables(DatatablesMixin):
         return self.queryset
 
     def filter_by_search_value(self):
-        search_value = self.request.GET.get("search[value]")
-        if search_value != "" and search_value is not None:
-            self.queryset = self.queryset.filter(
-                Q(Q(name__icontains=search_value) | Q(subject_areas__title__icontains=search_value) |
-                  Q(users__first_name__icontains=search_value) | Q(users__last_name__icontains=search_value) |
-                  Q(full_score__icontains=search_value))).distinct()
+        whole_search_value = self.request.GET.get("search[value]")
+        search_values = whole_search_value.split(" ")
+        for search_value in search_values:
+            if search_value != "" and search_value is not None:
+                self.queryset = self.queryset.filter(
+                    Q(Q(name__icontains=search_value) | Q(subject_areas__title__icontains=search_value) |
+                      Q(users__profile__title__icontains=search_value) |
+                      Q(users__first_name__icontains=search_value) | Q(users__last_name__icontains=search_value) |
+                      Q(full_score__icontains=search_value))).distinct()
 
     def get_ordered_queryset(self):
         order_column_index = self.request.GET.get("order[0][column]")
         asc_or_desc = self.request.GET.get("order[0][dir]")
-        if order_column_index == "0":
+        if order_column_index == "1":
             if asc_or_desc == "asc":
                 self.queryset = self.queryset.order_by(Lower("name"))
             else:
                 self.queryset = self.queryset.annotate(lower_name=Lower('name')).order_by("-lower_name")
+        if order_column_index == "2":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by("full_score")
+            else:
+                self.queryset = self.queryset.order_by("-full_score")
         return self.queryset
 
     def get_data(self, page):
