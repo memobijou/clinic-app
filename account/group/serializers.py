@@ -93,13 +93,13 @@ class GroupDatatables(DatatablesMixin):
         return self.queryset
 
     def get_ordered_queryset(self):
-        order_column_index = self.request.GET.get("order[1][column]")
-        asc_or_desc = self.request.GET.get("order[1][dir]")
+        order_column_index = self.request.GET.get("order[0][column]")
+        asc_or_desc = self.request.GET.get("order[0][dir]")
+        print(f"hey: {order_column_index}")
         if order_column_index == "1":
             if asc_or_desc == "asc":
                 self.queryset = self.queryset.order_by(Lower("name"))
                 print(f"whyyyy: {asc_or_desc} - {order_column_index} - {self.queryset} - {Group.objects.all()}")
-
             else:
                 self.queryset = self.queryset.annotate(lower_name=Lower('name')).order_by("-name")
         return self.queryset
@@ -110,6 +110,15 @@ class GroupDatatables(DatatablesMixin):
                              f'<p style="margin:0;padding:0;"><input type="checkbox" style="cursor:pointer;" '
                              f'name="item" value={query.pk}></p>',
                              f'<i class="fa fa-circle" style="color:{query.color};">'
-                             f'</i>&nbsp;&nbsp;<span>{query.name}</span>'] for query in page],
+                             f'</i>&nbsp;&nbsp;<span>{query.name}</span>',
+                             self.get_users(query)
+                             ] for query in page],
                 "records_total": self.queryset.count()}
         return data
+
+    @staticmethod
+    def get_users(query):
+        users = ""
+        for user in query.users.all():
+            users += f"<p>{str(user)}</p>"
+        return users

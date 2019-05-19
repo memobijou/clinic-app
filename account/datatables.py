@@ -24,7 +24,9 @@ class UserListDatatables(DatatablesMixin):
         if search_value != "" and search_value is not None:
             self.queryset = self.queryset.filter(
                 Q(Q(username__icontains=search_value) | Q(first_name__icontains=search_value) |
-                  Q(last_name__icontains=search_value) | Q(email__icontains=search_value)))
+                  Q(last_name__icontains=search_value) | Q(email__icontains=search_value)) |
+                Q(profile__title__icontains=search_value)
+            )
 
     def get_ordered_queryset(self):
         from django.db.models.functions import Lower
