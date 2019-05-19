@@ -58,6 +58,8 @@ class MessagingTestCase(TestCase):
 
         send_push_notification_to_receiver("Test Message", sender, receiver)
 
+        receiver.refresh_from_db()
+
         self.assertEqual(receiver.profile.messaging_badges, 1)
         response = self.client.get(reverse_lazy(
             "api_messaging:messaging-list", kwargs={"receiver": receiver.id, "sender": sender.id}))
