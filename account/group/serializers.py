@@ -38,7 +38,7 @@ class ReadOnlyGroupViewSet(viewsets.ModelViewSet):
     def filter_by_user_id(self):
         user_id = self.request.GET.get("user_id")
         if user_id is not None:
-            self.queryset = self.queryset.filter(users__in=user_id)
+            self.queryset = self.queryset.filter(users__id__in=user_id)
 
     def filter_by_name(self):
         name = self.request.GET.get("name")
