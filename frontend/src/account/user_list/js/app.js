@@ -10,11 +10,11 @@ $(document).ready(function(){
         {targets: 0, title: "", name: "", orderable:false, type:"checkbox"},
         {targets: 1, title: "Titel", name: "title"},
         {targets: 2, title: "Vorname", name: "first_name"},
-        {targets: 3, title: "Nachname", name: "last_name"},
+        {targets: 3, title: "Nachname", name: "last_name", default: true},
         {targets: 4, title: "Benutzername", name: "username"},
         {targets: 5, title: "Email", name: "email"},
         {targets: 6, title: "Mentor", name: "mentor"},
-        {targets: 7, title: "Schüler", name: "students"},
+        {targets: 7, title: "Schüler", name: "students", orderable: false},
         {targets: 8, title: "Fachrichtung", name: "discipline"},
         {targets: 9, title: "Aktiv", name: "is_active"}
       ],
@@ -37,21 +37,8 @@ $(document).ready(function(){
             style:    'os',
             selector: 'td:first-child'
         },
-        order: [[1, 'asc']],
+        order: [[3, 'asc']],
 	} )
-
-    let select_html = `
-        &nbsp;&nbsp;
-        <label>
-            <select class="form-control input-sm" id="select_action" style="min-width:160px;">
-                <option value="">---------</option>
-                <option value="activation">Benutzer aktivieren</option>    
-                <option value="deactivation">Benutzer deaktivieren</option>
-                <option value="deletion">Benutzer löschen</option> 
-            </select>
-            <button class="btn btn-primary" id="peform_action_btn">Ausführen</button>
-        </label>
-    `
 
     let create_action_tag = function(options){
         let select_action = document.createElement("label")

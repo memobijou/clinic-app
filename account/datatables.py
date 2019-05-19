@@ -30,28 +30,50 @@ class UserListDatatables(DatatablesMixin):
         from django.db.models.functions import Lower
         order_column_index = self.request.GET.get("order[0][column]")
         asc_or_desc = self.request.GET.get("order[0][dir]")
-        if order_column_index == "0":
+        print(f"what: {order_column_index}")
+        if order_column_index == "1":
             if asc_or_desc == "asc":
-                self.queryset = self.queryset.order_by(Lower("username"))
+                self.queryset = self.queryset.order_by(Lower("profile__title"))
             else:
-                self.queryset = self.queryset.annotate(lower_username=Lower('username')).order_by("-lower_username")
+                self.queryset = self.queryset.annotate(lower_title=Lower('profile__title')).order_by("-lower_title")
 
-        elif order_column_index == "1":
+        elif order_column_index == "2":
             if asc_or_desc == "asc":
                 self.queryset = self.queryset.order_by(Lower("first_name"))
             else:
                 self.queryset = self.queryset.annotate(
                     lower_first_name=Lower("first_name")).order_by("-lower_first_name")
-        elif order_column_index == "2":
+        elif order_column_index == "3":
             if asc_or_desc == "asc":
                 self.queryset = self.queryset.order_by(Lower("last_name"))
             else:
                 self.queryset = self.queryset.annotate(lower_last_name=Lower("last_name")).order_by("-lower_last_name")
-        elif order_column_index == "3":
+        elif order_column_index == "4":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by(Lower("username"))
+            else:
+                self.queryset = self.queryset.annotate(lower_username=Lower("username")).order_by("-lower_username")
+        elif order_column_index == "5":
             if asc_or_desc == "asc":
                 self.queryset = self.queryset.order_by(Lower("email"))
             else:
                 self.queryset = self.queryset.annotate(lower_email=Lower("email")).order_by("-lower_email")
+        elif order_column_index == "6":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by(Lower("profile__mentor__last_name"))
+            else:
+                self.queryset = self.queryset.annotate(lower_mentor=Lower("profile__mentor__last_name")).order_by(
+                    "-lower_mentor")
+        elif order_column_index == "8":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by("profile__subject_area__title")
+            else:
+                self.queryset = self.queryset.order_by("-profile__subject_area__title")
+        elif order_column_index == "9":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by("is_active")
+            else:
+                self.queryset = self.queryset.order_by("-is_active")
         return self.queryset
 
     def get_data(self, page):
