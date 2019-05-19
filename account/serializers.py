@@ -112,6 +112,7 @@ class UserPasswordSerializer(serializers.ModelSerializer):
             password_validation_data.pop("password2")
             validators.validate_password(password=data.get("password"), user=User(**password_validation_data))
         except exceptions.ValidationError as e:
+            print(f"what is going on: {e.messages}")
             raise serializers.ValidationError({"error": list(e.messages)})
         return data
 
