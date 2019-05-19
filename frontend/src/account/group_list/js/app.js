@@ -64,7 +64,7 @@ $(document).ready(function(){
       columnDefs: [
         {targets: 0, title: "", name: "", orderable: false},
         {targets: 1, title: "Gruppe", name: "name"},
-        {targets: 2, title: "Benutzer", name: "users"},
+        {targets: 2, title: "Benutzer", name: "users", orderable: false},
       ],
 
        // Mit ajax funktioniert muss nur angepasst werden auf REST API
