@@ -24,7 +24,7 @@ class BasicProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ("is_admin", "user", )
+        fields = ("is_admin", "user", "title", )
 
 
 def get_subject_area_choices():
@@ -70,10 +70,12 @@ class UserSerializer(serializers.ModelSerializer):
 class UserPasswordSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField()
     device_token = serializers.CharField()
+    title = serializers.CharField(allow_null=True, required=False)
 
     class Meta:
         model = User
-        fields = ('pk', 'username', "password", "password2", "email", "first_name", "last_name", "device_token")
+        fields = ('pk', 'username', "password", "password2", "email", "first_name", "last_name", "device_token",
+                  "title",)
         extra_kwargs = {"email": {"required": True, "allow_null": False},
                         "first_name": {"required": True, "allow_null": False},
                         "last_name": {"required": True, "allow_null": False}
@@ -83,12 +85,17 @@ class UserPasswordSerializer(serializers.ModelSerializer):
         data = {**self.validated_data}
         print(f"hopps: {data}")
         device_token = data.pop("device_token")
+        title = None
+        if "title" in data:
+            title = data.pop("title")
         data.pop("password2")
         user = User(**data)
         user.set_password(self.validated_data.get("password"))
         user.is_active = False
         user.save()
         user.profile.device_token = device_token
+        if title:
+            user.profile.title = title
         user.save()
         self.send_push_notifcation_to_new_user(user)
         return user
@@ -100,6 +107,8 @@ class UserPasswordSerializer(serializers.ModelSerializer):
             print(f"hello: {data}")
             password_validation_data = {**data}
             password_validation_data.pop("device_token")
+            if "title" in data:
+                password_validation_data.pop("title")
             password_validation_data.pop("password2")
             validators.validate_password(password=data.get("password"), user=User(**password_validation_data))
         except exceptions.ValidationError as e:
