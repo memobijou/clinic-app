@@ -55,7 +55,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('pk', 'username', 'first_name', 'last_name', "email", "is_superuser", "profile", "students",
+        fields = ('pk', "title", 'username', 'first_name', 'last_name', "email", "is_superuser", "profile", "students",
                   "is_active",)
 
     def update(self, instance, validated_data):
@@ -73,7 +73,7 @@ class UserPasswordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('pk', 'username', "password", "password2", "email", "first_name", "last_name", "device_token")
+        fields = ('pk', "title", 'username', "password", "password2", "email", "first_name", "last_name", "device_token")
         extra_kwargs = {"email": {"required": True, "allow_null": False},
                         "first_name": {"required": True, "allow_null": False},
                         "last_name": {"required": True, "allow_null": False}
