@@ -166,7 +166,7 @@ def send_push_notifcation_to_activated_user(user):
             r = push_service.notify_single_device(
                 registration_id=user.profile.device_token, message_title=f"Herzlich Willkommen",
                 message_body=f"Ihr Account wurde freigeschaltet",
-                sound="default", data_message={"category": "registration-activation"})
+                sound="default", data_message={"category": "registration-activation", "user_id": user.id})
             print(f"he: {r}")
             print("success acctivation")
         except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:

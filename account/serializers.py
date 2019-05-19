@@ -115,7 +115,7 @@ class UserPasswordSerializer(serializers.ModelSerializer):
                 r = push_service.notify_single_device(
                     registration_id=user.profile.device_token, message_title=f"Registrierung erfolgreich",
                     message_body=f"Sie müssen warten bis Ihr Account freigeschaltet wird",
-                    sound="default", data_message={"category": "registration"})
+                    sound="default", data_message={"category": "registration", "user_id": user.id})
                 print(f"he: {r}")
                 print("success registration")
             except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
