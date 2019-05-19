@@ -89,7 +89,9 @@ class GroupDatatables(DatatablesMixin):
     def get_filtered_queryset(self):
         search_value = self.request.GET.get("search[value]")
         if search_value != "" and search_value is not None:
-            self.queryset = self.queryset.filter(Q(name__icontains=search_value))
+            self.queryset = self.queryset.filter(
+                Q(Q(name__icontains=search_value) | Q(users__first_name__icontains=search_value)
+                  | Q(users__last_name__icontains=search_value) | Q(users__title__icontains=search_value))).distinct()
         return self.queryset
 
     def get_ordered_queryset(self):
