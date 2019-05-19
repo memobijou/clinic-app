@@ -16,7 +16,7 @@ class BasicUserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('pk', "title",  'username', 'first_name', 'last_name', "email", "is_superuser", )
+        fields = ('pk', "title",  'username', 'first_name', 'last_name', "email", "is_superuser", "is_active",)
 
 
 class BasicProfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -55,7 +55,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('pk', 'username', 'first_name', 'last_name', "email", "is_superuser", "profile", "students", )
+        fields = ('pk', 'username', 'first_name', 'last_name', "email", "is_superuser", "profile", "students",
+                  "is_active",)
 
     def update(self, instance, validated_data):
         profile = validated_data.pop("profile")

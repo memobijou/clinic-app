@@ -35,7 +35,7 @@ class UserViewSet(viewsets.ModelViewSet):
             user_serializer = UserSerializer(instance=user)
             return Response(user_serializer.data)
         else:
-            return Response({"error": "invalid password or username"},
+            return Response({"error": "Benutzername oder Passwort falsch"},
                             status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['POST'])
@@ -45,7 +45,7 @@ class UserViewSet(viewsets.ModelViewSet):
         user_already_exists = User.objects.filter(username=username).exists()
 
         if user_already_exists:
-            return Response({"error": "that user already exists"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Dieser Benutzer existiert bereits"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             serializer = UserPasswordSerializer(data=self.request.data)
             if serializer.is_valid():
