@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('username', 'password1', 'password2', 'first_name', 'last_name', "email", "is_superuser")
+        fields = ('username', 'password1', 'password2', 'first_name', 'last_name', "email",)
 
     def __init__(self, user=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -39,16 +39,8 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class EditForm(CustomUserCreationForm):
-    def clean_is_superuser(self):
-        is_superuser = self.cleaned_data.get("is_superuser")
-        if self.instance.is_superuser is True and (is_superuser is False or is_superuser is None):
-            self.add_error("is_superuser", "Ein Administrator kann diese Eigenschaft nicht abwählen")
-        return is_superuser
-
     def __init__(self, user=None, *args, **kwargs):
         super().__init__(user=user, *args, **kwargs)
-        self.fields["is_superuser"].widget.attrs["class"] = ""
-        self.fields["is_superuser"].widget.attrs["style"] = "cursor:pointer;"
         self.fields["password1"].required = False
         self.fields["password2"].required = False
 
