@@ -177,9 +177,7 @@ def send_push_notifcation_to_activated_user(user):
 def send_activation_notification(sender, instance, **kwargs):
     if instance.pk is not None:
         old_user = User.objects.get(pk=instance.pk)
-        print(f"why: {old_user.is_active} --- {instance.is_active}")
         if old_user.is_active is not True and instance.is_active is True:
-            print(f"love love")
             send_push_notifcation_to_activated_user(instance)
 
 

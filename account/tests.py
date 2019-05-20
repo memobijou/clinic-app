@@ -188,6 +188,16 @@ class UserTestCase(TestCase):
         response = self.client.post(reverse_lazy("api_account:user-registration"), data=test_data)
         self.assertEqual(response.status_code, 400)
 
+        # test_data["password"] = "what"
+        # test_data["password2"] = "smart"
+        # test_data["email"] = "mbona@hotmail.com"
+        # test_data["first_name"] = "hello"
+        # test_data["last_name"] = "hello"
+        # response = self.client.post(reverse_lazy("api_account:user-registration"), data=test_data)
+        # json_response = json.loads(response.content)
+        # print(f"gnooooooooooooooooome: {json_response}")
+        # self.assertEqual("haha", json_response)
+
     def test_rest_api_user_subject_area_assignment(self):
         user = mixer.blend(User)
         subject_area = mixer.blend(SubjectArea)
