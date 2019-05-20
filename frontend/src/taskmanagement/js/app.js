@@ -40,18 +40,6 @@ $(document).ready(function(){
         "aaSorting": []
 	} )
 
-    // Datetimepicker
-    $('.datetimepicker').datetimepicker(
-            {
-                locale: 'de',
-                widgetPositioning:{
-                    horizontal: 'auto',
-                    vertical: 'bottom',
-                }
-            }
-    );
-
-
     let button_show_inner_html = "Benutzer auswählen <span class=\"fa fa-caret-down\"></span>"
     let button_hide_inner_html = "Benutzer auswählen <span class=\"fa fa-caret-up\"></span>"
 
@@ -120,4 +108,26 @@ $(document).ready(function(){
         $("#peform_action_btn").attr("disabled", "")
     }
 
+    let config = {
+        locale: 'de',
+        widgetPositioning:{
+            horizontal: 'auto',
+            vertical: 'bottom',
+        },
+        useCurrent: false
+    }
+
+    $('#id_start_datetime').datetimepicker(config);
+
+    $('#id_end_datetime').datetimepicker(config);
+
+    $("#id_start_datetime").on("dp.change", function (e) {
+        $('#id_end_datetime').data("DateTimePicker").minDate(e.date);
+        $('#id_end_datetime').data("DateTimePicker").defaultDate(e.date)
+        $('#id_end_datetime').select()
+    });
+
+    $("#id_end_datetime").on("dp.change", function (e) {
+        $('#id_start_datetime').data("DateTimePicker").maxDate(e.date);
+    });
 })
