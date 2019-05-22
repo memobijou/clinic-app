@@ -14,6 +14,12 @@ class AccomplishmentFormMixin(BootstrapModelFormMixin):
         model = Accomplishment
         fields = ("name", "full_score", "subject_areas",)
 
+    def clean_full_score(self):
+        full_score = self.cleaned_data['full_score']
+        if full_score <= 0:
+            self.add_error("full_score", "Gesamtpunktezahl muss größer als 0 sein")
+        return full_score
+
     @transaction.atomic
     def save(self, commit=True, **kwargs):
         is_new_object = False
