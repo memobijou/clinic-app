@@ -24,8 +24,9 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
         today = datetime.datetime.now()
 
-        self.queryset = self.queryset.exclude(
-            Q(Q(end_date__year__lt=today.year) | Q(end_date__month__lt=today.month) | Q(end_date__day__lt=today.day)))
+        self.queryset = self.queryset.exclude(Q(end_date__month=today.month, end_date__day__lt=today.day)
+                                              | Q(end_date__month__lt=today.month)
+                                              | Q(end_date__year__lt=today.year,))
 
         if self.kwargs.get("user_id"):
             user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
