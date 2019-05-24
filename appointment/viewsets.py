@@ -28,6 +28,8 @@ class AppointmentViewSet(viewsets.ModelViewSet):
                                               | Q(end_date__month__lt=today.month)
                                               | Q(end_date__year__lt=today.year,))
 
+        self.queryset = self.queryset.exclude(is_infobox=True)
+
         if self.kwargs.get("user_id"):
             user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
             user.profile.appointment_badges = 0
@@ -35,7 +37,6 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         return self.queryset
 
     def filter(self):
-        self.filter_by_infobox_or_conference()
         self.filter_by_group_name()
         self.filter_by_group_pks()
         self.filter_groups_by_user_id()
@@ -72,10 +73,6 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         user_id = self.request.GET.get("user_id")
         if user_id is not None:
             self.queryset = self.queryset.filter(groups__users__pk=user_id)
-
-    def filter_by_infobox_or_conference(self):
-        if self.request.GET.get("is_conference") == "true":
-            self.queryset = self.queryset.filter(is_conference=True)
 
     @action(detail=False, name="calendar")
     def calendar(self, request):
