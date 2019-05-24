@@ -40,14 +40,8 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         self.filter_by_group_pks()
         self.filter_groups_by_user_id()
 
-        is_info = self.request.GET.get("is_infobox")
         is_conference = self.request.GET.get("is_conference")
 
-        if is_info == "true":
-            self.queryset = self.queryset.filter(is_infobox=True)
-            self.queryset = self.queryset.annotate(
-                promoter_name=Concat(F("promoter__first_name"), Value(' '), F("promoter__last_name"),
-                                     output_field=CharField()))
         if is_conference == "true":
             self.queryset = self.queryset.filter(is_conference=True)
 
@@ -80,9 +74,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
             self.queryset = self.queryset.filter(groups__users__pk=user_id)
 
     def filter_by_infobox_or_conference(self):
-        if self.request.GET.get("is_infobox") == "true":
-            self.queryset = self.queryset.filter(is_infobox=True)
-        elif self.request.GET.get("is_conference") == "true":
+        if self.request.GET.get("is_conference") == "true":
             self.queryset = self.queryset.filter(is_conference=True)
 
     @action(detail=False, name="calendar")
