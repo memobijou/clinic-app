@@ -1,6 +1,4 @@
 from uniklinik.settings.base import *
-
-from uniklinik.settings.base import *
 import dj_database_url
 
 # CUSTOM
