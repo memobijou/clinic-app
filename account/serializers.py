@@ -27,16 +27,16 @@ class BasicProfileSerializer(serializers.HyperlinkedModelSerializer):
         fields = ("is_admin", "user", "title", )
 
 
-def get_subject_area_choices():
-    return SubjectArea.objects.values_list("pk", "title")
+# def get_subject_area_choices():
+#     return SubjectArea.objects.values_list("pk", "title")
 
 
 class ProfileSerializer(serializers.ModelSerializer):
     mentor = BasicUserSerializer(read_only=True)
     subject_area = SubjectAreaSerializer(read_only=True)
-    subject_area_id = serializers.ChoiceField(
-        source="subject_area.pk", allow_null=True, label="Fachrichtung (subject_area_id)",
-        choices=lazy(get_subject_area_choices, tuple)())
+    # subject_area_id = serializers.ChoiceField(
+    #     source="subject_area.pk", allow_null=True, label="Fachrichtung (subject_area_id)",
+    #     choices=lazy(get_subject_area_choices, tuple)())
     total_badges = serializers.SerializerMethodField()
 
     def get_total_badges(self, instance):
