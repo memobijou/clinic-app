@@ -25,3 +25,5 @@ AWS_S3_OBJECT_PARAMETERS = {
 # AWS - Media
 
 DEFAULT_FILE_STORAGE = 'uniklinik.settings.storage_backends.MediaStorage'  # <-- here is where we reference it
+
+SECRET_KEY = os.environ.get("SECRET_KEY")
