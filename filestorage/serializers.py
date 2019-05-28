@@ -160,6 +160,7 @@ class FileDirectorySerializer(serializers.ModelSerializer):
         for child_directory in child_directories_queryset:
             request = self.context.get("request")
             user_id = self.context.get("user_id")
+            print(f"heyyy: {request}")
             if user_id:
                 url = reverse("api_filestorage:directories-detail", kwargs={"pk": child_directory.get("pk"),
                                                                             "user_id": user_id})
@@ -177,7 +178,8 @@ class FileDirectorySerializer(serializers.ModelSerializer):
     def get_parent(self, value):
         if value.parent:
             request = self.context.get("request")
-            url = reverse("api_filestorage:directories-detail", kwargs={"pk": value.parent.pk})
+            user_id = self.context.get("user_id")
+            url = reverse("api_filestorage:directories-detail", kwargs={"pk": value.parent.pk, "user_id": user_id})
             parent_dict = {"name": value.name, "pk": value.id}
             if request:
                 parent_dict["link"] = request.build_absolute_uri(url)
@@ -192,34 +194,6 @@ class FileDirectorySerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         super().save(**kwargs)
-
-
-# ViewSets define the view behavior.
-class DirectoryViewSet(viewsets.ModelViewSet):
-    queryset = FileDirectory.objects.all()
-    serializer_class = FileDirectorySerializer
-    pagination_class = PageNumberPagination
-
-    def get_serializer_context(self):
-        return {"request": self.request}
-
-    def get_queryset(self):
-        self.queryset = super().get_queryset()
-        if not self.kwargs.get("pk"):
-            self.queryset = self.queryset.filter(parent__isnull=True)
-        self.filter_by_name()
-        self.filter_by_name_exact()
-        return self.queryset
-
-    def filter_by_name(self):
-        name = self.request.GET.get("name")
-        if name is not None:
-            self.queryset = self.queryset.filter(name__icontains=name)
-
-    def filter_by_name_exact(self):
-        name = self.request.GET.get("name_exact")
-        if name is not None:
-            self.queryset = self.queryset.filter(name__iexact=name)
 
 
 # ViewSets define the view behavior.
