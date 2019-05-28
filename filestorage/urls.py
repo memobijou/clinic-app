@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework import routers
-from filestorage.serializers import FileViewSet, FileUploadCreateView, DirectoryViewSet, FileUploadUpdateView
+from filestorage.serializers import FileViewSet, FileUploadCreateView, FileUploadUpdateView
 from filestorage.views import FileDirectoryView, DownloadView, DownloadSubscribeAnnouncement, \
     FilestorageSubscribeAnnouncement, DeleteFileView
 from django.urls import include
@@ -11,11 +11,8 @@ from filestorage.views import FileView
 router = routers.DefaultRouter()
 router.register(r'', FileViewSet, basename="files")
 
-directory_router = routers.DefaultRouter()
-directory_router.register(r"directory", DirectoryViewSet, basename="directories")
 
 urlpatterns = [
-    path(r'api/', include(directory_router.urls)),
     path(r'files_api/', include(router.urls)),
     path(r'api/peform-upload/<int:directory_pk>/', FileUploadCreateView.as_view(), name='file_upload'),
     path(r'api/file/<int:file_pk>/edit/', FileUploadUpdateView.as_view(), name="file_upload_edit"),
