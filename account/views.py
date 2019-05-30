@@ -1,3 +1,4 @@
+from django.contrib.auth.views import LoginView
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -7,7 +8,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 from django.views import View
 from abc import ABCMeta, abstractmethod
-from account.forms import CustomUserCreationForm, ProfileFormMixin, CustomPasswordChangeForm, EditForm
+from account.forms import CustomUserCreationForm, ProfileFormMixin, CustomPasswordChangeForm, EditForm, \
+    CustomAuthenticationForm
 from account.models import Profile
 from django.contrib.auth.models import User
 
@@ -192,3 +194,19 @@ class UserDeletionView(generic.View):
             print(f"he: {profiles}")
             profiles.update(removed=True)
             return HttpResponseRedirect(reverse_lazy("account:user_list"))
+
+
+class CustomLoginView(LoginView):
+    form_class = CustomAuthenticationForm
+
+    def form_valid(self, form):
+        print(f"bob: {self.request.user.id}")
+        success_response = super().form_valid(form)
+        if self.request.user.is_superuser:
+            return success_response
+        if self.request.user.id:
+            print(f"safe: {not self.request.user.profile.is_admin}")
+            if not self.request.user.profile.is_admin:
+                form.add_error(None, "Zugriff verweigert")
+                return super().form_invalid(form)
+        return success_response
