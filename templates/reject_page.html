@@ -1,0 +1,52 @@
+{% load static %}
+
+<!doctype html>
+<html class="fixed">
+	<head>
+
+		<!-- Basic -->
+		<meta charset="UTF-8">
+
+		<title>UKGM | Verwaltung </title>
+		<meta name="keywords" content="UKGM Verwaltung" />
+		<meta name="description" content="UKGM - Verwaltung">
+		<meta name="author" content="UKGM">
+
+		<!-- Mobile Metas -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        {% block css %}
+            {% if settings.WEBPACK_DEV_SERVER is True %}
+                <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/base/bundle.css" />
+            {% else %}
+                <link rel="stylesheet" href="{% static 'dist/base/bundle.css' %}" />
+            {% endif %}
+        {% endblock %}
+
+        {% include "base/css/extra_css.html" %}
+	</head>
+	<body>
+        <div class="col-md-12">
+            <h1 class="text text-danger">Zugriff verweigert</h1>
+        </div>
+
+        {% block js %}
+            {% if settings.WEBPACK_DEV_SERVER is True %}
+                <script src="http://{{ settings.PUBLIC_IP }}:8080/build/base/bundle.js"></script>
+            {% else %}
+                <script src="{% static 'dist/base/bundle.js' %}"></script>
+            {% endif %}
+        {% endblock %}
+
+        {% block specific_page_vendor_js %}
+
+        {% endblock %}
+
+        {% include 'base/js/extra_js.html' %}
+
+
+        {% block examples %}
+
+        {% endblock %}
+	</body>
+</html>

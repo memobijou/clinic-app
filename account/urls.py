@@ -5,7 +5,7 @@ from account.group.views import GroupListView, GroupCreateView, GroupUpdateView,
 from account.viewsets import UserViewSet
 from account.datatables import UserListDatatables
 from account.views import CreateUserView, UserListView, UserProfileView, ChangeProfilePasswordView, UserEditView, \
-    UserActivationView, UserDeactivationView, UserDeletionView, ChangeUserPasswordView
+    UserActivationView, UserDeactivationView, UserDeletionView, ChangeUserPasswordView, CustomLoginView
 from rest_framework import routers
 from django.contrib.auth import views as auth_views
 
@@ -21,7 +21,7 @@ urlpatterns = [
     path(r'api/', include(user_group_router.urls)),
     path(r'users/datatables', UserListDatatables.as_view(), name="user_datatables"),
     path(r'groups/datatables', GroupDatatables.as_view(), name="group_datatables"),
-    path(r'users/login/', auth_views.LoginView.as_view(), name="login"),
+    path(r'users/login/', CustomLoginView.as_view(), name="login"),
     path('users/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path(r'users/new/', CreateUserView.as_view(), name='create_user'),
     path(r'users/', UserListView.as_view(), name='user_list'),
