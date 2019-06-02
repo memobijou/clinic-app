@@ -95,8 +95,11 @@
             </div>
             <h2 class="panel-title">Passwort zurücksetzen</h2>
         </header>
-        <div class="panel-body" style="display:none;">
+        <div class="panel-body" style="{% if password_form.non_field_errors|length == 0 %}display:none;{% endif %}">
             <fieldset class="mb-xl">
+                <div class="form-group col-md-12">
+                    {{ password_form.non_field_errors }}
+                </div>
                 <div class="form-group">
                     {{ password_form.new_password1.errors }}
                     <label class="col-md-3 control-label" for="{{ password_form.new_password1.id_for_label }}">{{ password_form.new_password1.label }}</label>
