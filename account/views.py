@@ -68,6 +68,23 @@ class UserEditBaseView(LoginRequiredMixin, generic.UpdateView, metaclass=ABCMeta
         context.update({"password_form": self.password_form})
         return super().get_context_data(**context)
 
+    def form_valid(self, form):
+        form = self.custom_form_validation(form)
+        if form.is_valid() is False:
+            return super().form_invalid(form)
+        return super().form_valid(form)
+
+    def custom_form_validation(self, form):
+        form = self.dont_allow_superuser_to_be_changed_from_non_superuser(form)
+        return form
+
+    def dont_allow_superuser_to_be_changed_from_non_superuser(self, form):
+        instance = form.save(commit=False)
+        if instance.is_superuser:
+            if not self.request.user.is_superuser:
+                form.add_error(None, "Sie haben keine Berechtigung diesen Nutzer zu bearbeiten")
+        return form
+
 
 class UserProfileView(UserEditBaseView):
     form_class = ProfileFormMixin
@@ -120,6 +137,9 @@ class BaseChangePasswordView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         if self.password_form.is_valid() is True:
+            self.password_form = self.custom_form_validation(self.password_form)
+            if self.password_form.is_valid() is False:
+                return render(request, self.template_name, self.get_context())
             self.password_form.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
@@ -135,6 +155,17 @@ class BaseChangePasswordView(LoginRequiredMixin, View):
     def get_context(self):
         context = {"object": self.object, "password_form": self.password_form, "form": self.form}
         return context
+
+    def custom_form_validation(self, form):
+        form = self.dont_allow_superuser_to_be_changed_from_non_superuser(form)
+        return form
+
+    def dont_allow_superuser_to_be_changed_from_non_superuser(self, form):
+        instance = form.save(commit=False)
+        if instance.is_superuser:
+            if not self.request.user.is_superuser:
+                form.add_error(None, "Sie haben keine Berechtigung diesen Nutzer zu bearbeiten")
+        return form
 
 
 class ChangeProfilePasswordView(BaseChangePasswordView):
