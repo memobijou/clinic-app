@@ -21,7 +21,8 @@ class PhoneBookDatatables(DatatablesMixin):
         if search_value != "" and search_value is not None:
             self.queryset = self.queryset.filter(
                 Q(Q(title__icontains=search_value) | Q(phone_number__icontains=search_value) |
-                  Q(first_name__icontains=search_value) | Q(last_name__icontains=search_value)))
+                  Q(first_name__icontains=search_value) | Q(last_name__icontains=search_value)
+                  | Q(mobile_number__icontains=search_value)))
         return self.queryset
 
     def get_ordered_queryset(self):
