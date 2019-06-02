@@ -208,7 +208,7 @@ class UserDeactivationView(generic.View):
     def dispatch(self, request, *args, **kwargs):
         if request.method == "POST":
             items = request.POST.getlist("item")
-            users = User.objects.filter(id__in=items)
+            users = User.objects.filter(id__in=items, is_superuser=False)
             print(f"he: {users}")
             for user in users:
                 user.is_active = False
