@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from account.models import Profile
+from account.models import Profile, AccountAuthorization
 from subject_area.models import SubjectArea
 from subject_area.serializers import SubjectAreaSerializer
 from django.utils.functional import lazy
@@ -142,3 +142,9 @@ class DeviceTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ("device_token", )
+
+
+class AuthorizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountAuthorization
+        fields = ("email", )

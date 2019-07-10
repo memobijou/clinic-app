@@ -1,7 +1,7 @@
 from django.test import TestCase
 from mixer.backend.django import mixer
 from django.urls import reverse_lazy
-from account.models import Group
+from account.models import Group, AccountAuthorization
 import json
 # Create your tests here.
 # admitStudent_MissingMandatoryFields_FailToAdmit
@@ -223,3 +223,21 @@ class UserTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(User.objects.get(pk=user.pk).profile.device_token, new_device_token)
+
+    def test_email_is_authorized(self):
+        response = self.client.post(reverse_lazy("account:authorize_mail"), data={"email": "example@example.com"})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(AccountAuthorization.objects.count(), 1)
+
+    def test_account_authorizations_email_is_unique(self):
+        response = self.client.post(reverse_lazy("account:authorize_mail"), data={"email": "example@example.com"})
+        response_error = self.client.post(reverse_lazy("account:authorize_mail"), data={"email": "example@example.com"})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response_error.status_code, 400)
+        self.assertEqual(AccountAuthorization.objects.count(), 1)
+
+    def test_email_authorization_deletion(self):
+        instance = AccountAuthorization.objects.create(email="example@example.com")
+        response = self.client.post(reverse_lazy("account:authorize_mail_deletion"), data={"item": [instance.pk]})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(AccountAuthorization.objects.count(), 0)

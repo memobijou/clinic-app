@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
 from django.db.models import Q, Case, When, Value, IntegerField
 from django.urls import reverse_lazy
-from account.serializers import UserSerializer
+from account.serializers import UserSerializer, AuthorizationSerializer
 from uniklinik.mixins import DatatablesMixin
+from account.models import AccountAuthorization
 
 
 class UserListDatatables(DatatablesMixin):
@@ -99,6 +100,53 @@ class UserListDatatables(DatatablesMixin):
                              str(query.profile.mentor_name), query.profile.get_students_string(),
                              getattr(getattr(query.profile, "subject_area", ""), "title", ""),
                              ok_span if query.is_active is True else not_ok_span]
+                            for query in page],
+                "records_total": self.queryset.count()}
+        return data
+
+
+class AuthorizationDatatables(DatatablesMixin):
+    queryset = AccountAuthorization.objects.all()
+    serializer_class = AuthorizationSerializer
+
+    def __init__(self):
+        super().__init__()
+        self.records_total = None
+        self.page_number = None
+        self.page_size = None
+
+    def get_filtered_queryset(self):
+        self.filter_by_search_value()
+        return self.queryset
+
+    def filter_by_search_value(self):
+        search_value = self.request.GET.get("search[value]")
+        if search_value != "" and search_value is not None:
+            self.queryset = self.queryset.filter(Q(Q(email__icontains=search_value)))
+
+    def get_ordered_queryset(self):
+        from django.db.models.functions import Lower
+        order_column_index = self.request.GET.get("order[0][column]")
+        asc_or_desc = self.request.GET.get("order[0][dir]")
+        print(f"what: {order_column_index}")
+        if order_column_index == "1":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by(Lower("email"))
+            else:
+                self.queryset = self.queryset.order_by(Lower("email"))
+        return self.queryset
+
+    def get_data(self, page):
+        ok_span = '<span class="glyphicon glyphicon-ok text-success"></span>'
+        not_ok_span = '<span class="glyphicon glyphicon-remove text-danger"></span>'
+
+        data = {"results": [[
+                             f'<p style="margin:0;padding:0;">'
+                             f'<a href="{reverse_lazy("account:user_edit", kwargs={"pk": query.pk})}">'
+                             f'Bearbeiten</a></p>'
+                             f'<p style="margin:0;padding:0;"><input type="checkbox" style="cursor:pointer;" '
+                             f'name="item" value={query.pk}></p>',
+                             query.email]
                             for query in page],
                 "records_total": self.queryset.count()}
         return data
