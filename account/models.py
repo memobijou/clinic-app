@@ -8,6 +8,7 @@ from accomplishment.models import Accomplishment, UserAccomplishment
 from taskmanagement.models import UserTask
 import os
 import random
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserManager(UserManager):
@@ -190,3 +191,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+class AccountAuthorization(models.Model):
+    email = models.EmailField(_('email address'), blank=False, unique=True)

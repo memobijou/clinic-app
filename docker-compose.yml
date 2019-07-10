@@ -25,6 +25,8 @@ services:
     environment:
       - public_ip=0.0.0.0
       - firebase_token=<dein token hier>
+      - mapper_url=https://kardio-mapper-staging.herokuapp.com
+      - host_url=127.0.0.1
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/clinic-app

@@ -1,6 +1,6 @@
 from django.contrib.auth.views import LoginView
 from django.db import transaction
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
@@ -9,9 +9,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from abc import ABCMeta, abstractmethod
 from account.forms import CustomUserCreationForm, ProfileFormMixin, CustomPasswordChangeForm, EditForm, \
-    CustomAuthenticationForm
-from account.models import Profile
+    CustomAuthenticationForm, AccountAuthorizationForm
+from account.models import Profile, AccountAuthorization
 from django.contrib.auth.models import User
+import json
+import requests
+import os
 
 
 class CreateUserView(LoginRequiredMixin, generic.CreateView):
@@ -190,7 +193,7 @@ class ChangeUserPasswordView(BaseChangePasswordView):
         return reverse_lazy("account:user_edit", kwargs={"pk": self.kwargs.get("pk")})
 
 
-class UserActivationView(generic.View):
+class UserActivationView(LoginRequiredMixin, generic.View):
     @transaction.atomic
     def dispatch(self, request, *args, **kwargs):
         if request.method == "POST":
@@ -203,7 +206,7 @@ class UserActivationView(generic.View):
             return HttpResponseRedirect(reverse_lazy("account:user_list"))
 
 
-class UserDeactivationView(generic.View):
+class UserDeactivationView(LoginRequiredMixin, generic.View):
     @transaction.atomic
     def dispatch(self, request, *args, **kwargs):
         if request.method == "POST":
@@ -216,7 +219,7 @@ class UserDeactivationView(generic.View):
             return HttpResponseRedirect(reverse_lazy("account:user_list"))
 
 
-class UserDeletionView(generic.View):
+class UserDeletionView(LoginRequiredMixin, generic.View):
     @transaction.atomic
     def dispatch(self, request, *args, **kwargs):
         if request.method == "POST":
@@ -241,3 +244,42 @@ class CustomLoginView(LoginView):
                 form.add_error(None, "Zugriff verweigert")
                 return super().form_invalid(form)
         return success_response
+
+
+class EmailAuthorizationView(LoginRequiredMixin, generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == "POST":
+            form = AccountAuthorizationForm(data=request.POST)
+            if form.is_valid() is True:
+                mapper_url = os.environ.get("mapper_url") + "/api/v1/mapping/submit_account/"
+                host_url = os.environ.get("host_url")
+                response = requests.post(mapper_url, data={"email": form.data.get("email"), "url": host_url})
+                print(f"status --- {response.status_code}")
+                print(f"ban --- {response.text}")
+                form.save()
+                return HttpResponseRedirect(reverse_lazy("account:authorize_mail"))
+            else:
+                error_msg = ""
+                for error_list in form.errors.values():
+                    for error in error_list:
+                        error_msg += error + "</br>"
+                context = {
+                    'status': '400', 'error': error_msg
+                }
+                print(f"error_____: {error_msg}")
+                response = HttpResponse(json.dumps(context), content_type='application/json')
+                response.status_code = 400
+                return response
+
+        if request.method == "GET":
+            template_name = "account/authorization/authorization.html"
+            return render(request, template_name, {"form": AccountAuthorizationForm()})
+
+
+class EmailAuthorizationDeleteView(LoginRequiredMixin, generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == "POST":
+            items = request.POST.getlist("item")
+            authorizations = AccountAuthorization.objects.filter(id__in=items)
+            authorizations.delete()
+            return HttpResponseRedirect(reverse_lazy("account:authorize_mail"))

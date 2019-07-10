@@ -119,6 +119,19 @@ const accountUserListConfig = Object.assign({}, config, {
 	}
 })
 
+
+const accountAuthorizationConfig = Object.assign({}, config, {
+	entry: {
+		bundle: "./src/account/authorization/js/app.js"
+	},
+	output: {
+		path: path.resolve(__dirname, "../static/dist/account/authorization/"),
+		filename: "[name].js",
+		publicPath: "/build/account/authorization/"
+	}
+})
+
+
 const accountGroupListConfig = Object.assign({}, config, {
 	entry: {
 		bundle: "./src/account/group_list/js/app.js"
@@ -237,6 +250,7 @@ const subjectAreaConfig = Object.assign({}, config, {
 module.exports = [
 	baseConfig,
 	accountUserListConfig,
+	accountAuthorizationConfig,
 	appointmentConfig,
 	dutyRosterConfig,
 	filestorageConfig,

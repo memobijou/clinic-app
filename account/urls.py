@@ -3,9 +3,10 @@ from django.urls import path, include
 from account.group.serializers import GroupDatatables, ReadOnlyGroupViewSet, UserGroupViewSet
 from account.group.views import GroupListView, GroupCreateView, GroupUpdateView, GroupDeletionView
 from account.viewsets import UserViewSet
-from account.datatables import UserListDatatables
+from account.datatables import UserListDatatables, AuthorizationDatatables
 from account.views import CreateUserView, UserListView, UserProfileView, ChangeProfilePasswordView, UserEditView, \
-    UserActivationView, UserDeactivationView, UserDeletionView, ChangeUserPasswordView, CustomLoginView
+    UserActivationView, UserDeactivationView, UserDeletionView, ChangeUserPasswordView, CustomLoginView, \
+    EmailAuthorizationView, EmailAuthorizationDeleteView
 from rest_framework import routers
 from django.contrib.auth import views as auth_views
 
@@ -20,6 +21,7 @@ urlpatterns = [
     path(r'api/', include(router.urls)),
     path(r'api/', include(user_group_router.urls)),
     path(r'users/datatables', UserListDatatables.as_view(), name="user_datatables"),
+    path(r'users/authorization/datatables', AuthorizationDatatables.as_view(), name="auth_datatables"),
     path(r'groups/datatables', GroupDatatables.as_view(), name="group_datatables"),
     path(r'users/login/', CustomLoginView.as_view(), name="login"),
     path('users/logout/', auth_views.LogoutView.as_view(), name='logout'),
@@ -36,4 +38,7 @@ urlpatterns = [
     path(r'users/activation', UserActivationView.as_view(), name='user_activation'),
     path(r'users/deactivation', UserDeactivationView.as_view(), name='user_deactivation'),
     path(r'users/deletion', UserDeletionView.as_view(), name='user_deletion'),
+    path(r'users/authorization', EmailAuthorizationView.as_view(), name='authorize_mail'),
+    path(r'users/authorization/deletion', EmailAuthorizationDeleteView.as_view(), name='authorize_mail_deletion'),
 ]
+

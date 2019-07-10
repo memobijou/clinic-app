@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Benutzer Authorisierung Übersicht</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span>Benutzer Authorisierung Übersicht</span></li>
+{% endblock %}
+
+{% block content %}
+    {% include 'account/authorization/form.html' %}
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="panel-actions">
+                <a href="#" class="fa fa-caret-down"></a>
+                <a href="#" class="fa fa-times"></a>
+            </div>
+            <h2 class="panel-title">Benutzer Authorisierung Übersicht</h2>
+        </header>
+
+        <form id="action_form" method="POST">{% csrf_token %}
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <table class="table table-bordered table-striped table-hover" id="datatable-default">
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </section>
+<!-- end: page -->
+{% endblock %}
+
+
+{% block examples %}
+
+{% endblock %}
+
+{% block css %}
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/account/authorization/bundle.css" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'dist/account/authorization/bundle.css' %}" />
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    <!-- Specific Page Vendor -->
+    <script>
+        var datatables_url = "{% url 'account:auth_datatables' %}";
+        var actions =
+            {
+                deletion: "{% url 'account:authorize_mail_deletion' %}"
+            }
+    </script>
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <script src="http://{{ settings.PUBLIC_IP }}:8080/build/account/authorization/bundle.js"></script>
+    {% else %}
+        <script src="{% static 'dist/account/authorization/bundle.js' %}"></script>
+    {% endif %}
+{% endblock %}

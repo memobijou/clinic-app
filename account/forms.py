@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm, AuthenticationForm
 from django import forms
 from django.db import transaction
-from account.models import User
+from account.models import User, AccountAuthorization
 from account.models import title_choices
 from subject_area.models import SubjectArea
 from uniklinik.forms import BootstrapModelFormMixin
@@ -110,3 +110,9 @@ class CustomPasswordChangeForm(PasswordChangeForm):
 
 class CustomAuthenticationForm(AuthenticationForm):
     pass
+
+
+class AccountAuthorizationForm(BootstrapModelFormMixin):
+    class Meta:
+        model = AccountAuthorization
+        fields = ("email", )
