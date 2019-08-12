@@ -104,7 +104,7 @@ class UserTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(group.users.count(), group_users_count+5)
 
-    def test_rest_api_login(self):
+    def test_rest_api_login_with_username(self):
         user = mixer.blend(User)
         password = "Password1¢"
         user.set_password(password)
@@ -117,6 +117,21 @@ class UserTestCase(TestCase):
 
         response = self.client.post(reverse_lazy("api_account:user-login"),
                                     data={"username": user.username, "password": "WRONG PASSWORD"})
+        self.assertEqual(response.status_code, 400)
+
+    def test_rest_api_login_with_email(self):
+        user = mixer.blend(User)
+        password = "Password1¢"
+        user.set_password(password)
+        user.save()
+        response = self.client.post(reverse_lazy("api_account:user-login"),
+                                    data={"email": user.email, "password": password})
+        self.assertEqual(response.status_code, 200)
+        json_response = json.loads(response.content)
+        self.assertEqual(user.pk, json_response.get("pk"))
+
+        response = self.client.post(reverse_lazy("api_account:user-login"),
+                                    data={"email": user.email, "password": "WRONG PASSWORD"})
         self.assertEqual(response.status_code, 400)
 
     def test_rest_api_registration(self):

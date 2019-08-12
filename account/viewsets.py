@@ -26,9 +26,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['POST'])
     def login(self, request):
+        email = self.request.POST.get("email")
         username = self.request.POST.get("username")
         password = self.request.POST.get("password")
-        user = get_object_or_404(User, username=username)
+        if email:
+            user = get_object_or_404(User, email=email)
+        else:
+            user = get_object_or_404(User, username=username)
+
         is_valid_password = user.check_password(password)
 
         if is_valid_password is True:
