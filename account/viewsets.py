@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -46,8 +47,9 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['POST'])
     def registration(self, request):
         username = self.request.data.get("username")
+        email = self.request.data.get("email")
 
-        user_already_exists = User.objects.filter(username=username).exists()
+        user_already_exists = User.objects.filter(Q(Q(username=username) | Q(email=email))).exists()
 
         if user_already_exists:
             return Response({"error": "Dieser Benutzer existiert bereits"}, status=status.HTTP_400_BAD_REQUEST)

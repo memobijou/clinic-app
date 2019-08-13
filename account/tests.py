@@ -174,6 +174,15 @@ class UserTestCase(TestCase):
                                     data=data)
         self.assertEqual(response.status_code, 400)
 
+        # Test exisiting email error
+
+        data["username"] = "432someuser123"
+
+        response = self.client.post(reverse_lazy("api_account:user-registration"),
+                                    data=data)
+
+        self.assertEqual(response.status_code, 400)
+
         # Test password similar to username error
 
         data["username"] = "new_user"
@@ -202,6 +211,8 @@ class UserTestCase(TestCase):
 
         response = self.client.post(reverse_lazy("api_account:user-registration"), data=test_data)
         self.assertEqual(response.status_code, 400)
+
+
 
         # test_data["password"] = "what"
         # test_data["password2"] = "smart"
