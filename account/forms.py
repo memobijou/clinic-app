@@ -24,6 +24,12 @@ class CustomUserCreationForm(UserCreationForm):
         for visible in self.visible_fields():
             visible.field.widget.attrs["class"] = "form-control"
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            self.add_error("email", "Email existiert bereits")
+        return email
+
     @transaction.atomic
     def save(self, commit=True):
         mentor = self.cleaned_data.get("mentor")
@@ -64,6 +70,13 @@ class EditForm(CustomUserCreationForm):
         instance.password = old_password
         instance.save()
         return instance
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email != self.instance.email:
+            if User.objects.filter(email=email).exists():
+                self.add_error("email", "Email existiert bereits")
+        return email
 
 
 class ProfileFormMixin(BootstrapModelFormMixin):
