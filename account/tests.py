@@ -42,6 +42,41 @@ class UserTestCase(TestCase):
         user.refresh_from_db()
         self.assertEqual(user.is_active, True)
 
+        # test user edition with same data
+
+        data = user.__dict__
+        response = self.client.post(reverse_lazy("account:user_edit", kwargs={"pk": user.pk}), data=data)
+        self.assertEqual(response.status_code, 302)
+
+        # test user edition with same email
+
+        before_email = user.email
+        user.email = "emailforyou@email.com"
+        user.save()
+        data = user.__dict__
+        response = self.client.post(reverse_lazy("account:user_edit", kwargs={"pk": user.pk}), data=data)
+        self.assertEqual(response.status_code, 302)
+
+        user.email = before_email
+        user.save()
+
+        # test user edition with new data
+
+        data["first_name"] = "someothername123"
+        data["last_name"] = "someotherlastname4323"
+        response = self.client.post(reverse_lazy("account:user_edit", kwargs={"pk": user.pk}), data=data)
+        self.assertEqual(response.status_code, 302)
+
+        # test user edition for exisiting email
+
+        second_user = mixer.blend(User, is_active=False)
+        second_user.email = "someotheremail@email.com"
+        second_user.save()
+
+        data["email"] = second_user.email
+        response = self.client.post(reverse_lazy("account:user_edit", kwargs={"pk": user.pk}), data=data)
+        self.assertEqual(response.status_code, 200)  # 200 on view is error
+
     def test_user_deletion(self):
         user = mixer.blend(User, is_active=False)
         user_2 = mixer.blend(User, is_active=False)
