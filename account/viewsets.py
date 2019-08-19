@@ -31,7 +31,7 @@ class UserViewSet(viewsets.ModelViewSet):
         username = self.request.POST.get("username")
         password = self.request.POST.get("password")
         if email:
-            user = get_object_or_404(User, email=email)
+            user = get_object_or_404(User, email__iexact=email)
         else:
             user = get_object_or_404(User, username=username)
 
