@@ -28,5 +28,4 @@ DEFAULT_FILE_STORAGE = 'uniklinik.settings.storage_backends.MediaStorage'  # <--
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-PREPEND_WWW = True
 SECURE_SSL_REDIRECT = True
