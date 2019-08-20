@@ -42,6 +42,10 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         self.filter_groups_by_user_id()
 
         is_conference = self.request.GET.get("is_conference")
+        is_infobox = self.request.GET.get("is_infobox")  # backwards compatibility
+
+        if is_infobox == "true":  # backwards compatibility
+            return Appointment.objects.none()
 
         if is_conference == "true":
             self.queryset = self.queryset.filter(is_conference=True)
