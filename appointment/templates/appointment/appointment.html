@@ -49,29 +49,6 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div id="edit_infobox" class="modal fade" role="dialog">
-      <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-              <form method="POST" id="edit_infobox_form">{% csrf_token %}
-                  <div class="modal-header" style="background-color:#f0ad4e;color:white;border-radius: 3px;">
-                    <button type="button" style="color:black;" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Task bearbeiten</h4>
-                  </div>
-                  <div class="modal-body">
-                        {% include 'appointment/forms/edit_infocard_form.html' %}
-                  </div>
-                  <div class="modal-footer">
-                      <div style="float:left;">
-                          <button type="submit" class="btn" style="background-color:#f0ad4e;color:white;">Änderungen speichern</button>
-                      </div>
-                  </div>
-              </form>
-            </div>
-      </div>
-    </div>
-
 
     <!-- Modal -->
     <div id="edit_conference" class="modal fade" role="dialog">

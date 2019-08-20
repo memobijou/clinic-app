@@ -58,14 +58,11 @@ class AppointmentView(LoginRequiredMixin, View):
 
     def __init__(self):
         super().__init__()
-        self.infobox_form = None
         self.edit_infobox_form = None
         self.edit_conference_form = None
         self.conference_form = None
 
     def dispatch(self, request, *args, **kwargs):
-        self.infobox_form = self.get_infobox_form()
-        self.edit_infobox_form = self.get_edit_infobox_form()
         self.edit_conference_form = self.get_edit_conference_form()
         self.conference_form = self.get_conference_form()
         return super().dispatch(request, *args, **kwargs)
@@ -73,26 +70,12 @@ class AppointmentView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.get_context())
 
-    def get_infobox_form(self):
-        if self.request.method == "POST":
-            self.infobox_form = InfoboxFormMixin(data=self.request.POST)
-        else:
-            self.infobox_form = InfoboxFormMixin()
-        return self.infobox_form
-
     def get_conference_form(self):
         if self.request.method == "POST":
             self.conference_form = ConferenceFormMixin(data=self.request.POST)
         else:
             self.conference_form = ConferenceFormMixin()
         return self.conference_form
-
-    def get_edit_infobox_form(self):
-        if self.request.method == "POST":
-            self.edit_infobox_form = InfoboxFormMixin(prefix="infobox_edit", data=self.request.POST)
-        else:
-            self.edit_infobox_form = InfoboxFormMixin(prefix="infobox_edit")
-        return self.edit_infobox_form
 
     def get_edit_conference_form(self):
         if self.request.method == "POST":
@@ -102,8 +85,7 @@ class AppointmentView(LoginRequiredMixin, View):
         return self.edit_conference_form
 
     def get_context(self):
-        return {"infobox_form": self.infobox_form, "conference_form": self.conference_form,
-                "edit_infobox_form": self.edit_infobox_form, "edit_conference_form": self.edit_conference_form}
+        return {"conference_form": self.conference_form, "edit_conference_form": self.edit_conference_form}
 
 
 def get_users_from_groups(groups):
