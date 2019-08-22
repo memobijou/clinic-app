@@ -58,16 +58,13 @@ def configuration_view(request):
     else:
         form = ConfigForm()
 
-    logo_encoded = None
     if settings.AWS_ACCESS_KEY_ID:
-        s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                          aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-        response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key='media/company/logo.jpg')
-        f = response['Body']
-        logo_encoded = base64.b64encode(f.read()).decode('ascii')
+        logo_url = reverse_lazy("config:logo")
+    else:
+        logo_url = staticfiles_storage.url("ukgm_logo.jpg")
 
     return render(request, 'configuration/configuration.html',
-                  {"form": form, "logo_url": staticfiles_storage.url("ukgm_logo.jpg"), "logo_encoded": logo_encoded})
+                  {"form": form, "logo_url": logo_url})
 
 
 def logo_view(request):
