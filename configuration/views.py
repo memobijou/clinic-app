@@ -74,7 +74,12 @@ def logo_view(request):
     if settings.AWS_ACCESS_KEY_ID:
         s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-        response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key='media/company/logo.jpg')
-        f = response['Body']
+        response = s3.list_objects_v2(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Prefix='media/company/')
+        objs = response['Contents']
+        latest = max(objs, key=lambda x: x['LastModified'])
+
+        # response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key='media/company/logo.jpg')
+        f = latest['Body']
         response = HttpResponse(f.read(), content_type='application/force-download')
+        response['Content-Disposition'] = 'attachment; filename=\"request.txt\"'
         return response
