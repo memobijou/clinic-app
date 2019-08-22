@@ -14,6 +14,13 @@ import base64
 
 
 def handle_uploaded_file(f, form):
+    try:
+        ImageField().to_python(f)
+    except ValidationError as e:
+        for error in e.error_list:
+            form.add_error("logo", error.message)
+        return
+
     if settings.AWS_ACCESS_KEY_ID:
         handle_boto3_upload(f, form)
         return
@@ -23,13 +30,6 @@ def handle_uploaded_file(f, form):
 
     if not os.path.exists(path):
         os.mkdir(path)
-
-    try:
-        ImageField().to_python(f)
-    except ValidationError as e:
-        for error in e.error_list:
-            form.add_error("logo", error.message)
-        return
 
     for filename in os.listdir(path):
         if filename.startswith("logo"):
