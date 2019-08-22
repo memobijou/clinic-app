@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.conf import settings
 from django.urls import reverse_lazy
@@ -68,3 +68,13 @@ def configuration_view(request):
 
     return render(request, 'configuration/configuration.html',
                   {"form": form, "logo_url": staticfiles_storage.url("ukgm_logo.jpg"), "logo_encoded": logo_encoded})
+
+
+def logo_view(request):
+    if settings.AWS_ACCESS_KEY_ID:
+        s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                          aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+        response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key='media/company/logo.jpg')
+        f = response['Body']
+        response = HttpResponse(f.read(), mimetype='application/force-download')
+        return response
