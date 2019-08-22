@@ -58,7 +58,7 @@ def handle_boto3_upload(f):
         to_delete_keys = []
         for obj in objs:
             if obj["Key"] != new_key:
-                to_delete_keys.append(obj["Key"])
+                to_delete_keys.append({"Key": obj["Key"]})
         s3 = boto3.resource('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
 
