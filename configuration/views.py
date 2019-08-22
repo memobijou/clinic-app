@@ -43,7 +43,27 @@ def handle_boto3_upload(f):
     s3 = boto3.resource('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
-    bucket.put_object(Key="media/company/logo" + "." + f.name.split(".")[len(f.name.split("."))-1], Body=f)
+    new_key = f.name.split(".")[len(f.name.split("."))-1]
+    bucket.put_object(Key="media/company/logo" + "." + new_key, Body=f)
+
+    s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                      aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+
+    response = s3.list_objects_v2(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Prefix='media/company/')
+
+    if "Contents" not in response:
+        return
+    else:
+        objs = response['Contents']
+        to_delete_keys = []
+        for obj in objs:
+            if obj["Key"] != new_key:
+                to_delete_keys.append(obj["Key"])
+        s3 = boto3.resource('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+
+        s3.meta.client.delete_objects(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Delete={"Objects": to_delete_keys})
+
 
 
 @login_required
