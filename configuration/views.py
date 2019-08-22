@@ -63,7 +63,7 @@ def configuration_view(request):
         s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
         response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key='media/company/logo.jpg')
-        f = response['Body'].read()
+        f = response['Body']
         logo_encoded = base64.b64encode(f.read())
 
     return render(request, 'configuration/configuration.html',
