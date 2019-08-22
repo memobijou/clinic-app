@@ -10,6 +10,7 @@ from django.forms.fields import ImageField
 from django.core.exceptions import ValidationError
 from django.contrib.staticfiles.storage import staticfiles_storage
 import boto3
+import base64
 
 
 def handle_uploaded_file(f, form):
@@ -57,5 +58,14 @@ def configuration_view(request):
     else:
         form = ConfigForm()
 
+    logo_encoded = None
+    if settings.AWS_ACCESS_KEY_ID:
+        s3 = boto3.resource('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+        bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
+        response = bucket.get_object(Key='media/company/logo.jpg')
+        f = response['Body'].read()
+        logo_encoded = base64.b64encode(f.read())
+
     return render(request, 'configuration/configuration.html',
-                  {"form": form, "logo_url": staticfiles_storage.url("ukgm_logo.jpg")})
+                  {"form": form, "logo_url": staticfiles_storage.url("ukgm_logo.jpg"), "logo_encoded": logo_encoded})

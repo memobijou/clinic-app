@@ -13,6 +13,10 @@
         <form method="POST" enctype="multipart/form-data">{% csrf_token %}
             <div class="panel-body text-center">
                 <div class="col-md-6 col-md-offset-3">
+                    {% if logo_encoded %}
+                      <img src="data:image/png;base64, {{ logo_encoded }}" />
+                    {% endif %}
+
                     <img src="{{ logo_url }}" class="img-responsive"/>
                     <br/>
                     {{ form.as_p }}
