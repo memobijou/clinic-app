@@ -33,6 +33,7 @@ urlpatterns = [
     path('accomplishment/', include(("accomplishment.urls", "accomplishment"), namespace="accomplishment")),
     path('messaging/', include(("messaging.urls", "messaging"), namespace="messaging")),
     path('phone-books/', include(("phonebook.urls", "phonebook"), namespace="phonebook")),
+    path('config/', include(("configuration.urls", "configuration"), namespace="config")),
     path('subject-areas/', include(("subject_area.urls", "subject_area"), namespace="subject_area")),
     path(r'api-auth/', include('rest_framework.urls')),
     path('api/v1/', include(('accomplishment.api_urls', "accomplishment"), namespace="api_accomplishment")),
