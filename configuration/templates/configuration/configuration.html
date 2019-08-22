@@ -13,7 +13,7 @@
         <form method="POST" enctype="multipart/form-data">{% csrf_token %}
             <div class="panel-body text-center">
                 <div class="col-md-6 col-md-offset-3">
-                    <img src="{{ logo_url }}" class="img-responsive"/>
+                    <img src="{{ logo_url }}" class="img-responsive center-block"/>
                     <br/>
                     {{ form.as_p }}
                 </div>
