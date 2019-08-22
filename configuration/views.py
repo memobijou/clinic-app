@@ -9,9 +9,14 @@ import os
 from django.forms.fields import ImageField
 from django.core.exceptions import ValidationError
 from django.contrib.staticfiles.storage import staticfiles_storage
+import boto3
 
 
 def handle_uploaded_file(f, form):
+    if settings.AWS_ACCESS_KEY_ID:
+        handle_boto3_upload(f, form)
+        return
+
     path = settings.MEDIA_ROOT + '/company/'
     file_path = path + "logo" + "." + f.name.split(".")[len(f.name.split("."))-1]
 
@@ -32,6 +37,13 @@ def handle_uploaded_file(f, form):
     with open(file_path, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
+
+
+def handle_boto3_upload(f, form):
+    s3 = boto3.resource('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+    bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
+    bucket.put_object(Key="/company/logo" + "." + f.name.split(".")[len(f.name.split("."))-1], Body=f)
 
 
 @login_required
