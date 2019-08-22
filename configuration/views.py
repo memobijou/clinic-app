@@ -81,6 +81,6 @@ def logo_view(request):
         response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
         f = response['Body']
         response = HttpResponse(f.read(), content_type='application/force-download')
-        filename = key.split("/")[len(key.split("/")-1)]
+        filename = key.split("/")[len(key.split("/"))-1]
         response['Content-Disposition'] = f'attachment; filename=\"{filename}\"'
         return response
