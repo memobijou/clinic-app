@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="panel-actions">
+                <a href="#" class="fa fa-caret-down"></a>
+                <a href="#" class="fa fa-times"></a>
+            </div>
+            <h2 class="panel-title">Einstellungen</h2>
+        </header>
+        <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+            <div class="panel-body text-center">
+                <div class="col-md-6 col-md-offset-3">
+                    <img src="{{ logo_url }}" class="img-responsive"/>
+                    <br/>
+                    {{ form.as_p }}
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <button class="btn btn-primary">Änderungen speichern</button>
+            </div>
+        </form>
+    </section>
+{% endblock %}

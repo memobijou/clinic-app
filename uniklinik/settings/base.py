@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'storages',
     "phonebook",
     "subject_area",
+    "configuration",
 ]
 
 
