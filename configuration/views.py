@@ -10,7 +10,6 @@ from django.forms.fields import ImageField
 from django.core.exceptions import ValidationError
 from django.contrib.staticfiles.storage import staticfiles_storage
 import boto3
-import base64
 
 
 def handle_uploaded_file(f, form):
@@ -22,7 +21,7 @@ def handle_uploaded_file(f, form):
         return
 
     if settings.AWS_ACCESS_KEY_ID:
-        handle_boto3_upload(f, form)
+        handle_boto3_upload(f)
         return
 
     path = settings.MEDIA_ROOT + '/company/'
@@ -40,7 +39,7 @@ def handle_uploaded_file(f, form):
             destination.write(chunk)
 
 
-def handle_boto3_upload(f, form):
+def handle_boto3_upload(f):
     s3 = boto3.resource('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
@@ -72,6 +71,14 @@ def logo_view(request):
         s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
         response = s3.list_objects_v2(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Prefix='media/company/')
+
+        if "Contents" not in response:
+            with open(settings.STATIC_ROOT + "/ukgm_logo.jpg", "rb") as f:
+                response = HttpResponse(f.read(), content_type='application/force-download')
+                filename = f.name.split("/")[len(f.name.split("/")) - 1]
+                response['Content-Disposition'] = f'attachment; filename=\"{filename}\"'
+                return response
+
         objs = response['Contents']
         latest = max(objs, key=lambda x: x['LastModified'])
         key = latest["Key"]
