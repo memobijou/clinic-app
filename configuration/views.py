@@ -64,7 +64,7 @@ def configuration_view(request):
                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
         response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key='media/company/logo.jpg')
         f = response['Body']
-        logo_encoded = base64.b64encode(f.read())
+        logo_encoded = base64.b64encode(f.read()).decode('ascii')
 
     return render(request, 'configuration/configuration.html',
                   {"form": form, "logo_url": staticfiles_storage.url("ukgm_logo.jpg"), "logo_encoded": logo_encoded})
