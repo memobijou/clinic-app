@@ -76,5 +76,5 @@ def logo_view(request):
                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
         response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key='media/company/logo.jpg')
         f = response['Body']
-        response = HttpResponse(f.read(), mimetype='application/force-download')
+        response = HttpResponse(f.read(), content_type='application/force-download')
         return response
