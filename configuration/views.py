@@ -77,9 +77,10 @@ def logo_view(request):
         response = s3.list_objects_v2(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Prefix='media/company/')
         objs = response['Contents']
         latest = max(objs, key=lambda x: x['LastModified'])
-
-        response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=latest["Key"])
+        key = latest["Key"]
+        response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
         f = response['Body']
         response = HttpResponse(f.read(), content_type='application/force-download')
-        response['Content-Disposition'] = 'attachment; filename=\"request.txt\"'
+        filename = key.split("/")[len(key.split("/")-1)]
+        response['Content-Disposition'] = f'attachment; filename=\"{filename}\"'
         return response
