@@ -8,8 +8,8 @@ from configuration.forms import ConfigForm
 import os
 from django.forms.fields import ImageField
 from django.core.exceptions import ValidationError
-from django.contrib.staticfiles.storage import staticfiles_storage
 import boto3
+from django.contrib.staticfiles import finders
 
 
 def handle_uploaded_file(f, form):
@@ -20,7 +20,7 @@ def handle_uploaded_file(f, form):
             form.add_error("logo", error.message)
         return
 
-    if settings.AWS_ACCESS_KEY_ID:
+    if hasattr(settings, "AWS_ACCESS_KEY_ID"):
         handle_boto3_upload(f)
         return
 
@@ -65,7 +65,6 @@ def handle_boto3_upload(f):
         s3.meta.client.delete_objects(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Delete={"Objects": to_delete_keys})
 
 
-
 @login_required
 def configuration_view(request):
     if request.POST:
@@ -77,17 +76,14 @@ def configuration_view(request):
     else:
         form = ConfigForm()
 
-    if settings.AWS_ACCESS_KEY_ID:
-        logo_url = reverse_lazy("config:logo")
-    else:
-        logo_url = staticfiles_storage.url("ukgm_logo.jpg")
+    logo_url = reverse_lazy("config:logo")
 
     return render(request, 'configuration/configuration.html',
                   {"form": form, "logo_url": logo_url})
 
 
 def logo_view(request):
-    if settings.AWS_ACCESS_KEY_ID:
+    if hasattr(settings, "AWS_ACCESS_KEY_ID"):
         s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
         response = s3.list_objects_v2(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Prefix='media/company/')
@@ -108,3 +104,21 @@ def logo_view(request):
         filename = key.split("/")[len(key.split("/"))-1]
         response['Content-Disposition'] = f'attachment; filename=\"{filename}\"'
         return response
+    else:
+        path = settings.MEDIA_ROOT + '/company/'
+
+        if os.path.exists(path):
+            for filename in os.listdir(path):
+                if filename.startswith("logo"):
+                    with open(path + f"/{filename}", "rb") as f:
+                        response = HttpResponse(f.read(), content_type='application/force-download')
+                        response['Content-Disposition'] = f'attachment; filename=\"{filename}\"'
+                        return response
+
+        path = finders.find('ukgm_logo.jpg')
+
+        with open(path, "rb") as f:
+            response = HttpResponse(f.read(), content_type='application/force-download')
+            filename = f.name.split("/")[len(f.name.split("/")) - 1]
+            response['Content-Disposition'] = f'attachment; filename=\"{filename}\"'
+            return response
