@@ -43,7 +43,7 @@ def handle_boto3_upload(f, form):
     s3 = boto3.resource('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
-    bucket.put_object(Key="/company/logo" + "." + f.name.split(".")[len(f.name.split("."))-1], Body=f)
+    bucket.put_object(Key="/media/company/logo" + "." + f.name.split(".")[len(f.name.split("."))-1], Body=f)
 
 
 @login_required
