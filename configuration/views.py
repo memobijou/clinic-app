@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.conf import settings
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 # Create your views here.
 from configuration.forms import ConfigForm
 import os
@@ -80,7 +80,7 @@ def configuration_view(request):
                     mapper_url = os.environ.get("mapper_url") + "/api/v1/mandators/submission/"
                     host_url = os.environ.get("host_url")
                     requests.post(mapper_url, data={"url": host_url,
-                                                    "logo_url": str(request.build_absolute_uri()) + logo_url})
+                                                    "logo_url": str(request.build_absolute_uri()) + str(logo_url)})
                 return HttpResponseRedirect(reverse_lazy("config:config"))
     else:
         form = ConfigForm()
