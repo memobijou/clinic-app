@@ -80,7 +80,8 @@ def configuration_view(request):
                     mapper_url = os.environ.get("mapper_url") + "/api/v1/mandators/submission/"
                     host_url = os.environ.get("host_url")
                     requests.post(mapper_url, data={"url": host_url,
-                                                    "logo_url": host_url + str(logo_url)})
+                                                    "logo_url": host_url + str(logo_url),
+                                                    "theme": form.cleaned_data.get("theme_color")})
                 return HttpResponseRedirect(reverse_lazy("config:config"))
     else:
         form = ConfigForm()
