@@ -10,6 +10,7 @@ from django.forms.fields import ImageField
 from django.core.exceptions import ValidationError
 import boto3
 from django.contrib.staticfiles import finders
+import requests
 
 
 def handle_uploaded_file(f, form):
@@ -68,16 +69,19 @@ def handle_boto3_upload(f):
 
 @login_required
 def configuration_view(request):
+    logo_url = reverse_lazy("config:logo")
+
     if request.POST:
         form = ConfigForm(data=request.POST, files=request.FILES)
         if form.is_valid() is True:
             handle_uploaded_file(request.FILES['logo'], form)
             if form.is_valid() is True:
+                mapper_url = os.environ.get("mapper_url") + "/api/v1/mandators/submission/"
+                host_url = os.environ.get("host_url")
+                requests.post(mapper_url, data={"url": host_url, "logo_url": logo_url})
                 return HttpResponseRedirect(reverse_lazy("config:config"))
     else:
         form = ConfigForm()
-
-    logo_url = reverse_lazy("config:logo")
 
     return render(request, 'configuration/configuration.html',
                   {"form": form, "logo_url": logo_url})
