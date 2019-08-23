@@ -1,8 +1,8 @@
 from django import forms
-import os
 
 
 class ConfigForm(forms.Form):
+    company_title = forms.CharField(label="Firmentitel")
     logo = forms.FileField(label="Neues Firmenlogo hochladen")
     theme_color = forms.ChoiceField(choices=(('blauweiss', 'blauweiss'),), label="Theme")
 

@@ -1,6 +1,5 @@
 from django.conf import settings  # import the settings file
 from django.db.models import Count, Case, When
-
 from taskmanagement.models import Task
 
 

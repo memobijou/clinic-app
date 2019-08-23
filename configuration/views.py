@@ -5,7 +5,7 @@ from django.conf import settings
 from django.urls import reverse_lazy, reverse
 # Create your views here.
 from configuration.forms import ConfigForm
-import os
+import os, json
 from django.forms.fields import ImageField
 from django.core.exceptions import ValidationError
 import boto3
@@ -76,12 +76,27 @@ def configuration_view(request):
         if form.is_valid() is True:
             handle_uploaded_file(request.FILES['logo'], form)
             if form.is_valid() is True:
+                company_title = form.cleaned_data.get("company_title")
+                config = {"company_title": company_title, "theme": form.cleaned_data.get("theme_color")}
                 if hasattr(settings, "AWS_ACCESS_KEY_ID"):
                     mapper_url = os.environ.get("mapper_url") + "/api/v1/mandators/submission/"
                     host_url = os.environ.get("host_url")
-                    requests.post(mapper_url, data={"url": host_url,
-                                                    "logo_url": host_url + str(logo_url),
+                    requests.post(mapper_url, data={"url": host_url, "logo_url": host_url + str(logo_url),
+                                                    "company_title": form.cleaned_data.get("company_title"),
                                                     "theme": form.cleaned_data.get("theme_color")})
+
+                    s3 = boto3.resource('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+                    bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
+                    config_key = "media/config/config.json"
+                    encoded_config = json.dumps(config, indent=4, ensure_ascii=False).encode()
+                    bucket.put_object(Key=config_key, Body=encoded_config)
+                else:
+                    path = settings.MEDIA_ROOT + '/config/'
+                    if not os.path.exists(path):
+                        os.mkdir(path)
+                    with open(path + "config.json", "w") as f:
+                        json.dump(config, f, indent=4, ensure_ascii=False)
                 return HttpResponseRedirect(reverse_lazy("config:config"))
     else:
         form = ConfigForm()
