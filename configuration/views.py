@@ -76,9 +76,11 @@ def configuration_view(request):
         if form.is_valid() is True:
             handle_uploaded_file(request.FILES['logo'], form)
             if form.is_valid() is True:
-                mapper_url = os.environ.get("mapper_url") + "/api/v1/mandators/submission/"
-                host_url = os.environ.get("host_url")
-                requests.post(mapper_url, data={"url": host_url, "logo_url": request.build_absolute_uri(logo_url)})
+                if hasattr(settings, "AWS_ACCESS_KEY_ID"):
+                    mapper_url = os.environ.get("mapper_url") + "/api/v1/mandators/submission/"
+                    host_url = os.environ.get("host_url")
+                    requests.post(mapper_url, data={"url": host_url,
+                                                    "logo_url": request.build_absolute_uri() + logo_url})
                 return HttpResponseRedirect(reverse_lazy("config:config"))
     else:
         form = ConfigForm()
