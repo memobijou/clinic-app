@@ -3,6 +3,7 @@ import boto3
 from django.conf import settings  # import the settings file
 from django.db.models import Count, Case, When
 from taskmanagement.models import Task
+from botocore.exceptions import ClientError
 
 
 def settings_context(request):
@@ -10,9 +11,12 @@ def settings_context(request):
         s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
         key = "media/config/config.json"
-        response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
-        f = response['Body']
-        config = json.load(f)
+        try:
+            response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
+            f = response['Body']
+            config = json.load(f)
+        except ClientError as e:
+            config = {}
     else:
         path = settings.MEDIA_ROOT + '/config/'
         try:
