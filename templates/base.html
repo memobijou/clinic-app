@@ -7,10 +7,10 @@
 		<!-- Basic -->
 		<meta charset="UTF-8">
 
-		<title>UKGM | Verwaltung </title>
-		<meta name="keywords" content="UKGM Verwaltung" />
-		<meta name="description" content="UKGM - Verwaltung">
-		<meta name="author" content="UKGM">
+		<title>{{ config.company_title|default:"CLINIC.link"}} | Verwaltung </title>
+		<meta name="keywords" content="{{ config.company_title|default:"CLINIC.link"}} Verwaltung" />
+		<meta name="description" content="{{ config.company_title|default:"CLINIC.link"}} - Verwaltung">
+		<meta name="author" content="{{ config.company_title|default:"CLINIC.link"}}">
 
 		<!-- Mobile Metas -->
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -33,7 +33,7 @@
                     <div>
                         <a class="navbar-brand" href="{% url 'main' %}" style="color:#292929;">
                             <p>
-                                <span style="font-size:20px;">UKGM</span></p>
+                                <span style="font-size:20px;">{{ config.company_title|default:"CLINIC.link"}}</span></p>
                          </a>
                     </div>
 					<div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
@@ -51,7 +51,7 @@
 							<figure class="profile-picture">
                                 <img src="{% static 'octopus/assets/images/!logged-user.jpg' %}" alt="" class="img-circle" data-lock-picture="{% static 'octopus/assets/images/!logged-user.jpg' %}" />
 							</figure>
-							<div class="profile-info" data-lock-name="John Doe" data-lock-email="">
+							<div class="profile-info" data-lock-name="" data-lock-email="">
                                 {% if request.user.first_name and request.user.last_name %}
 								    <span class="name">{{ request.user.first_name|default:"" }} {{ request.user.last_name|default:"" }}</span>
                                 {% else %}

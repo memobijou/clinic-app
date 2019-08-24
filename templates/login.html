@@ -6,9 +6,9 @@
 		<!-- Basic -->
 		<meta charset="UTF-8">
 
-		<title>UKGM - Login</title>
+		<title>{{ config.company_title|default:"CLINIC.link"}}  - Login</title>
 		<meta name="keywords" content="" />
-		<meta name="description" content="UKGM Verwaltung - Login">
+		<meta name="description" content="{{ config.company_title|default:"CLINIC.link"}} - Login">
 
 
 		<!-- Mobile Metas -->
@@ -32,7 +32,7 @@
 		<section class="body-sign" style="padding-bottom:20%;">
 			<div class="center-sign">
 				<a href="{% url 'main' %}" class="logo pull-left">
-                    <h3 style="color:black;text-decoration: none;">UKGM</h3>
+                    <h3 style="color:black;text-decoration: none;">{{ config.company_title|default:"CLINIC.link"}}</h3>
 				</a>
 
 				<div class="panel panel-sign">
