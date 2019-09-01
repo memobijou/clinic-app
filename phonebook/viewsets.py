@@ -3,11 +3,17 @@ from phonebook.models import PhoneBook
 from phonebook.serializers import PhoneBookSerializer
 from rest_framework import mixins
 from django.db.models import Q
+from rest_framework import pagination
+
+
+class CustomPagination(pagination.PageNumberPagination):
+    page_size = 500
 
 
 class PhoneBookViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = PhoneBookSerializer
     queryset = PhoneBook.objects.all().order_by("last_name")
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         q = self.request.GET.get("q")
