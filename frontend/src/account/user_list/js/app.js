@@ -14,7 +14,7 @@ $(document).ready(function(){
         {targets: 4, title: "Benutzername", name: "username"},
         {targets: 5, title: "Email", name: "email"},
         {targets: 6, title: "Mentor", name: "mentor"},
-        {targets: 7, title: "Schüler", name: "students", orderable: false},
+        {targets: 7, title: "Mentee", name: "students", orderable: false},
         {targets: 8, title: "Fachrichtung", name: "discipline"},
         {targets: 9, title: "Aktiv", name: "is_active"}
       ],

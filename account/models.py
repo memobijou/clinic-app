@@ -150,8 +150,8 @@ class Profile(models.Model):
             try:
                 if hasattr(mentor, "profile"):
                     r = push_service.notify_single_device(
-                        registration_id=mentor.profile.device_token, message_title="Neuer Schüler",
-                        message_body=f"{student_profile} wurde Ihnen als Schüler zugeteilt",
+                        registration_id=mentor.profile.device_token, message_title="Neuer Mentee",
+                        message_body=f"{student_profile} wurde Ihnen als Mentee zugeteilt",
                         sound="default", data_message={"category": "mentor"})
                     print("success mentor")
                     print(f"he: {r}")
