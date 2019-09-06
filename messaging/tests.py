@@ -8,12 +8,15 @@ from messaging.models import TextMessage
 from unittest import mock
 from account.models import Profile
 from messaging.utils import send_push_notification_to_receiver
+from rest_framework.authtoken.models import Token
 
 
 class MessagingTestCase(TestCase):
     def setUp(self):
         self.session_user = mixer.blend(User)
         self.client.force_login(self.session_user)
+        self.token = Token.objects.create(user=self.session_user).key
+        self.client.defaults['HTTP_AUTHORIZATION'] = 'Token ' + self.token
 
     def test_message_sending_rest_api(self):
         user_1 = mixer.blend(User)

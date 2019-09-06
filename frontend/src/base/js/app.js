@@ -55,3 +55,14 @@ function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
+
+
+$(document).ready(function(){
+  if(auth_token){
+      $.ajaxSetup({
+        headers: {
+            'Authorization': "Token " + auth_token
+        }
+    });
+  }
+})

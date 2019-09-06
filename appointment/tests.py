@@ -7,12 +7,15 @@ from django.urls import reverse_lazy
 from account.models import Group
 from appointment.views import send_push_notifications
 from unittest import mock
+from rest_framework.authtoken.models import Token
 
 
 class AppointmentTestCase(TestCase):
     def setUp(self):
         self.session_user = mixer.blend(User)
         self.client.force_login(self.session_user)
+        self.token = Token.objects.create(user=self.session_user).key
+        self.client.defaults['HTTP_AUTHORIZATION'] = 'Token ' + self.token
 
     def test_conference_creation(self):
         appointments_count = Appointment.objects.count()
@@ -75,6 +78,8 @@ class DutyRosterTestCase(TestCase):
     def setUp(self):
         self.session_user = mixer.blend(User)
         self.client.force_login(self.session_user)
+        self.token = Token.objects.create(user=self.session_user).key
+        self.client.defaults['HTTP_AUTHORIZATION'] = 'Token ' + self.token
 
     def test_duty_roster_upload(self):
         year = 2019

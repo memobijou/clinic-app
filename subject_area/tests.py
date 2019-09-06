@@ -4,12 +4,15 @@ from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from subject_area.models import SubjectArea
 from subject_area.forms import SubjectAreaForm
+from rest_framework.authtoken.models import Token
 
 
 class SubjectAreaTestCase(TestCase):
     def setUp(self):
         self.session_user = mixer.blend(User)
         self.client.force_login(self.session_user)
+        self.token = Token.objects.create(user=self.session_user).key
+        self.client.defaults['HTTP_AUTHORIZATION'] = 'Token ' + self.token
 
     def test_subject_area_creation(self):
         subject_areas_count = SubjectArea.objects.count()

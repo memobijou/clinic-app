@@ -8,12 +8,15 @@ from unittest import mock
 from account.models import Profile
 from django.contrib.auth.models import User
 from filestorage.utils import send_push_notifications
+from rest_framework.authtoken.models import Token
 
 
 class FilestorageTestCase(TestCase):
     def setUp(self):
         self.session_user = mixer.blend(User)
         self.client.force_login(self.session_user)
+        self.token = Token.objects.create(user=self.session_user).key
+        self.client.defaults['HTTP_AUTHORIZATION'] = 'Token ' + self.token
 
     def test_directory_creation(self):
         response = self.client.post(reverse_lazy("filestorage:tree"), data={"name": "directory"})

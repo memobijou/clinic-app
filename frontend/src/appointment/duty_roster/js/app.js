@@ -78,7 +78,11 @@ $(document).ready(function(){
        // Also filtern nach Querystring Parameter die man von Datatables bekommt
        // Und Datensätze anzeigen wie es Datatables erwartet
        serverSide: true,
-       ajax: api_url,
+       ajax: {
+        url: api_url,
+        type: "GET",
+        headers: {},
+       },
        lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
        autoWidth: false,
        initComplete: function(settings, json) {
@@ -137,7 +141,8 @@ $(document).ready(function(){
       dictResponseError: 'Fehler beim hochladen der Datei!',
       maxFiles: 1,
       headers: {
-          "x-csrftoken": window.CSRF_TOKEN
+          "x-csrftoken": window.CSRF_TOKEN,
+          "Authorization": "Token " + auth_token
       },
       //previewsContainer: '#preview',
       init: function(){

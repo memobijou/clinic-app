@@ -6,12 +6,15 @@ from account.models import Group, Profile
 from unittest import mock
 from taskmanagement.utils import send_push_notifications
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 
 class TaskManagementTestCase(TestCase):
     def setUp(self):
         self.session_user = mixer.blend(User)
         self.client.force_login(self.session_user)
+        self.token = Token.objects.create(user=self.session_user).key
+        self.client.defaults['HTTP_AUTHORIZATION'] = 'Token ' + self.token
 
     def test_task_creation(self):
         tasks_count = Task.objects.count()

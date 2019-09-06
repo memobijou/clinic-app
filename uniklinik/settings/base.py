@@ -143,9 +143,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100,
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        #'rest_framework.authentication.TokenAuthentication',  # <-- And here
-        #'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
     ]
 }
 
@@ -157,3 +157,4 @@ MEDIA_URL = "/media/"
 PUBLIC_IP = os.environ.get("public_ip", "0.0.0.0")
 
 # TESTING
+AUTHENTICATION_BACKENDS = ['uniklinik.views.CustomModelBackend']

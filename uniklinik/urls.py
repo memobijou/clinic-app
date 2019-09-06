@@ -21,6 +21,7 @@ from rest_framework.authtoken import views
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 
+from uniklinik.views import CustomAuthToken
 
 urlpatterns = [
     path('', login_required(TemplateView.as_view(template_name='main.html')), name="main"),
@@ -47,7 +48,7 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path(r'api-token-auth/', views.obtain_auth_token)
+    path(r'api-token-auth/', CustomAuthToken.as_view())
 ]
 
 if settings.DEBUG is True:
