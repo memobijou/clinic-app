@@ -1,3 +1,4 @@
+from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.db import transaction
 from django.http import HttpResponseRedirect, HttpResponse
@@ -242,8 +243,13 @@ class CustomLoginView(LoginView):
             print(f"safe: {not self.request.user.profile.is_admin}")
             if not self.request.user.profile.is_admin:
                 form.add_error(None, "Zugriff verweigert")
+                logout(self.request)
                 return super().form_invalid(form)
         return success_response
+
+    def post(self, request, *args, **kwargs):
+
+        return super().post(request, *args, **kwargs)
 
 
 class EmailAuthorizationView(LoginRequiredMixin, generic.View):
