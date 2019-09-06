@@ -7,12 +7,15 @@ import json
 # admitStudent_MissingMandatoryFields_FailToAdmit
 from subject_area.models import SubjectArea
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 
 class UserTestCase(TestCase):
     def setUp(self):
         self.session_user = mixer.blend(User)
         self.client.force_login(self.session_user)
+        self.token = Token.objects.create(user=self.session_user).key
+        self.client.defaults['HTTP_AUTHORIZATION'] = 'Token ' + self.token
 
     def test_user_creation(self):
         users_count = User.objects.count()

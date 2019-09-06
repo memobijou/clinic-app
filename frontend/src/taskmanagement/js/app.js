@@ -22,7 +22,11 @@ $(document).ready(function(){
        // Also filtern nach Querystring Parameter die man von Datatables bekommt
        // Und Datensätze anzeigen wie es Datatables erwartet
        serverSide: true,
-       ajax: api_url,
+       ajax: {
+        url: api_url,
+        type: "GET",
+        headers: {  },
+       },
        lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
        autoWidth: false,
        initComplete: function(settings, json) {

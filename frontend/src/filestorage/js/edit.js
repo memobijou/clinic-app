@@ -44,6 +44,9 @@ $(document).ready(function(){
         autodiscover: false,
         maxFiles: window.maxFiles,
         parallelUploads: 1,
+        headers: {
+            "Authorization": "Token " + auth_token
+        },
         success: function(file, response){
             file["pk"] = response.pk;
             window.success_function(this, file, response);
@@ -55,6 +58,7 @@ $(document).ready(function(){
                 $.ajax({
                    beforeSend: function(xhr, settings) {
                         xhr.setRequestHeader("X-CSRFToken", window.CSRF_TOKEN);
+                        // xhr.setRequestHeader("Authorization", "Token " + auth_token);
                    },
                    url: url,
                    type: 'DELETE'

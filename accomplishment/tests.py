@@ -6,12 +6,15 @@ from accomplishment.forms import AccomplishmentFormMixin
 from accomplishment.models import Accomplishment
 from django.urls import reverse_lazy
 from subject_area.models import SubjectArea
+from rest_framework.authtoken.models import Token
 
 
 class AccomplishmentTestCase(TestCase):
     def setUp(self):
         self.session_user = mixer.blend(User)
         self.client.force_login(self.session_user)
+        self.token = Token.objects.create(user=self.session_user).key
+        self.client.defaults['HTTP_AUTHORIZATION'] = 'Token ' + self.token
 
     def test_accomplishment_creation(self):
         accomplishments_count = Accomplishment.objects.count()

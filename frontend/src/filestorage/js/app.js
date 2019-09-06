@@ -8,7 +8,6 @@ import '~/vendor/dropzone/4.3.0/dropzone.css'
 
 import 'script-loader!~/vendor/dropzone/4.3.0/dropzone.js'
 
-
 let {template} = require("~/filestorage/js/templates/base_tpl.js")
 
 window.template = template
@@ -27,6 +26,7 @@ window.options_in_german = {
   'dictRemoveFile': 'Datei entfernen',
   'dictMaxFilesExceeded': 'Sie können keine weiteren Dateien mehr hochladen'
 };
+
 
 
 const show_dropzone_html = `
@@ -102,12 +102,10 @@ const peform_upload = function(formData){
         contentType: false,
         processData: false,
         data: formData,
-    // other attributes of AJAX
+        // other attributes of AJAX
+    }).always(function(){
+        location.reload()
     })
-        .always(function(){
-            location.reload()
-        })
-
 }
 
 ;["drop"].forEach(eventName => {

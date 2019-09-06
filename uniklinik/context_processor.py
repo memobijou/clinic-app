@@ -4,6 +4,7 @@ from django.conf import settings  # import the settings file
 from django.db.models import Count, Case, When
 from taskmanagement.models import Task
 from botocore.exceptions import ClientError
+from rest_framework.authtoken.models import Token
 
 
 def settings_context(request):
@@ -24,9 +25,18 @@ def settings_context(request):
                 config = json.load(f)
         except OSError as e:
             config = {}
+    token = None
+    if request.user.is_authenticated:
+        token = Token.objects.filter(user=request.user).first()
+        if token:
+            print(f"???????: {token}")
+        else:
+            print(f"NO TOKEN YET")
+            token = Token.objects.create(user=request.user)
+        token = str(token)
 
     # return the value you want as a dictionnary. you may add multiple values in there.
     return {'settings': settings, "global_tasks": Task.objects.all().annotate(completed_count=Count(
         Case(When(usertasks__completed=True,then="usertasks")))).annotate(
         users_count=Count("users"),
-    ).order_by("end_datetime").distinct()[:10], "config": config}
+    ).order_by("end_datetime").distinct()[:10], "config": config, "auth_token": token}

@@ -23,7 +23,7 @@ services:
       dockerfile: Dockerfile.web
     tty: true
     environment:
-      - public_ip=0.0.0.0
+      - public_ip=127.0.0.1
       - firebase_token=<dein token hier>
       - mapper_url=https://kardio-mapper-staging.herokuapp.com
       - host_url=127.0.0.1
