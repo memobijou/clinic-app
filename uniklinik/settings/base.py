@@ -156,5 +156,5 @@ MEDIA_URL = "/media/"
 # CUSTOM SETTINGS
 PUBLIC_IP = os.environ.get("public_ip", "0.0.0.0")
 
-# TESTING
+
 AUTHENTICATION_BACKENDS = ['uniklinik.views.CustomModelBackend']
