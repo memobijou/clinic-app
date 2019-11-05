@@ -247,10 +247,6 @@ class CustomLoginView(LoginView):
                 return super().form_invalid(form)
         return success_response
 
-    def post(self, request, *args, **kwargs):
-
-        return super().post(request, *args, **kwargs)
-
 
 class EmailAuthorizationView(LoginRequiredMixin, generic.View):
     def dispatch(self, request, *args, **kwargs):
