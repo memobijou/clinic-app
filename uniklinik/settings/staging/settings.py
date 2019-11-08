@@ -25,3 +25,16 @@ AWS_S3_OBJECT_PARAMETERS = {
 # AWS - Media
 
 DEFAULT_FILE_STORAGE = 'uniklinik.settings.storage_backends.MediaStorage'  # <-- here is where we reference it
+
+
+# Channels Specific
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        },
+        "symmetric_encryption_keys": [SECRET_KEY],
+    },
+}
+ASGI_APPLICATION = 'uniklinik.routing.application'
