@@ -1,6 +1,7 @@
 from uniklinik.settings.base import *
 import dj_database_url
 
+
 # CUSTOM
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
