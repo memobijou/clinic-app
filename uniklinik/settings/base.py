@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'appointment',
     'rest_framework',
     'rest_framework.authtoken',
+    'channels',
     'filestorage',
     "uniklinik",
     'taskmanagement',
@@ -158,3 +159,8 @@ PUBLIC_IP = os.environ.get("public_ip", "0.0.0.0")
 
 
 AUTHENTICATION_BACKENDS = ['uniklinik.views.CustomModelBackend']
+
+
+# Channels
+
+ASGI_APPLICATION = "uniklinik.routing.application"

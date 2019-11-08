@@ -1,0 +1,30 @@
+<h1>TEST</h1>
+
+
+<script>
+    let ws_start = "ws://";
+    if(location.protocol === "https"){
+        ws_start = "wss://";
+    }
+    let endpoint = ws_start + location.host + location.pathname + "/1/2/";
+    let socket = new WebSocket(endpoint);
+
+    socket.onopen = function(e){
+        console.log("OPEN", e);
+    };
+
+    socket.onmessage = function(e){
+        console.log("MSG", e);
+        console.log(JSON.parse(e.data));
+
+    };
+
+    socket.close = function(e){
+        console.log("CLOSE", e);
+    };
+
+    socket.onerror = function(e){
+        console.log("ERROR", e);
+    }
+
+</script>
