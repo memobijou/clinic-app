@@ -7,7 +7,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import mixins
 from account.serializers import UserSerializer, SubjectAreaAssignmentSerializer, UserPasswordSerializer, \
-    DeviceTokenSerializer, AuthorizationSerializer
+    DeviceTokenSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -25,7 +25,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if pk_filter_value is not None and pk_filter_value != "":
             self.queryset = self.queryset.filter(pk=pk_filter_value)
 
-    @action(detail=False, methods=['POST'])
+    @action(detail=False, methods=['POST'], authentication_classes=[], permission_classes=[])
     def login(self, request):
         email = self.request.POST.get("email")
         username = self.request.POST.get("username")
@@ -44,7 +44,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response({"error": "Benutzername oder Passwort falsch"},
                             status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['POST'])
+    @action(detail=False, methods=['POST'], authentication_classes=[], permission_classes=[])
     def registration(self, request):
         username = self.request.data.get("username")
         email = self.request.data.get("email")
@@ -88,3 +88,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RegistrationLoginViewset(viewsets.ModelViewSet):
+    pass
