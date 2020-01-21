@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "phonebook",
     "subject_area",
     "configuration",
+    "broadcast"
 ]
 
 

@@ -45,6 +45,7 @@ urlpatterns = [
     path('api/v1/', include(('taskmanagement.api_urls', "taskmanagement"), namespace="api_taskmanagement")),
     path('api/v1/', include(('appointment.api_urls', "appointment"), namespace="api_appointment")),
     path('api/v1/', include(('filestorage.api_urls', "filestorage"), namespace="api_filestorage")),
+    path('api/v1/', include(('broadcast.api_urls', "broadcast"), namespace="api_broadcast")),
 ]
 
 urlpatterns += [
