@@ -19,3 +19,13 @@ class Like(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="likes")
     broadcast = models.ForeignKey("broadcast.Broadcast", null=True, on_delete=models.SET_NULL)
     like_datetime = models.DateTimeField(null=True, auto_now=True)
+
+
+class Comment(models.Model):
+    class Meta:
+        ordering = ("-send_datetime", )
+
+    text = models.TextField()
+    sender = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="comments")
+    send_datetime = models.DateTimeField(null=True, auto_now=True)
+    broadcast = models.ForeignKey("broadcast.Broadcast", null=True, on_delete=models.SET_NULL)
