@@ -29,3 +29,11 @@ class Comment(models.Model):
     sender = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="comments")
     send_datetime = models.DateTimeField(null=True, auto_now=True)
     broadcast = models.ForeignKey("broadcast.Broadcast", null=True, on_delete=models.SET_NULL)
+
+
+class Attachement(models.Model):
+    class Meta:
+        ordering = ("upload_datetime", )
+    file = models.FileField(upload_to="broadcast_")
+    upload_datetime = models.DateTimeField(null=True, auto_now=True)
+    broadcast = models.ForeignKey("broadcast.Broadcast", null=True, on_delete=models.SET_NULL)
