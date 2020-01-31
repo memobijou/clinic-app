@@ -92,6 +92,8 @@ class UserListDatatables(DatatablesMixin):
 
         data = {"results": [[
                              f'<p style="margin:0;padding:0;">'
+                             f'<a href="{reverse_lazy("account:user_profile", kwargs={"pk": query.pk})}">'
+                             f'Profil</a></p>'
                              f'<a href="{reverse_lazy("account:user_edit", kwargs={"pk": query.pk})}">'
                              f'Bearbeiten</a></p>'
                              f'<p style="margin:0;padding:0;"><input type="checkbox" style="cursor:pointer;" '

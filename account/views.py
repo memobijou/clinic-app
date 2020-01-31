@@ -94,6 +94,19 @@ class UserProfileView(UserEditBaseView):
     form_class = ProfileFormMixin
     template_name = "account/user/profile/profile.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        self.object = context["object"]
+        context["total_scored"] = 0
+        context["total_full_score"] = 0
+
+        for user_accoomplishment in self.object.user_accomplishments.all():
+            context["total_scored"] += user_accoomplishment.score
+            context["total_full_score"] += user_accoomplishment.accomplishment.full_score
+
+        context["total_full_scored_percentage"] = int(context["total_scored"]/context["total_full_score"]*100)
+        return context
+
     def get_success_url(self):
         return reverse_lazy("account:user_profile", kwargs={"pk": self.kwargs.get("pk")})
 

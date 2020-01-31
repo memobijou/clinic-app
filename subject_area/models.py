@@ -12,3 +12,11 @@ class SubjectArea(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Category(models.Model):
+    title = models.CharField(max_length=200, verbose_name="Bezeichnung")
+    subject_area = models.ForeignKey("subject_area.SubjectArea", null=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return self.title

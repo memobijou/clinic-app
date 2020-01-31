@@ -67,7 +67,7 @@ $(document).ready(function(){
         {targets: 1, title: "Bezeichnung", name: "name"},
         {targets: 2, title: "Gesamtpunktestand", name: "full_score"},
         {targets: 3, title: "Fachrichtungen", name: "subject_areas", orderable: false},
-        {targets: 4, title: "Benutzer", name: "users", orderable: false},
+        {targets: 4, title: "Kategorien", name: "categories", orderable: false},
 
       ],
 

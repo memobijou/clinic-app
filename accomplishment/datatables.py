@@ -3,6 +3,7 @@ from django.db.models.functions import Lower
 from django.urls import reverse_lazy
 from accomplishment.models import Accomplishment
 from accomplishment.serializers import AccomplishmentSerializer
+from subject_area.models import SubjectArea
 from uniklinik.mixins import DatatablesMixin
 
 
@@ -26,10 +27,8 @@ class AccomplishmentDatatables(DatatablesMixin):
         for search_value in search_values:
             if search_value != "" and search_value is not None:
                 self.queryset = self.queryset.filter(
-                    Q(Q(name__icontains=search_value) | Q(subject_areas__title__icontains=search_value) |
-                      Q(users__profile__title__icontains=search_value) |
-                      Q(users__first_name__icontains=search_value) | Q(users__last_name__icontains=search_value) |
-                      Q(full_score__icontains=search_value))).distinct()
+                    Q(Q(name__icontains=search_value) | Q(categories__title__icontains=search_value))
+                    | Q(categories__subject_area__title__icontains=search_value)).distinct()
 
     def get_ordered_queryset(self):
         order_column_index = self.request.GET.get("order[0][column]")
@@ -50,13 +49,14 @@ class AccomplishmentDatatables(DatatablesMixin):
         data = {"results": [], "records_total": self.queryset.count()}
         for query in page:
             subject_areas_string = ""
-            subject_areas = query.subject_areas.all()
+            subject_areas = SubjectArea.objects.filter(category__id__in=query.categories.all().values_list("pk"))
             for subject_area in subject_areas:
                 subject_areas_string += subject_area.title + "<br/>"
-            users_string = ""
-            for user in query.users.all():
-                users_string += str(user) + "<br/>"
+            categories_string = ""
+            print(f"????!?!?!?!: {query.categories.all()}")
+            for category in query.categories.all():
+                categories_string += str(category) + "<br/>"
             data["results"].append([
                 f'<a href="{reverse_lazy("accomplishment:edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
-                query.name, query.full_score, subject_areas_string, users_string])
+                query.name, query.full_score, subject_areas_string, categories_string])
         return data

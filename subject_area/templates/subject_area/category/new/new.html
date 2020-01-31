@@ -2,46 +2,48 @@
 {% load static %}
 
 {% block horizontal_nav_title %}
-    <h2>Fachrichtung bearbeiten</h2>
+    <h2>Neue Kategorie anlegen</h2>
 {% endblock %}
 
 {% block horizontal_nav_navigation %}
     <li><span><a href="{% url 'subject_area:list' %}">Fachrichtungen Übersicht</a></span></li>
-    <li><span>Fachrichtung bearbeiten</span></li>
+    <li><span><a href="{% url 'subject_area:edit' pk=subject_area_object.pk %}">Fachrichtung bearbeiten</a></span></li>
+    <li><span><a>Neue Kategorie anlegen</a></span></li>
 {% endblock %}
 
 {% block content %}
 
     <div class="row">
         <div class="col-md-12">
+            <div>
+                <section class="panel">
+                    <section class="panel-body">
+                        <b>Fachrichtung:</b> {{ subject_area_object.title }}
+                    </section>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <section class="panel">
-                {% include 'subject_area/form.html' %}
+                {% include 'subject_area/category/new/form.html' %}
             </section>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <section class="panel">
-                <header class="panel-heading">
-                    <div class="panel-actions">
-                        <a href="#" class="fa fa-caret-down" id="display_category_btn"></a>
-                        <a href="#" class="fa fa-times"></a>
-                    </div>
-                    <h2 class="panel-title">Kategorien</h2>
-                </header>
                 <section class="panel-body">
                 <div class="col-md-12">
-                    <div class="pull-right">
-                        <a class="btn btn-info" href="{% url 'subject_area:new-category' pk=object.pk %}">Neue Kategorie anlegen</a><br/><br/>
-                    </div>
-                    {% with categories=object.category_set.all %}
+                    {% with categories=subject_area_object.category_set.all %}
                         {% if categories %}
-                            <p>Kategorien von <b>{{ object.title }}</b></p>
+                            <p>Kategorien von <b>{{ subject_area_object.title }}</b></p>
                             {% for category in categories %}
-                               <p> {{ category.title }} <a href="{% url 'subject_area:edit-category' pk=object.pk category_pk=category.pk %}"><span class="glyphicon glyphicon-pencil"></span></a></p>
+                               <p> {{ category.title }} <a href="{% url 'subject_area:edit-category' pk=subject_area_object.pk category_pk=category.pk %}"><span class="glyphicon glyphicon-pencil"></span></a></p>
                             {% endfor %}
                         {% else %}
-                            <p class="help-block">Keine Kategorien für <b>{{ object.title }}</b> vorhanden </p>
+                            <p class="help-block">Keine Kategorien für <b>{{ subject_area_object.title }}</b> vorhanden </p>
                         {% endif %}
                     {% endwith %}
                 </div>

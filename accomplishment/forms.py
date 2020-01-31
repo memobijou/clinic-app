@@ -1,5 +1,5 @@
 from accomplishment.models import Accomplishment, UserAccomplishment
-from subject_area.models import SubjectArea
+from subject_area.models import SubjectArea, Category
 from uniklinik.forms import BootstrapModelFormMixin
 from django.db import transaction
 from django import forms
@@ -10,9 +10,12 @@ class AccomplishmentFormMixin(BootstrapModelFormMixin):
     subject_areas = forms.ModelMultipleChoiceField(
         queryset=SubjectArea.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
 
+    categories = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
+
     class Meta:
         model = Accomplishment
-        fields = ("name", "full_score", "subject_areas",)
+        fields = ("name", "full_score", "subject_areas", "categories",)
 
     def clean_full_score(self):
         full_score = self.cleaned_data['full_score']
