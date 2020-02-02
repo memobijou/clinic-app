@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 from mixer.backend.django import mixer
 import json
 from accomplishment.forms import AccomplishmentFormMixin
-from accomplishment.models import Accomplishment
+from accomplishment.models import Accomplishment, UserAccomplishment
 from django.urls import reverse_lazy
-from subject_area.models import SubjectArea
+from subject_area.models import SubjectArea, Category
 from rest_framework.authtoken.models import Token
 
 
@@ -18,33 +18,54 @@ class AccomplishmentTestCase(TestCase):
 
     def test_accomplishment_creation(self):
         accomplishments_count = Accomplishment.objects.count()
-        subject_areas = [instance.pk for instance in mixer.cycle(2).blend(SubjectArea)]
+        subject_areas = [instance for instance in mixer.cycle(2).blend(SubjectArea)]
+        categories = [instance for instance in mixer.cycle(2).blend(Category)]
+
+        category_ids = [category.id for category in categories]
+
+        subject_areas[0].category_set.add(categories[0])
+        subject_areas[1].category_set.add(categories[1])
 
         users = mixer.cycle(2).blend(User)
+
         i = 0
+
         for user in users:
-            user.profile.subject_area_id = subject_areas[i]
+            print(f"whaaat: {subject_areas[i].id}")
+            user.profile.subject_area = subject_areas[i]
             user.save()
+            user.profile.save()
             i += 1
 
+            print(f"hey 2: {user.profile.subject_area}")
+
         with mixer.ctx(commit=False):
-            data = mixer.blend(Accomplishment, full_score=100).__dict__
-            data = {**data, "subject_areas": subject_areas}
+            data = mixer.blend(Accomplishment, name="test", full_score=100).__dict__
+            data = {**data, "categories": category_ids}
 
         response = self.client.post(reverse_lazy("accomplishment:list"), data)
+        print(response.content)
 
-        instance = Accomplishment.objects.first()
+        accomplishment = Accomplishment.objects.first()
+
+        print(f"yeso: {SubjectArea.objects.all()}")
+        print(f"yeso 2: {Category.objects.all()}")
+        print(f"yeso 3: {User.objects.all()}")
+        print(f"yeso 4: {UserAccomplishment.objects.all()}")
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Accomplishment.objects.count(), accomplishments_count+1)
-        self.assertEqual(len(users), instance.users.all().count())
-        self.assertEqual(len(subject_areas), instance.subject_areas.all().count())
+        self.assertEqual(len(users), accomplishment.users.all().count())
+        #  self.assertEqual(len(subject_areas), accomplishment.subject_areas.all().count())
 
         users_after_accomplishment_creation = mixer.cycle(2).blend(User)
 
         subject_area_after_accomplishment_creation = mixer.blend(SubjectArea)
 
-        instance.subject_areas.add(subject_area_after_accomplishment_creation)
+        category_after_accomplishment_creation = mixer.blend(
+            Category, subject_area=subject_area_after_accomplishment_creation)
+
+        accomplishment.categories.add(category_after_accomplishment_creation)
 
         i = 0
         for user in users_after_accomplishment_creation:
@@ -52,19 +73,20 @@ class AccomplishmentTestCase(TestCase):
             user.save()
             i += 1
 
-        instance.refresh_from_db()
+        accomplishment.refresh_from_db()
 
-        self.assertEqual(len(users)+len(users_after_accomplishment_creation), instance.users.all().count())
+        self.assertEqual(len(users)+len(users_after_accomplishment_creation), accomplishment.users.all().count())
 
     def test_accomplishment_edition(self):
         full_score = 3
         instance = self.create_accomplishment(full_score=full_score)
         subject_areas = instance.subject_areas.all()
+        categories = instance.categories.all()
         accomplishment_users = set(instance.users.values_list("pk", flat=True))
 
         with mixer.ctx(commit=False):
             new_data = mixer.blend(Accomplishment).__dict__
-            new_data = {**new_data, "subject_areas": [subject_area.pk for subject_area in subject_areas]}
+            new_data = {**new_data, "categories": [category.pk for category in categories]}
 
         response = self.client.post(reverse_lazy("accomplishment:edit", kwargs={"pk": instance.pk}), data=new_data)
         self.assertEqual(response.status_code, 302)
@@ -72,23 +94,35 @@ class AccomplishmentTestCase(TestCase):
         instance.refresh_from_db()
 
         self.assertEqual(instance.name, new_data.get("name"))
-        self.assertEqual(instance.subject_areas.all().count(), subject_areas.count())
+        self.assertEqual(instance.categories.all().count(), categories.count())
         self.assertEqual(set(instance.users.values_list("pk", flat=True)), accomplishment_users)
 
         # test changing of subject_areas
 
-        new_subject_areas = [subject_area.pk for subject_area in mixer.cycle(3).blend(SubjectArea)]
-        new_data["subject_areas"] = new_subject_areas
+        new_subject_areas = [subject_area for subject_area in mixer.cycle(3).blend(SubjectArea)]
+
+        i = 0
+
+        new_categories = [category for category in mixer.cycle(3).blend(Category)]
+
+        for new_subject_area in new_subject_areas:
+            new_categories[i].subject_area = new_subject_area
+            new_categories[i].save()
+
+        new_data["categories"] = [new_category.pk for new_category in new_categories]
 
         new_users = mixer.cycle(3).blend(User)
+
         i = 0
         for user in new_users:
-            user.profile.subject_area_id = new_subject_areas[i]
+            user.profile.subject_area = new_subject_areas[i]
             user.save()
+            user.profile.save()
             i += 1
 
         response = self.client.post(reverse_lazy("accomplishment:edit", kwargs={"pk": instance.pk}), data=new_data)
         self.assertEqual(response.status_code, 302)
+        print(f"?????? {accomplishment_users}")
         old_user = next(iter(accomplishment_users))
         response = self.client.get(reverse_lazy("api_accomplishment:accomplishment-detail",
                                                 kwargs={"accomplishment_id": instance.pk,
@@ -100,12 +134,13 @@ class AccomplishmentTestCase(TestCase):
 
         instance.refresh_from_db()
 
-        self.assertEqual(len(new_subject_areas), instance.subject_areas.all().count())
+        self.assertEqual(len(new_subject_areas), SubjectArea.objects.filter(
+            category__in=instance.categories.all()).count())
         self.assertNotEqual(set(instance.users.values_list("pk", flat=True)), accomplishment_users)
 
         # example user must be user from subject_area because non-subject-areas aren't listed on endpoint
 
-        example_user = instance.subject_areas.first().profiles.first().user
+        example_user = instance.categories.first().subject_area.profiles.first().user
 
         for i in range(0, full_score):
             response = self.client.put(reverse_lazy("api_accomplishment:accomplishment-incrementation",
@@ -169,21 +204,33 @@ class AccomplishmentTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def create_accomplishment(self, full_score=1):
-        subject_areas = [instance.pk for instance in mixer.cycle(2).blend(SubjectArea)]
+        subject_areas = [instance for instance in mixer.cycle(2).blend(SubjectArea)]
+        categories = [instance for instance in mixer.cycle(2).blend(Category)]
+
+        category_ids = [instance.pk for instance in categories]
+
+        categories[0].subject_area = subject_areas[0]
+        categories[1].subject_area = subject_areas[1]
+
+        categories[0].save()
+        categories[1].save()
 
         users = mixer.cycle(2).blend(User)
+
         i = 0
         for user in users:
-            user.profile.subject_area_id = subject_areas[i]
+            user.profile.subject_area = subject_areas[i]
             user.save()
+            user.profile.save()
             i += 1
 
         with mixer.ctx(commit=False):
             data = mixer.blend(Accomplishment, full_score=full_score).__dict__
-            data = {**data, "subject_areas": subject_areas}
+            data = {**data, "categories": category_ids}
 
         form = AccomplishmentFormMixin(data=data)
         instance = form.save()
+        print(f"....----....----.... {instance.users.all()}")
         return instance
 
     def fetch_user_accomplishment(self, user_id, accomplishment_id):

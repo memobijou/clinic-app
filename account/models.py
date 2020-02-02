@@ -122,7 +122,12 @@ class Profile(models.Model):
                 mentor_changed = True
 
         if self.pk is None or subject_area_changed is True:
-            accomplishments = Accomplishment.objects.filter(subject_areas__pk=self.subject_area_id).exclude(
+            # accomplishments = Accomplishment.objects.filter(subject_areas__pk=self.subject_area_id).exclude(
+            #     user_accomplishments__user__profile=self).distinct()
+            # UserAccomplishment.objects.bulk_create(
+            #     [UserAccomplishment(accomplishment=accomplishment, user=self.user, score=0)
+            #      for accomplishment in accomplishments])
+            accomplishments = Accomplishment.objects.filter(categories__subject_area__id=self.subject_area_id).exclude(
                 user_accomplishments__user__profile=self).distinct()
             UserAccomplishment.objects.bulk_create(
                 [UserAccomplishment(accomplishment=accomplishment, user=self.user, score=0)

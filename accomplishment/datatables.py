@@ -55,7 +55,7 @@ class AccomplishmentDatatables(DatatablesMixin):
             categories_string = ""
             print(f"????!?!?!?!: {query.categories.all()}")
             for category in query.categories.all():
-                categories_string += str(category) + "<br/>"
+                categories_string += str(category.title) + "<br/>"
             data["results"].append([
                 f'<a href="{reverse_lazy("accomplishment:edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
                 query.name, query.full_score, subject_areas_string, categories_string])

@@ -105,9 +105,9 @@
                                 <li>
                                     <span class="title">{{ user_accomplishment.accomplishment.name }}</span> {{ user_accomplishment.score|default:"0"  }}/{{ user_accomplishment.accomplishment.full_score }}
                                       <div class="progress">
-                                          <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ user_accomplishment.score }}"
-                                          aria-valuemin="0" aria-valuemax="100" style="width:{{ user_accomplishment.score }}%">
-                                              {{ user_accomplishment.score }}%
+                                          <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ user_accomplishment.get_percentage }}"
+                                          aria-valuemin="0" aria-valuemax="100" style="width:{{ user_accomplishment.get_percentage }}%">
+                                              {{ user_accomplishment.get_percentage }}%
                                           </div>
                                       </div>
                                 </li>

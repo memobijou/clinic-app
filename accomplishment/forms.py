@@ -31,7 +31,9 @@ class AccomplishmentFormMixin(BootstrapModelFormMixin):
             is_new_object = True
 
         instance = super().save(commit)
-        users = User.objects.filter(profile__subject_area__in=instance.subject_areas.all()).distinct()
+        subject_areas = SubjectArea.objects.filter(id__in=self.instance.categories.values_list("subject_area__id",
+                                                                                               flat=True).distinct())
+        users = User.objects.filter(profile__subject_area__in=subject_areas).distinct()
 
         # Das muss zu Fachrichtungen gemacht werden statt zu Gruppen
         if is_new_object is False:
