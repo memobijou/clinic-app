@@ -96,9 +96,14 @@
                                 {{ form.full_score.errors }}
                             </p>
                             <div class="inline-checkboxes">
-                                <label for="{{ form.subject_areas.id }}">Fachrichtungen</label>
+                                <label for="{{ form.subject_areas.id }}">Fachrichtungen VERALTET</label>
                                 {{ form.subject_areas }}
                                 {{ form.subject_areas.errors }}
+                            </div>
+                            <div class="inline-checkboxes" style="padding-top:10px;">
+                                <label for="{{ form.categories.id }}">Kategorien</label>
+                                {{ form.categories }}
+                                {{ form.categories.errors }}
                             </div>
                             <br/>
                             <div class="text-right">

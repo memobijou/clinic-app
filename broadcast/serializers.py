@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from broadcast.models import Broadcast, Like, Comment
+from broadcast.models import Broadcast, Like, Comment, Attachement
 from account.serializers import UserSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -31,6 +31,12 @@ class CommentSerializer(ModelSerializer):
         # return obj.like_set.count()
 
 
+class AttachementSerializer(ModelSerializer):
+    class Meta:
+        model = Attachement
+        fields = ("file", "upload_datetime", )
+
+
 class BroadcastSerializer(ModelSerializer):
     sender_id = serializers.IntegerField(write_only=True)
     sender = MinimalUserSerializer(read_only=True)
@@ -38,11 +44,12 @@ class BroadcastSerializer(ModelSerializer):
     likes_count = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
     comments = CommentSerializer(many=True, read_only=True, source="comment_set")
+    attachements = AttachementSerializer(many=True, read_only=True, source="attachement_set")
 
     class Meta:
         model = Broadcast
         fields = ("id", "text", "sender_id", "sender", "send_datetime", "likes", "likes_count",
-                  "comments_count", "comments",)
+                  "comments_count", "comments", "attachements")
 
     def get_likes_count(self, obj):
         return obj.like_set.count()

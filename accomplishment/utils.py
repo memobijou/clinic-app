@@ -1,9 +1,10 @@
 from accomplishment.models import Accomplishment
+from subject_area.models import SubjectArea
 
 
 def get_accomplishment_scores(instance: Accomplishment):
     users = instance.users.all()
-    subject_areas = instance.subject_areas.all()
+    subject_areas = SubjectArea.objects.filter(category__in=instance.categories.all())
 
     subject_area_users = users.filter(profile__subject_area__in=subject_areas)
 

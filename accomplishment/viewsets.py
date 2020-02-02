@@ -23,7 +23,7 @@ class AccomplishmentViewSet(viewsets.ModelViewSet):
             self.queryset = self.queryset.filter(accomplishment__pk=accomplishment_id)
         # exclude stellt sicher das User die nicht mehr zur Fachrichtung gehören ausgeschloßen werden
         self.queryset = self.queryset.filter(user__pk=user_id).exclude(
-            ~Q(user__in=F("accomplishment__subject_areas__profiles__user"))).distinct()
+            ~Q(user__in=F("accomplishment__categories__subject_area__profiles__user"))).distinct()
         return self.queryset
 
     @transaction.atomic

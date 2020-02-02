@@ -246,6 +246,18 @@ const subjectAreaConfig = Object.assign({}, config, {
 })
 
 
+const subjectAreaEditConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/subject_area/edit/js/app.js"],
+	},
+	output: {
+		path: path.resolve(__dirname, "../static/dist/subject_area/edit/"),
+		filename: "[name].js",
+		publicPath: "/build/subject_area/edit/"
+	}
+})
+
+
 
 module.exports = [
 	baseConfig,
@@ -259,5 +271,6 @@ module.exports = [
 	taskManagementConfig,
 	accomplishmentConfig,
 	phoneBookConfig,
-	subjectAreaConfig
+	subjectAreaConfig,
+	subjectAreaEditConfig
 ]

@@ -15,10 +15,13 @@
             <section class="panel">
                 <header class="panel-heading">
                     <div class="panel-actions">
-                        <a href="#"></a>
+                        <a href="#" class="fa fa-caret-up"></a>
+                        <a href="#" class="fa fa-times"></a>
                     </div>
 
                     <h2 class="panel-title">Neue Leistung</h2>
+                </header>
+                <section class="panel-body" style="display: none;">
                     <form method="POST">{% csrf_token %}
                         <br/>
                         <p>
@@ -34,15 +37,20 @@
                             {{ form.full_score.errors }}
                         </p>
                         <div class="inline-checkboxes">
-                            <label for="{{ form.subject_areas.id }}">Fachrichtungen</label>
+                            <label for="{{ form.subject_areas.id }}">Fachrichtungen VERALTET</label>
                             {{ form.subject_areas }}
                             {{ form.subject_areas.errors }}
+                        </div>
+                        <div class="inline-checkboxes">
+                            <label for="{{ form.categories.id }}">Kategorien</label>
+                            {{ form.categories }}
+                            {{ form.categories.errors }}
                         </div>
                         <div class="text-right">
                             <button class="btn btn-primary">Leistung anlegen</button>
                         </div>
                     </form>
-                </header>
+                </section>
             </section>
         </div>
     </div>

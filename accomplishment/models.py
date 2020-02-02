@@ -14,6 +14,9 @@ class Accomplishment(models.Model):
     subject_areas = models.ManyToManyField("subject_area.SubjectArea", blank=True, related_name="accomplishments",
                                            verbose_name="Fachrichtungen")
 
+    categories = models.ManyToManyField("subject_area.Category", blank=True, related_name="accomplishments",
+                                        verbose_name="Kategorien")
+
     def get_current_score_percentage(self, subject_area_users):
         users_count = len(subject_area_users)
         full_score = users_count * self.full_score
@@ -60,3 +63,10 @@ class UserAccomplishment(models.Model):
             return f"{self.score}/{self.score}"
         else:
             return f"{self.score}/{self.accomplishment.full_score}"
+
+    def get_percentage(self):
+        accomplishment = self.accomplishment
+        if self.score == 0 or accomplishment.full_score == 0:
+            return 0
+        else:
+            return int((self.score/accomplishment.full_score)*100)
