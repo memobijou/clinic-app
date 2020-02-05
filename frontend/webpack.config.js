@@ -234,6 +234,18 @@ const phoneBookConfig = Object.assign({}, config, {
 })
 
 
+const phoneBookCategoryConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/phonebook-category/js/app.js"],
+	},
+	output: {
+		path: path.resolve(__dirname, "../static/dist/phonebook-category/"),
+		filename: "[name].js",
+		publicPath: "/build/phonebook-category/"
+	}
+})
+
+
 const subjectAreaConfig = Object.assign({}, config, {
 	entry: {
 		bundle: ["./src/subject_area/js/app.js"],
@@ -271,6 +283,7 @@ module.exports = [
 	taskManagementConfig,
 	accomplishmentConfig,
 	phoneBookConfig,
+	phoneBookCategoryConfig,
 	subjectAreaConfig,
 	subjectAreaEditConfig
 ]

@@ -1,0 +1,30 @@
+<div class="row">
+    <div class="col-md-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="#" class="fa fa-caret-up"></a>
+                    <a href="#" class="fa fa-times"></a>
+                </div>
+
+                <h2 class="panel-title">Neue Kategorie</h2>
+            </header>
+            <section class="panel-body" style="display: none;">
+                <form method="POST">{% csrf_token %}
+                    <div class="col-md-6 col-md-offset-3">
+                    <br/>
+                    <p>
+                        <label for="{{ form.title.id }}">{{ form.title.label }}
+                        </label>
+                        {{ form.title }}
+                        {{ form.title.errors }}
+                    </p>
+                    <div class="text-right">
+                        <button class="btn btn-primary">Kategorie anlegen</button>
+                    </div>
+                    </div>
+                </form>
+            </section>
+        </section>
+    </div>
+</div>
