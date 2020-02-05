@@ -9,6 +9,7 @@ import os
 from pyfcm import FCMNotification
 from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError
 from django.contrib.auth.models import User
+from account.models import title_choices
 
 
 class BasicUserSerializer(serializers.HyperlinkedModelSerializer):
@@ -44,7 +45,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ("title", "is_admin", "mentor", "device_token", "subject_area", "subject_area_id",
+        fields = ("title", "is_admin", "mentor", "device_token", "subject_area", "subject_area_id", "profile_image",
                   "appointment_badges", "task_badges", "total_badges", "filestorage_badges", "messaging_badges",)
         read_only_fields = ('is_admin',)
 
@@ -60,9 +61,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         profile = validated_data.pop("profile")
-        subject_area = profile.pop("subject_area")
+        print(f"bob: {profile}")
         User.objects.filter(pk=instance.pk).update(**validated_data)
-        Profile.objects.filter(pk=instance.profile.pk).update(**profile, subject_area_id=subject_area.get("pk"))
+        Profile.objects.filter(pk=instance.profile.pk).update(**profile)
         instance.refresh_from_db()
         return instance
 
@@ -148,3 +149,12 @@ class AuthorizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountAuthorization
         fields = ("email", )
+
+
+class ProfileEditionSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(source="user.first_name", required=False, allow_null=True)
+    last_name = serializers.CharField(source="user.last_name", required=False, allow_null=True)
+
+    class Meta:
+        model = Profile
+        fields = ("profile_image", "first_name", "last_name", "title",)

@@ -1,4 +1,6 @@
 from rest_framework.serializers import ModelSerializer
+
+from account.models import title_choices
 from broadcast.models import Broadcast, Like, Comment, Attachement
 from account.serializers import UserSerializer
 from rest_framework import serializers
@@ -6,9 +8,13 @@ from django.contrib.auth.models import User
 
 
 class MinimalUserSerializer(ModelSerializer):
+    title = serializers.ChoiceField(choices=title_choices, source="profile.title")
+    profile_image = serializers.ImageField(source="profile.profile_image")
+
+
     class Meta:
         model = User
-        fields = ("id", "username", "email")
+        fields = ("id", "username", "email", "first_name", "last_name", "title", "profile_image")
 
 
 class LikeSerializer(ModelSerializer):
