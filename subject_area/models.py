@@ -50,6 +50,6 @@ class Category(models.Model):
             score = user_accomplishement.score
             score_sum += score
         if full_score_sum > 0 and score_sum > 0:
-            return score_sum/full_score_sum*100
+            return int(score_sum/full_score_sum*100)
         else:
             return 0
