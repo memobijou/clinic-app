@@ -22,7 +22,7 @@ class PhoneBookDatatables(DatatablesMixin):
             self.queryset = self.queryset.filter(
                 Q(Q(title__icontains=search_value) | Q(phone_number__icontains=search_value) |
                   Q(first_name__icontains=search_value) | Q(last_name__icontains=search_value)
-                  | Q(mobile_number__icontains=search_value)))
+                  | Q(mobile_number__icontains=search_value)) | Q(category__title__icontains=search_value))
         return self.queryset
 
     def get_ordered_queryset(self):
@@ -60,13 +60,25 @@ class PhoneBookDatatables(DatatablesMixin):
                 self.queryset = self.queryset.order_by('mobile_number')
             else:
                 self.queryset = self.queryset.order_by('-mobile_number')
+        if order_column_index == "6":
+            if asc_or_desc == "asc":
+                self.queryset = self.queryset.order_by('category__title')
+            else:
+                self.queryset = self.queryset.order_by('-category__title')
         return self.queryset
 
     def get_data(self, page):
-        data = {"results": [[f'<a href="{reverse_lazy("phonebook:edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
-                             query.last_name, query.first_name, query.title, query.phone_number, query.mobile_number]
-                            for query in page],
-                "records_total": self.queryset.count()}
+        data = {"results": [], "records_total": self.queryset.count()}
+        for query in page:
+            category = None
+            if query.category:
+                category = query.category.title
+            print(category)
+            data["results"].append([
+                f'<a href="{reverse_lazy("phonebook:edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
+                query.last_name, query.first_name, query.title, query.phone_number, query.mobile_number,
+                category]
+            )
         return data
 
 

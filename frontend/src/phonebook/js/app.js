@@ -13,6 +13,7 @@ $(document).ready(function(){
         {targets: 3, title: "Bezeichnung", name: "title"},
         {targets: 4, title: "Telefonnummer", name: "phone_number"},
         {targets: 5, title: "Handynummer", name: "mobile_number"},
+        {targets: 6, title: "Kategorie", name: "category"},
       ],
 
        // Mit ajax funktioniert muss nur angepasst werden auf REST API

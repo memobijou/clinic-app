@@ -28,3 +28,8 @@ class Category(models.Model):
     @staticmethod
     def get_absolute_url():
         return reverse_lazy("phonebook-category:list")
+
+    def __str__(self):
+        if self.title:
+            return f"{self.title}"
+
