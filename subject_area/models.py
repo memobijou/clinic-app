@@ -14,6 +14,21 @@ class SubjectArea(models.Model):
     def __str__(self):
         return self.title
 
+    def get_user_accomplishment_score(self, user_id):
+        score_sum = 0
+        full_score_sum = 0
+        for category in self.category_set.all():
+            print(f"bomba: {category} - {category.accomplishments.all()}")
+            for accomplishment in category.accomplishments.all():
+                full_score_sum += accomplishment.full_score
+                for user_accomplishment in accomplishment.user_accomplishments.filter(user_id=user_id):
+                    score_sum += user_accomplishment.score
+        print(f"yes: : : {score_sum} - {full_score_sum}")
+        if score_sum > 0 and full_score_sum > 0:
+            return f"{score_sum}/{full_score_sum}"
+        else:
+            return "0/0"
+
     def get_user_accomplishment_percentage(self, user_id):
         score_sum = 0
         full_score_sum = 0

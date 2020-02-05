@@ -74,7 +74,7 @@
 
                 <div class="panel-body">
                     <div class="content">
-                        {{ total_scored }} / {{ total_full_score }}
+                        {{ total_full_scored }}
                         <div class="progress">
                           <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ total_full_scored_percentage }}"
                           aria-valuemin="0" aria-valuemax="100" style="width:{{ total_full_scored_percentage }}%">
@@ -93,7 +93,7 @@
                     </div>
 
                     <h2 class="panel-title">
-                        <span class="label label-primary label-sm text-normal va-middle mr-sm">{{ object.user_accomplishments.count }}</span>
+                        <span class="label label-primary label-sm text-normal va-middle mr-sm">{{ user_accomplishments.count }}</span>
                         <span class="va-middle">Einzelleistungen</span>
                     </h2>
                 </header>
@@ -101,7 +101,7 @@
                 <div class="panel-body" style="display:none;">
                     <div class="content">
                         <ul class="simple-user-list">
-                            {% for user_accomplishment in  object.user_accomplishments.all %}
+                            {% for user_accomplishment in  user_accomplishments %}
                                 <li>
                                     <span class="title">{{ user_accomplishment.accomplishment.name }}</span> {{ user_accomplishment.score|default:"0"  }}/{{ user_accomplishment.accomplishment.full_score }}
                                       <div class="progress">
