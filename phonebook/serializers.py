@@ -3,7 +3,7 @@ from phonebook.models import PhoneBook, Category
 
 
 class PhoneBookSerializer(serializers.ModelSerializer):
-    category = serializers.CharField(source="category.title")
+    category = serializers.CharField(source="category.title", allow_null=True, required=False)
 
     class Meta:
         model = PhoneBook
