@@ -98,16 +98,17 @@ class UserProfileView(UserEditBaseView):
         context = super().get_context_data(**kwargs)
         self.object = context["object"]
         profile = self.object.profile
-        context["total_full_scored"] = profile.subject_area.get_user_accomplishment_score(self.object.id)
 
-        if self.object.profile.subject_area:
-            context["total_full_scored_percentage"] = profile.subject_area.get_user_accomplishment_percentage(
-                self.object.id)
-        else:
-            context["total_full_scored_percentage"] = 0
         context["user_accomplishments"] = self.object.user_accomplishments.filter(
             accomplishment__categories__subject_area=profile.subject_area_id)
 
+        if profile.subject_area_id:
+            context["total_full_scored"] = profile.subject_area.get_user_accomplishment_score(self.object.id)
+            context["total_full_scored_percentage"] = profile.subject_area.get_user_accomplishment_percentage(
+                self.object.id)
+        else:
+            context["total_full_scored"] = "0/0"
+            context["total_full_scored_percentage"] = 0
         return context
 
     def get_success_url(self):
