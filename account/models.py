@@ -69,6 +69,7 @@ class Profile(models.Model):
     biography = models.TextField(null=True, blank=True, verbose_name="Über dich")
     subject_area = models.ForeignKey("subject_area.SubjectArea", null=True, blank=True, on_delete=models.SET_NULL,
                                      related_name="profiles")
+    profile_image = models.ImageField(upload_to="profile_broadcast_", null=True, blank=True)
     title = models.CharField(choices=title_choices, null=True, blank=True, max_length=200)
     confirmed = models.NullBooleanField()
     removed = models.BooleanField(default=False)
