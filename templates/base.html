@@ -157,12 +157,25 @@
 											<span>Leistungen</span>
 										</a>
 									</li>
-                                    <li class="nav nav-children">
-										<a href="{% url 'phonebook:list' %}">
-											<i class="glyphicon glyphicon-earphone" aria-hidden="true"></i>
-											<span>Kontakliste</span>
+
+                                    <li class="nav-parent">
+										<a>
+											<i class="fa fa-book" aria-hidden="true"></i>
+											<span>Telefonbuch</span>
 										</a>
+										<ul class="nav nav-children">
+                                            <li>
+                                                <a href="{% url 'phonebook:list' %}">
+                                                    <i class="glyphicon glyphicon-earphone" aria-hidden="true"></i>
+                                                    <span>Kontakliste</span>
+                                                </a>
+                                            </li>
+                                            <li>
+												<a href="{% url 'phonebook:category-list' %}"><i class="fa fa-bookmark" aria-hidden="true"></i> Kategorien</a>
+											</li>
+										</ul>
 									</li>
+
                                     <li class="nav nav-children">
                                         <a href="{% url 'subject_area:list' %}">
                                             <i class="glyphicon glyphicon-book" aria-hidden="true"></i>

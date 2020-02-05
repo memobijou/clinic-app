@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Kontaktliste Übersicht</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span>Kontaktliste Übersicht</span></li>
+{% endblock %}
+
+{% block content %}
+    {% include 'phonebook/category/new.html'%}
+
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="panel-actions">
+                <a href="#" class="fa fa-caret-down"></a>
+                <a href="#" class="fa fa-times"></a>
+            </div>
+            <h2 class="panel-title">Kategorien Übersicht</h2>
+        </header>
+
+        <div class="panel-body">
+            <div class="col-md-12">
+                <table class="table table-bordered table-striped table-hover" id="datatable-default">
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+<!-- end: page -->
+{% endblock %}
+
+
+{% block examples %}
+
+{% endblock %}
+
+{% block css %}
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/phonebook/bundle.css" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'dist/phonebook/bundle.css' %}" />
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    <script>
+        var api_url = "{% url 'api_phonebook:phonebook-categories_datatables' %}";
+    </script>
+    <!-- Specific Page Vendor -->
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <script src="http://{{ settings.PUBLIC_IP }}:8080/build/phonebook-category/bundle.js"></script>
+    {% else %}
+        <script src="{% static 'dist/phonebook-category/bundle.js' %}"></script>
+    {% endif %}
+{% endblock %}
