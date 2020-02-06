@@ -10,7 +10,9 @@ from accomplishment.serializers import UserAccomplishmentSerializer
 
 class AccomplishmentViewSet(viewsets.ModelViewSet):
     queryset = UserAccomplishment.objects.prefetch_related("accomplishment__users").select_related(
-        "accomplishment").all()
+        "accomplishment").annotate(
+        divison=F('score') / F('accomplishment__full_score')
+    ).annotate(percentage=F('divison') * 100).all().order_by("percentage")
     serializer_class = UserAccomplishmentSerializer
     pagination_class = PageNumberPagination
     lookup_field = "accomplishment_id"
