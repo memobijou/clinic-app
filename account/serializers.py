@@ -157,4 +157,22 @@ class ProfileEditionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ("profile_image", "first_name", "last_name", "title",)
+        fields = ("profile_image", "title", "first_name", "last_name")
+
+    def update(self, instance, validated_data):
+        print(f"yes {validated_data}")
+        user_data = validated_data.pop("user")
+        first_name = user_data.get('first_name')
+        last_name = user_data.get('last_name')
+        user = instance.user
+
+        if first_name:
+            user.first_name = first_name
+
+        if last_name:
+            user.last_name = last_name
+
+        if first_name or last_name:
+            user.save()
+        instance.save()
+        return instance
