@@ -161,10 +161,13 @@ class ProfileEditionSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         print(f"yes {validated_data}")
+        title = validated_data.get("title")
         user_data = validated_data.pop("user")
         first_name = user_data.get('first_name')
         last_name = user_data.get('last_name')
         user = instance.user
+
+        instance.title = title
 
         if first_name:
             user.first_name = first_name
