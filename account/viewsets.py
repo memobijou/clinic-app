@@ -91,35 +91,15 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @atomic
-    @action(detail=True, methods=["PUT"], url_path="profile-edition")
+    @action(detail=True, methods=["PATCH"], url_path="profile-edition")
     def profile_edition(self, request, pk=None):
         user_instance = self.get_object()
         profile_instance = user_instance.profile
-        print(f"whaaat: {profile_instance.title}")
         serializer = ProfileEditionSerializer(instance=profile_instance, data=request.data)
-        first_name = serializer.initial_data.pop("first_name")
-        last_name = serializer.initial_data.pop("last_name")
-
-        initial_title = profile_instance.title
-
-        if not serializer.initial_data.get("title"):
-            serializer.initial_data["title"] = initial_title
-
-        if first_name:
-            first_name = first_name[0]
-
-        if last_name:
-            last_name = last_name[0]
 
         if serializer.is_valid():
             instance = serializer.save()
-            user = instance.user
-            if first_name:
-                user.first_name = first_name
-            if last_name:
-                user.last_name = last_name
-            if first_name and last_name:
-                user.save()
+
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
