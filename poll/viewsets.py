@@ -27,7 +27,7 @@ class PollViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         return self.queryset
 
     @transaction.atomic
-    @action(detail=True, methods=['PATCH'])
+    @action(detail=True, methods=['POST'])
     def select(self, request, user_id=None, id=None):
         print(f"hey: {user_id} - {id}")
         print(f"asfdsaf: {request.data.get('option')}")
