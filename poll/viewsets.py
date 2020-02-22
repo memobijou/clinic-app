@@ -8,6 +8,7 @@ from rest_framework.viewsets import GenericViewSet
 from django.shortcuts import get_object_or_404
 from poll.models import Poll, UserOption
 from poll.serializers import PollSerializer
+from django.contrib.auth.models import User
 
 
 class PollViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
@@ -19,6 +20,7 @@ class PollViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context["user_id"] = self.kwargs.get("user_id")
+        context["users_count"] = User.objects.count()
         return context
 
     def get_queryset(self):
