@@ -1,0 +1,74 @@
+{% extends 'poll/base.html' %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Umfragen Übersicht</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span>Umfragen Übersicht</span></li>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions">
+                        <a href="#" class="fa fa-caret-up"></a>
+                        <a href="#" class="fa fa-times"></a>
+                    </div>
+
+                    <h2 class="panel-title">Neue Umfrage</h2>
+                </header>
+                <section class="panel-body" style="display: none;">
+                    <div class="col-md-6 col-md-offset-3">
+                        <form method="POST">{% csrf_token %}
+                            <br/>
+                            <p>
+                                <label for="{{ form.title.id }}">{{ form.title.label }}
+                                </label>
+                                {{ form.title }}
+                                {{ form.title.errors }}
+                            </p>
+                            <br/>
+                            <p>
+                                <label for="{{ form.description.id }}">{{ form.description.label }}
+                                </label>
+                                {{ form.description }}
+                                {{ form.description.errors }}
+                            </p>
+                            <div class="text-right">
+                                <button class="btn btn-primary">Umfrage anlegen</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="panel-actions">
+                <a href="#" class="fa fa-caret-down"></a>
+                <a href="#" class="fa fa-times"></a>
+            </div>
+            <h2 class="panel-title">Leistungen Übersicht</h2>
+        </header>
+
+        <div class="panel-body">
+            <div class="col-md-12">
+                <table class="table table-bordered table-striped table-hover" id="datatable-default">
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+<!-- end: page -->
+{% endblock %}
+
+
+{% block examples %}
+
+{% endblock %}

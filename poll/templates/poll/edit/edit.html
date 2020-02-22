@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+
+{% block horizontal_nav_title %}
+    <h2>Umfrage bearbeiten</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span>Umfrage bearbeiten</span></li>
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ object.title }}</h2>
+                </div>
+                <div class="panel-body">
+                     <div class="col-md-11" style="">
+                        <p><b>Bezeichnung:</b> {{ object.title }}</p>
+                        <p><b>Beschreibung:</b> {{ object.description }}</p>
+                        {% if object.open %}
+                            <p><b>Veröffentlicht:</b> <span class="glyphicon glyphicon-ok" style="color:green;"></span></p>
+                        {% else %}
+                            <p><b>Veröffentlicht:</b> <span class="glyphicon glyphicon-remove" style="color:red;"></span></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="panel-title">Umfrage bearbeiten</h2>
+                </header>
+                <div class="panel-body">
+                    <div class="col-md-8">
+                        <form method="POST">{% csrf_token %}
+                            <br/>
+                            <p>
+                                <label for="{{ form.title.id }}">{{ form.title.label }}
+                                </label>
+                                {{ form.title }}
+                                {{ form.title.errors }}
+                            </p>
+                            <p>
+                                <label for="{{ form.description.id }}">{{ form.description.label }}
+                                </label>
+                                {{ form.description }}
+                                {{ form.description.errors }}
+                            </p>
+                            <p>
+                                <label for="{{ form.open.id }}">{{ form.open.label }}
+                                </label>
+                                {{ form.open }}
+                                {{ form.open.errors }}
+                            </p>
+                            <p>
+                                <label for="{{ form.option.id }}">{{ form.option.label }}
+                                </label>
+                                {{ form.option }}
+                                {{ form.option.errors }}
+                            </p>
+                            <br/>
+                            <div class="text-right">
+                                <button class="btn btn-primary">Änderungen speichern</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+        <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Optionen</h2>
+                </div>
+                <div class="panel-body">
+                     <div class="col-md-11" style="">
+                         {% for option in object.option_set.all %}
+                             <p>{{ option.title }} <span class="glyphicon glyphicon-pencil"></span></p>
+                         {% endfor %}
+
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}

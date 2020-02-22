@@ -269,6 +269,16 @@ const subjectAreaEditConfig = Object.assign({}, config, {
 	}
 })
 
+const PollConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/poll/js/app.js"],
+	},
+	output: {
+		path: path.resolve(__dirname, "../static/dist/poll/"),
+		filename: "[name].js",
+		publicPath: "/build/poll/"
+	}
+})
 
 
 module.exports = [
@@ -285,5 +295,6 @@ module.exports = [
 	phoneBookConfig,
 	phoneBookCategoryConfig,
 	subjectAreaConfig,
-	subjectAreaEditConfig
+	subjectAreaEditConfig,
+	PollConfig
 ]
