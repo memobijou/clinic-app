@@ -14,9 +14,27 @@ class Option(models.Model):
     class Meta:
         ordering = ("pk",)
 
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, verbose_name="Bezeichnung")
     poll = models.ForeignKey("poll.Poll", null=True, blank=True, verbose_name="Option", on_delete=models.SET_NULL)
     user_options = models.ManyToManyField(User, through='poll.UserOption')
+
+    def get_percentage(self):
+        all_user_options_count = 0
+        for option in self.poll.option_set.all():
+            for _ in option.useroption_set.all():
+                all_user_options_count += 1
+
+        if all_user_options_count == 0:
+            return 0
+        user_options_count = self.useroption_set.all().count()
+
+        if user_options_count == 0:
+            return 0
+
+        if user_options_count:
+            return int((user_options_count/all_user_options_count)*100)
+        else:
+            return int((user_options_count/all_user_options_count)*100)
 
 
 class UserOption(models.Model):

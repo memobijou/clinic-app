@@ -25,3 +25,9 @@ class PollUpdateForm(BootstrapModelFormMixin):
             new_option.save()
             self.instance.option_set.add(new_option)
         return super().save(commit)
+
+
+class OptionForm(BootstrapModelFormMixin):
+    class Meta:
+        model = Option
+        fields = ("title",)

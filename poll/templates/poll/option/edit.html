@@ -1,0 +1,79 @@
+{% extends 'poll/option/base.html' %}
+
+
+{% block horizontal_nav_title %}
+    <h2>Option bearbeiten</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><a href="{% url 'poll:list' %}"><span>Umfragen Übersicht</span></a></li>
+    <li><a href="{% url 'poll:edit' pk=object.poll_id %}"><span>Umfrage bearbeiten</span></a></li>
+    <li><span>Option bearbeiten</span></li>
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ object.title }}</h2>
+                </div>
+                <div class="panel-body">
+                     <div class="col-md-11" style="">
+                        <p><b>Bezeichnung:</b> {{ object.title }}</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="panel-title">Option bearbeiten</h2>
+                </header>
+                <div class="panel-body">
+                    <div class="col-md-8 col-md-offset-2">
+                        <form method="POST">{% csrf_token %}
+                            <br/>
+                            <p>
+                                <label for="{{ form.title.id }}">{{ form.title.label }}
+                                </label>
+                                {{ form.title }}
+                                {{ form.title.errors }}
+                            </p>
+                            <br/>
+                            <div class="text-right">
+                                <button class="btn btn-primary">Änderungen speichern</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions">
+                        <a href="#" class="fa fa-caret-up"></a>
+                        <a href="#" class="fa fa-times" id="display_option_btn"></a>
+                    </div>
+                    <h2 class="panel-title">Option löschen</h2>
+                </header>
+                <section class="panel-body" style="display:none;">
+                    <div class="text-center">
+                        <form method="POST" action="{% url 'poll:delete-option' pk=object.poll_id option_pk=object.pk %}">{% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Option {{ object.title }} löschen</button>
+                        </form>
+                    </div>
+                </section>
+            </section>
+        </div>
+    </div>
+
+{% endblock %}

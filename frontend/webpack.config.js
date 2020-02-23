@@ -281,6 +281,19 @@ const PollConfig = Object.assign({}, config, {
 })
 
 
+
+const PollOptionEditConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/poll/option/edit/js/app.js"],
+	},
+	output: {
+		path: path.resolve(__dirname, "../static/dist/poll/option/edit/"),
+		filename: "[name].js",
+		publicPath: "/build/poll/option/edit/"
+	}
+})
+
+
 module.exports = [
 	baseConfig,
 	accountUserListConfig,
@@ -296,5 +309,6 @@ module.exports = [
 	phoneBookCategoryConfig,
 	subjectAreaConfig,
 	subjectAreaEditConfig,
-	PollConfig
+	PollConfig,
+	PollOptionEditConfig
 ]

@@ -41,8 +41,13 @@ class PollDatatables(DatatablesMixin):
     def get_data(self, page):
         data = {"results": [], "records_total": self.queryset.count()}
         for query in page:
+            if query.open is True:
+                poll_is_open_or_not = f'<span class="glyphicon glyphicon-ok" style="color:green;"></span>'
+            else:
+                poll_is_open_or_not = f'<span class="glyphicon glyphicon-remove" style="color:red;"></span>'
+
             data["results"].append([
                 f'<a href="{reverse_lazy("poll:edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
                 # f'<a href="{reverse_lazy("poll:edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
-                query.title])
+                query.title, poll_is_open_or_not])
         return data
