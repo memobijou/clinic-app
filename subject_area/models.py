@@ -56,7 +56,7 @@ class Category(models.Model):
     def get_user_accomplishment_percentage(self, user_id):
         score_sum = 0
         full_score_sum = 0
-        for user_accomplishement in UserAccomplishment.objects.filter(accomplishment__categories=self).distinct():
+        for user_accomplishement in UserAccomplishment.objects.all().distinct():
             full_score_sum += user_accomplishement.score
         for user_accomplishement in UserAccomplishment.objects.filter(
                 user_id=user_id, accomplishment__categories=self).distinct():
