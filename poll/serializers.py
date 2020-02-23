@@ -25,6 +25,8 @@ class OptionSerializer(serializers.ModelSerializer):
             for _ in option.useroption_set.all():
                 all_user_options_count += 1
         user_id = self.context.get("user_id")
+        if all_user_options_count == 0:
+            return
         if user_id:
             # user_options_count = instance.useroption_set.filter(user_id=user_id).count()
             user_options_count = instance.useroption_set.filter().count()
