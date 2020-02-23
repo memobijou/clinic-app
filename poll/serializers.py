@@ -20,12 +20,13 @@ class OptionSerializer(serializers.ModelSerializer):
                 return user_option.selected
 
     def get_percentage(self, instance):
+        all_user_options_count = instance.useroption_set.count()
         user_id = self.context.get("user_id")
         if user_id:
-            user_options_count = instance.useroption_set.count()
+            user_options_count = instance.useroption_set.filter(user_id=user_id).count()
 
             if user_options_count:
-                return int((user_options_count/user_options_count)*100)
+                return int((all_user_options_count/user_options_count)*100)
         return 0
 
 
