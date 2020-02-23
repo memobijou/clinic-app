@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "configuration",
     "broadcast",
     "poll",
+    "proposal",
 ]
 
 
