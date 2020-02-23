@@ -26,7 +26,7 @@ class OptionSerializer(serializers.ModelSerializer):
             user_options_count = instance.useroption_set.filter(user_id=user_id).count()
 
             if user_options_count:
-                return int((all_user_options_count/user_options_count)*100)
+                return int((user_options_count/all_user_options_count)*100)
         return 0
 
 
