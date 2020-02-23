@@ -65,6 +65,7 @@ $(document).ready(function(){
       columnDefs: [
         {targets: 0, title: "", name: "", orderable: false},
         {targets: 1, title: "Bezeichnung", name: "title"},
+        {targets: 2, title: "Öffentlich", name: "open"},
       ],
 
        // Mit ajax funktioniert muss nur angepasst werden auf REST API

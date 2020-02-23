@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/poll/option/edit/bundle.css" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'dist/poll/option/edit/bundle.css' %}" />
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    <!-- Specific Page Vendor -->
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <script src="http://{{ settings.PUBLIC_IP }}:8080/build/poll/option/edit/bundle.js"></script>
+    {% else %}
+        <script src="{% static 'dist/poll/option/edit/bundle.js' %}"></script>
+    {% endif %}
+
+    <script>
+    </script>
+{% endblock %}

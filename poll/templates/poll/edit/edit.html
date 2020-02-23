@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block horizontal_nav_navigation %}
+    <li><a href="{% url 'poll:list' %}"><span>Umfragen Übersicht</span></a></li>
     <li><span>Umfrage bearbeiten</span></li>
 {% endblock %}
 
@@ -77,16 +78,30 @@
             </section>
         </div>
     </div>
-        <div class="row">
+    <div class="row">
         <div class="col-md-12">
             <section class="panel">
                 <div class="panel-heading">
                     <h2 class="panel-title">Optionen</h2>
                 </div>
                 <div class="panel-body">
-                     <div class="col-md-11" style="">
+                     <div class="col-md-12" style="">
                          {% for option in object.option_set.all %}
-                             <p>{{ option.title }} <span class="glyphicon glyphicon-pencil"></span></p>
+                             <div class="col-md-8" style="padding:0;">
+                                 <div class="col-md-6" style="padding:0;">
+                                     {{ option.title }} <a href="{% url 'poll:edit-option' pk=object.pk option_pk=option.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                 </div>
+                                 <div class="col-md-6" style="padding:0;">
+                                  <div class="progress">
+                                      {% with percentage=option.get_percentage %}
+                                      <div class="progress-bar" role="progressbar" aria-valuenow="{{ percentage }}"
+                                      aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage }}%">
+                                        <span class="sr-only-focusable">{{ percentage }}%</span>
+                                      </div>
+                                      {% endwith %}
+                                  </div>
+                                 </div>
+                             </div>
                          {% endfor %}
 
                     </div>

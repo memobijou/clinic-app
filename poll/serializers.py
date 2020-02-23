@@ -28,7 +28,6 @@ class OptionSerializer(serializers.ModelSerializer):
         if all_user_options_count == 0:
             return 0
         if user_id:
-            # user_options_count = instance.useroption_set.filter(user_id=user_id).count()
             user_options_count = instance.useroption_set.all().count()
 
             if user_options_count == 0:

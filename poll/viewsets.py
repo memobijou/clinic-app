@@ -25,7 +25,7 @@ class PollViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     def get_queryset(self):
         # if self.kwargs.get("user_id"):
             # self.queryset = self.queryset.filter(users__id=self.kwargs.get("user_id")).distinct()
-        return self.queryset
+        return self.queryset.filter(open=True)
 
     @transaction.atomic
     @action(detail=True, methods=['POST'])
