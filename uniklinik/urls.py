@@ -40,6 +40,7 @@ urlpatterns = [
     path(r'api-auth/', include('rest_framework.urls')),
     path('api/v1/', include(('accomplishment.api_urls', "accomplishment"), namespace="api_accomplishment")),
     path('api/v1/', include(('poll.api_urls', "poll"), namespace="api_poll")),
+    path('api/v1/', include(('proposal.api_urls', "proposal"), namespace="api_proposal")),
     path('api/v1/', include(('account.api_urls', "account"), namespace="api_account")),
     path('api/v1/', include(('phonebook.api_urls', "phonebook"), namespace="api_phonebook")),
     path('api/v1/', include(('subject_area.api_urls', "subject_area"), namespace="api_subject_area")),

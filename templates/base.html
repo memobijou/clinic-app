@@ -163,11 +163,22 @@
 											<span>Umfragen</span>
 										</a>
 									</li>
-                                    <li class="nav nav-children">
+                                    <li class="nav-parent">
 										<a>
 											<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 											<span>Anträge</span>
 										</a>
+                                        <ul class="nav nav-children">
+                                            <li>
+                                                <a href="{% url 'phonebook:list' %}">
+                                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                                    <span>Anträge</span>
+                                                </a>
+                                            </li>
+                                            <li>
+												<a href="{% url 'phonebook:category-list' %}"><i class="fa fa-bookmark" aria-hidden="true"></i> Antragstypen</a>
+											</li>
+										</ul>
 									</li>
 
                                     <li class="nav-parent">
