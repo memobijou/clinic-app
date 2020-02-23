@@ -20,7 +20,6 @@ class PollViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context["user_id"] = self.kwargs.get("user_id")
-        context["user_options_count"] = UserOption.objects.count()
         return context
 
     def get_queryset(self):
