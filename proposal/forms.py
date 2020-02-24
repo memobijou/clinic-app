@@ -1,9 +1,8 @@
-from django import forms
-
+from uniklinik.forms import BootstrapModelFormMixin
 from proposal.models import Type
 
 
-class TypeForm(forms.ModelForm):
+class TypeForm(BootstrapModelFormMixin):
     class Meta:
         model = Type
         fields = ("title",)

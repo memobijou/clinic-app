@@ -293,6 +293,18 @@ const PollOptionEditConfig = Object.assign({}, config, {
 	}
 })
 
+const ProposalTypeConfig = Object.assign({}, config, {
+	entry: {
+		bundle: ["./src/proposal/type/js/app.js"],
+	},
+	output: {
+		path: path.resolve(__dirname, "../static/dist/proposal/type/"),
+		filename: "[name].js",
+		publicPath: "/build/proposal/type/"
+	}
+})
+
+
 
 module.exports = [
 	baseConfig,
@@ -310,5 +322,6 @@ module.exports = [
 	subjectAreaConfig,
 	subjectAreaEditConfig,
 	PollConfig,
-	PollOptionEditConfig
+	PollOptionEditConfig,
+	ProposalTypeConfig
 ]
