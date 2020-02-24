@@ -13,3 +13,8 @@ class Proposal(models.Model):
 
 class Type(models.Model):
     title = models.CharField(max_length=200, null=True, blank=True, verbose_name="Bezeichnung")
+
+    def __str__(self):
+        if self.title:
+            return self.title
+        return ""

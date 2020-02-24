@@ -37,6 +37,7 @@ urlpatterns = [
     path('config/', include(("configuration.urls", "configuration"), namespace="config")),
     path('subject-areas/', include(("subject_area.urls", "subject_area"), namespace="subject_area")),
     path('polls/', include(("poll.urls", "poll"), namespace="poll")),
+    path('proposals/', include(("proposal.urls", "proposal"), namespace="proposal")),
     path(r'api-auth/', include('rest_framework.urls')),
     path('api/v1/', include(('accomplishment.api_urls', "accomplishment"), namespace="api_accomplishment")),
     path('api/v1/', include(('poll.api_urls', "poll"), namespace="api_poll")),

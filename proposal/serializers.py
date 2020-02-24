@@ -1,12 +1,11 @@
 from rest_framework import serializers
 
-from proposal.models import Proposal
+from proposal.models import Proposal, Type
 
 
 class ProposalSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source="user.first_name", read_only=True)
     last_name = serializers.CharField(source="user.last_name", read_only=True)
-    type = serializers.CharField(allow_null=True, required=False, write_only=True)
     title = serializers.CharField(source="type.title", read_only=True)
 
     class Meta:
@@ -15,3 +14,9 @@ class ProposalSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'user': {'write_only': True}
         }
+
+
+class TypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Type
+        fields = ("title",)

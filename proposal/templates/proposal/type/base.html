@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <link rel="stylesheet" href="http://{{ settings.PUBLIC_IP }}:8080/build/proposal/type/bundle.css" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'dist/proposal/type/bundle.css' %}" />
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    <!-- Specific Page Vendor -->
+    {% if settings.WEBPACK_DEV_SERVER is True %}
+        <script src="http://{{ settings.PUBLIC_IP }}:8080/build/proposal/type/bundle.js"></script>
+    {% else %}
+        <script src="{% static 'dist/proposal/type/bundle.js' %}"></script>
+    {% endif %}
+
+    <script>
+        var api_url = "{% url 'proposal:datatables-type' %}";
+    </script>
+{% endblock %}
