@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+
+{% block horizontal_nav_title %}
+    <h2>Antrag bearbeiten</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><a href="{% url 'proposal:list' %}"><span>Anträge Übersicht</span></a></li>
+    <li><span>Anträge bearbeiten</span></li>
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                {% with type=object.type %}
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Antrag {{ type.title|default:"" }} von {{ object.user.first_name }} {{ object.user.last_Name }}</h2>
+                    </div>
+                    <div class="panel-body">
+                         <div class="col-md-11" style="">
+                            <p><b>Antragstyp:</b> {{ type.title }}</p>
+                            <p><b>Antragssteller:</b> {{ object.user.first_name }} {{ object.user.last_name }}</p>
+                            <p><b>Email:</b> {{ object.user.email }}</p>
+                            <p><b>Startdatum:</b> {{ object.start_date }}</p>
+                            <p><b>Enddatum:</b> {{ object.end_date }}</p>
+                            {% if object.confirmed is True %}
+                                <p><b>Status:</b> <span class="glyphicon glyphicon-ok" style="color:green;"></span></p>
+                            {% elif object.confirmed is False %}
+                                <p><b>Status:</b> <span class="glyphicon glyphicon-remove" style="color:red;"></span></p>
+                            {% else %}
+                                <p><b>Status:</b> ?</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endwith %}
+            </section>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="panel-title">Antrag bearbeiten</h2>
+                </header>
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <form method="POST">{% csrf_token %}
+                            <div class="text-center">
+                                <p>
+                                    <label for="{{ form.confirmed.id }}">{{ form.confirmed.label }}
+                                    </label>
+                                    {{ form.confirmed }}
+                                    {{ form.confirmed.errors }}
+                                </p>
+                            </div>
+                            <br/>
+                            <div class="text-center">
+                                <button class="btn btn-primary">Änderungen speichern</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}

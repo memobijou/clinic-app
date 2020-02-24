@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+
+{% block horizontal_nav_title %}
+    <h2>Antrag bearbeiten</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><a href="{% url 'proposal:list-type' %}"><span>Anträge Übersicht</span></a></li>
+    <li><span>Antrag bearbeiten</span></li>
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ object.title }}</h2>
+                </div>
+                <div class="panel-body">
+                     <div class="col-md-11" style="">
+                        <p><b>Bezeichnung:</b> {{ object.title }}</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="panel-title">Antrag bearbeiten</h2>
+                </header>
+                <div class="panel-body">
+                    <div class="col-md-8 col-md-offset-2">
+                        <form method="POST">{% csrf_token %}
+                            <br/>
+                            <p>
+                                <label for="{{ form.title.id }}">{{ form.title.label }}
+                                </label>
+                                {{ form.title }}
+                                {{ form.title.errors }}
+                            </p>
+                            <br/>
+                            <div class="text-right">
+                                <button class="btn btn-primary">Änderungen speichern</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
