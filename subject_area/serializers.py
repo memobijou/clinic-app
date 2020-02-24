@@ -27,6 +27,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
     def get_percentage(self, instance):
         if self.context.get("user_id"):
-            return instance.get_user_accomplishment_percentage(self.context.get("user_id"))
+            return instance.get_user_accomplishment_percentage_related_to_finished(self.context.get("user_id"))
         else:
             return None
