@@ -1,0 +1,37 @@
+{% extends 'proposal/base.html' %}
+{% load static %}
+
+{% block horizontal_nav_title %}
+    <h2>Anträge Übersicht</h2>
+{% endblock %}
+
+{% block horizontal_nav_navigation %}
+    <li><span>Anträge Übersicht</span></li>
+{% endblock %}
+
+{% block content %}
+
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="panel-actions">
+                <a href="#" class="fa fa-caret-down"></a>
+                <a href="#" class="fa fa-times"></a>
+            </div>
+            <h2 class="panel-title">Anträge Übersicht</h2>
+        </header>
+
+        <div class="panel-body">
+            <div class="col-md-12">
+                <table class="table table-bordered table-striped table-hover" id="datatable-default">
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+<!-- end: page -->
+{% endblock %}
+
+
+{% block examples %}
+
+{% endblock %}

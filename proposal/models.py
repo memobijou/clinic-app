@@ -7,7 +7,7 @@ class Proposal(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     start_date = models.DateField(null=True, blank=True, verbose_name="Startdatum")
     end_date = models.DateField(null=True, blank=True, verbose_name="Enddatum")
-    confirmed = models.NullBooleanField()
+    confirmed = models.NullBooleanField(verbose_name="Bestätigen")
     type = models.ForeignKey("proposal.Type", null=True, blank=True, verbose_name="Typ", on_delete=models.SET_NULL)
 
 
