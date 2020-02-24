@@ -10,13 +10,14 @@ class ProposalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Proposal
-        fields = ("user", "first_name", "last_name", "start_date", "end_date", "confirmed", "type", "title")
+        fields = ("pk", "user", "first_name", "last_name", "start_date", "end_date", "confirmed", "type", "title")
         extra_kwargs = {
-            'user': {'write_only': True}
+            'user': {'write_only': True},
+            'confirmed': {"read_only": True}
         }
 
 
 class TypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Type
-        fields = ("title",)
+        fields = ("pk", "title",)
