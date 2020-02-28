@@ -58,7 +58,7 @@ class ChatConsumer(AsyncConsumer):
         print("disconnected", event)
 
     async def get_chat(self, sender_id, receiver_id):
-        queryset = self.queryset = self.queryset.filter(
+        queryset = TextMessage.objects.filter(
                 Q(Q(Q(sender__pk=sender_id) & Q(receiver__pk=receiver_id)) |
                   Q(Q(sender__pk=receiver_id) & Q(receiver__pk=sender_id))))
         text_messages = Paginator(queryset, text_message_page_size).page(1)
