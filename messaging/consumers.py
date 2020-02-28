@@ -11,31 +11,43 @@ from urllib import parse
 import asyncio
 from messaging.serializers import TextMessageSerializer
 from rest_framework.response import Response
-
 from messaging.viewsets import text_message_page_size
+from rest_framework.authtoken.models import Token
+from channels.exceptions import DenyConnection
 
 
 class ChatConsumer(AsyncConsumer):
     async def websocket_connect(self, event):
         print("connected ", event)
-        receiver_id = self.scope["url_route"]["kwargs"]["receiver"]
-        sender_id = self.scope["url_route"]["kwargs"]["sender"]
 
         await self.send({
             "type": "websocket.accept",
         })
 
-        # print("+++++++ " + str(self.get_chat()))
         # query_string = parse.parse_qs(self.scope.get("query_string").decode("UTF-8"))
 
-        while True:
-            await asyncio.sleep(1)
-            await self.send({
-                "type": "websocket.send",
-                "text": await self.get_chat(sender_id, receiver_id),
-            })
-
     async def websocket_receive(self, event):
+        print(f"lol {event}")
+        token = event.get("text")
+
+        if "Token" in token:
+            token_name, token_key = token.split()
+            if Token.objects.filter(key=token_key).count() == 1:
+                print(token_key)
+                while True:
+                    receiver_id = self.scope["url_route"]["kwargs"]["receiver"]
+                    sender_id = self.scope["url_route"]["kwargs"]["sender"]
+                    await asyncio.sleep(1)
+                    await self.send({
+                        "type": "websocket.send",
+                        "text": await self.get_chat(sender_id, receiver_id),
+                    })
+            else:
+                await self.send({
+                    "type": "websocket.send",
+                    "text": await self.error_message_wrong_token(),
+                })
+                raise DenyConnection
         await self.send({
             "type": "websocket.send",
             "text": event["text"],
@@ -45,7 +57,8 @@ class ChatConsumer(AsyncConsumer):
         print("disconnected", event)
 
     async def get_chat(self, sender_id, receiver_id):
-        text_messages = Paginator(TextMessage.objects.filter(sender_id=sender_id, receiver_id=receiver_id),
+        text_messages = Paginator(TextMessage.objects.filter(sender_id=sender_id, receiver_id=receiver_id
+                                                             ).order_by("-created_datetime"),
                                   text_message_page_size).page(1)
         serializer = TextMessageSerializer(text_messages, many=True)
         response = Response(serializer.data, content_type="application/json")
@@ -58,3 +71,6 @@ class ChatConsumer(AsyncConsumer):
         # p = Paginator(TextMessage.objects.all(), 10)
         # chat_json = serializers.serialize("json", p.page(1))
         # return chat_json
+
+    async def error_message_wrong_token(self):
+        return "Invalid token"
