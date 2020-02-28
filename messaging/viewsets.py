@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 from messaging.utils import send_push_notification_to_receiver
 
 
-text_message_page_size = 20
+text_message_page_size = 10
 
 
 class CustomPagination(PageNumberPagination):

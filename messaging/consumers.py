@@ -38,7 +38,7 @@ class ChatConsumer(AsyncConsumer):
                 while True:
                     receiver_id = self.scope["url_route"]["kwargs"]["receiver"]
                     sender_id = self.scope["url_route"]["kwargs"]["sender"]
-                    await asyncio.sleep(1)
+                    await asyncio.sleep(0.5)
                     await self.send({
                         "type": "websocket.send",
                         "text": await self.get_chat(sender_id, receiver_id),
