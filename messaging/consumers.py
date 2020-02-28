@@ -5,7 +5,7 @@ from django.db.models import Q
 from rest_framework.renderers import JSONRenderer
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
-from messaging.models import TextMessage
+from messaging.models import TextMessage, ConnectionHistory
 from django.core import serializers
 from django.core.paginator import Paginator
 from urllib import parse
@@ -38,6 +38,11 @@ class ChatConsumer(AsyncConsumer):
                 while True:
                     receiver_id = self.scope["url_route"]["kwargs"]["receiver"]
                     sender_id = self.scope["url_route"]["kwargs"]["sender"]
+                    #  history = ConnectionHistory.objects.filter(sender_id=sender_id, receiver_id=receiver_id)
+
+                    ConnectionHistory.objects.update_or_create(sender_id=sender_id, receiver_id=receiver_id,
+                                                               connected=True)
+
                     await asyncio.sleep(0.5)
                     await self.send({
                         "type": "websocket.send",
@@ -54,8 +59,13 @@ class ChatConsumer(AsyncConsumer):
             "text": event["text"],
         })
 
-    async def websocket_disconnect(self, event):
-        print("disconnected", event)
+    async def websocket_disconnect(self, close_code):
+        print("HÜLSE")
+        receiver_id = self.scope["url_route"]["kwargs"]["receiver"]
+        sender_id = self.scope["url_route"]["kwargs"]["sender"]
+        history = ConnectionHistory.objects.filter(sender_id=sender_id, receiver_id=receiver_id)
+        history.update_or_create(connected=False)
+        print("disconnected", close_code)
 
     async def get_chat(self, sender_id, receiver_id):
         queryset = TextMessage.objects.filter(
