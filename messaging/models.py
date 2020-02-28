@@ -11,3 +11,9 @@ class TextMessage(models.Model):
 
     class Meta:
         ordering = ("-created_datetime", )
+
+
+class ConnectionHistory(models.Model):
+    sender = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="sender_histories")
+    receiver = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="receiver_histories")
+    connected = models.BooleanField(default=False)

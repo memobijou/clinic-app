@@ -9,7 +9,7 @@ application = ProtocolTypeRouter({
     "websocket":
     # Empty for now (http->django views is added by default)
     AllowedHostsOriginValidator(
-        TokenAuthMiddlewareStack(
+        AuthMiddlewareStack(
             URLRouter([
                 path('messaging/chat/<int:receiver>/<int:sender>/', ChatConsumer)
             ])
