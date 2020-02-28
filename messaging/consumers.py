@@ -1,6 +1,7 @@
 from channels.consumer import AsyncConsumer
 import json
 from channels.db import database_sync_to_async
+from django.db.models import Q
 from rest_framework.renderers import JSONRenderer
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
@@ -57,9 +58,10 @@ class ChatConsumer(AsyncConsumer):
         print("disconnected", event)
 
     async def get_chat(self, sender_id, receiver_id):
-        text_messages = Paginator(TextMessage.objects.filter(sender_id=sender_id, receiver_id=receiver_id
-                                                             ).order_by("-created_datetime"),
-                                  text_message_page_size).page(1)
+        queryset = self.queryset = self.queryset.filter(
+                Q(Q(Q(sender__pk=sender_id) & Q(receiver__pk=receiver_id)) |
+                  Q(Q(sender__pk=receiver_id) & Q(receiver__pk=sender_id))))
+        text_messages = Paginator(queryset, text_message_page_size).page(1)
         serializer = TextMessageSerializer(text_messages, many=True)
         response = Response(serializer.data, content_type="application/json")
         response.accepted_renderer = JSONRenderer()
