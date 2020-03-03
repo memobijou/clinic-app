@@ -13,10 +13,10 @@ services:
       - "8080:8080"
   db:
     image: postgres
-#  redis:
-#    image: "redis:3.2.12"
-#    ports:
-#      - '6379:6379'
+  redis:
+    image: "redis:latest"
+    ports:
+      - '6379:6379'
   web:
     build:
       context: .
@@ -32,9 +32,22 @@ services:
       - .:/clinic-app
     ports:
       - "8000:8000"
+    links:
+      - redis
     depends_on:
       - db
 #      - redis
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    command: python manage.py runworker channels
+    volumes:
+      - .:/clinic-app
+    links:
+      - redis
+
+
 #  celery:
 #    build: .
 #    tty: true
