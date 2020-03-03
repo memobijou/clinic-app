@@ -8,11 +8,11 @@
         ws_start = "wss://";
     }
 
-    let endpoint = ws_start + location.host + location.pathname + "/1/30/";
+    let endpoint = ws_start + location.host + location.pathname + "/1/3/";
     let socket = new WebSocket(endpoint);
 
-    // let token = "Token dcc47b2a335324aedc284a4367bf9bfffba5adfb"; // local
-    let token = "Token 2b871264377f5f4699337f6cc513149d816dbc06"; // staging
+    let token = "Token dcc47b2a335324aedc284a4367bf9bfffba5adfb"; // local
+    // let token = "Token 2b871264377f5f4699337f6cc513149d816dbc06"; // staging
 
     socket.onopen = function(e){
         socket.send(token);

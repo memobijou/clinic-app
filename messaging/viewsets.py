@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
-from messaging.models import TextMessage
+from messaging.models import TextMessage, ConnectionHistory
 from messaging.serializers import TextMessageSerializer
 from rest_framework.mixins import ListModelMixin
 from django.contrib.auth.models import User
@@ -62,8 +62,8 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
 
             sender = User.objects.get(pk=sender)
             receiver = User.objects.get(pk=receiver)
-            send_push_notification_to_receiver(message, sender, receiver)
-
+            if ConnectionHistory.objects.filter(sender_id=sender, receiver_id=receiver, connected=True).count() == 0:
+                send_push_notification_to_receiver(message, sender, receiver)
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
