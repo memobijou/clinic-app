@@ -3,12 +3,12 @@
 
 <script>
     let ws_start = "ws://";
-    alert(location.protocol)
+
     if(location.protocol === "https:"){
         ws_start = "wss://";
     }
 
-    let endpoint = ws_start + location.host + location.pathname + "/1/3/";
+    let endpoint = ws_start + location.host + location.pathname + "/1/30/";
     let socket = new WebSocket(endpoint);
 
     // let token = "Token dcc47b2a335324aedc284a4367bf9bfffba5adfb"; // local
