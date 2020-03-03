@@ -7,12 +7,11 @@
         ws_start = "wss://";
     }
 
-    let endpoint = ws_start + "127.0.0.1:8000/messaging/chat" + "/30/1/";
-    alert(endpoint);
+    let endpoint = ws_start + "127.0.0.1:8000/messaging/chat" + "/3/1/";
     let socket = new WebSocket(endpoint);
 
-    // let token = "Token dcc47b2a335324aedc284a4367bf9bfffba5adfb"; // local
-    let token = "Token 2b871264377f5f4699337f6cc513149d816dbc06"; // staging
+    let token = "Token dcc47b2a335324aedc284a4367bf9bfffba5adfb"; // local
+    // let token = "Token 2b871264377f5f4699337f6cc513149d816dbc06"; // staging
 
     socket.onopen = function(e){
         socket.send(token);
