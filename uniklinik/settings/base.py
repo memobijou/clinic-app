@@ -167,3 +167,19 @@ AUTHENTICATION_BACKENDS = ['uniklinik.views.CustomModelBackend']
 # Channels
 
 ASGI_APPLICATION = "uniklinik.routing.application"
+#
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"
+#      }
+# }
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            # "hosts": [os.environ.get('REDIS_URL', ("localhost", 6379))],
+            "hosts": [os.environ.get('REDIS_URL', ("172.19.0.4", 6379))],
+        },
+    },
+}

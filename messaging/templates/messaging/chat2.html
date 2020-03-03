@@ -1,4 +1,4 @@
-<h1>TEST</h1>
+<h1>TEST 2 !!!!!</h1>
 
 
 <script>
@@ -7,7 +7,8 @@
         ws_start = "wss://";
     }
 
-    let endpoint = ws_start + location.host + location.pathname + "/1/3/";
+    let endpoint = ws_start + "127.0.0.1:8000/messaging/chat" + "/3/1/";
+    alert(endpoint);
     let socket = new WebSocket(endpoint);
 
     let token = "Token dcc47b2a335324aedc284a4367bf9bfffba5adfb";
