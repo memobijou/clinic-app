@@ -139,14 +139,17 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
                 Q(Q(receiver_id=receiver) | Q(sender_id=receiver))).annotate(
                 pk=Subquery(subquery)).values_list("pk", flat=True)
 
-            group_subquery = TextMessage.objects.filter(
-                 Q(Q(group__users__id=receiver))
-            ).order_by("-created_datetime").values("pk")[:1]
+            group_subquery = TextMessage.objects.filter(group_id=OuterRef("group_id")).order_by(
+                "-created_datetime").values("pk")[:1]
 
             latest_group_messages = self.queryset.values("group").distinct("group").\
-                exclude(group__isnull=True, receiver__isnull=False).order_by("group").annotate(
+                exclude(group__exact=None).filter(
+                receiver__exact=None, group__users__id=receiver
+            ).order_by("group").annotate(
                 pk=Subquery(group_subquery)
             ).values_list("pk", flat=True)
+
+            print(f"apple: {TextMessage.objects.all().exclude(group_id__exact=None)}")
 
             print(latest_messages)
             print(latest_group_messages)
