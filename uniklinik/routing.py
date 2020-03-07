@@ -2,7 +2,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 from channels.auth import AuthMiddlewareStack
 from django.urls import path
-from messaging.consumers import ChatConsumer
+from messaging.consumers import ChatConsumer, GroupChatConsumer
 from uniklinik.channels_auth import TokenAuthMiddlewareStack
 
 application = ProtocolTypeRouter({
@@ -11,7 +11,8 @@ application = ProtocolTypeRouter({
     AllowedHostsOriginValidator(
         AuthMiddlewareStack(
             URLRouter([
-                path('messaging/chat/<int:receiver>/<int:sender>/', ChatConsumer)
+                path('messaging/chat/<int:receiver>/<int:sender>/', ChatConsumer),
+                path('messaging/chat/groups/<int:group>/<int:receiver>', GroupChatConsumer)
             ])
         )
     )

@@ -37,10 +37,10 @@ class ChatConsumer(WebsocketConsumer):
         self.accept()
 
     def disconnect(self, close_code):
-        async_to_sync(self.channel_layer.group_add)(
-            f"chat-{self.receiver_id}-{self.sender_id}", self.channel_name)
-        async_to_sync(self.channel_layer.group_add)(
-            f"chat-{self.sender_id}-{self.receiver_id}", self.channel_name)
+        # async_to_sync(self.channel_layer.group_add)(
+        #     f"chat-{self.receiver_id}-{self.sender_id}", self.channel_name)
+        # async_to_sync(self.channel_layer.group_add)(
+        #     f"chat-{self.sender_id}-{self.receiver_id}", self.channel_name)
         ConnectionHistory.objects.update_or_create(sender_id=self.sender_id, receiver_id=self.receiver_id,
                                                    connected=False)
         print(f"fulya")
@@ -70,6 +70,51 @@ class ChatConsumer(WebsocketConsumer):
         queryset = TextMessage.objects.filter(
                 Q(Q(Q(sender__pk=sender_id) & Q(receiver__pk=receiver_id)) |
                   Q(Q(sender__pk=receiver_id) & Q(receiver__pk=sender_id))))
+        text_messages = Paginator(queryset, text_message_page_size).page(1)
+        serializer = TextMessageSerializer(text_messages, many=True)
+        response = Response(serializer.data, content_type="application/json")
+        response.accepted_renderer = JSONRenderer()
+        response.accepted_media_type = "application/json"
+        response.renderer_context = {}
+        return response.rendered_content.decode()
+
+
+class GroupChatConsumer(WebsocketConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.group_id = self.scope["url_route"]["kwargs"]["group"]
+        self.receiver_id = self.scope["url_route"]["kwargs"]["receiver"]
+
+    def connect(self):
+        print(f"hello world 1")
+        async_to_sync(self.channel_layer.group_add)(
+            f"group-chat-{self.group_id}", self.channel_name)
+        print(f"mamamamaba: {self.group_id} --- {self.channel_name}")
+        ConnectionHistory.objects.update_or_create(receiver_id=self.receiver_id, group_id=self.group_id,
+                                                   connected=True)
+        self.accept()
+
+    def disconnect(self, close_code):
+        ConnectionHistory.objects.update_or_create(receiver_id=self.receiver_id, group_id=self.group_id,
+                                                   connected=False)
+        print(f"fulya")
+
+    def receive(self, text_data=None, bytes_data=None):
+        async_to_sync(self.channel_layer.group_send)(
+            f"group-chat-{self.group_id}",
+            {
+                "type": "websocket.send",
+                "text": text_data,
+            },
+        )
+
+    def websocket_send(self, event):
+        self.send(
+            text_data=self.get_chat(self.group_id)
+        )
+
+    def get_chat(self, group_id):
+        queryset = TextMessage.objects.filter(group_id=group_id)
         text_messages = Paginator(queryset, text_message_page_size).page(1)
         serializer = TextMessageSerializer(text_messages, many=True)
         response = Response(serializer.data, content_type="application/json")
