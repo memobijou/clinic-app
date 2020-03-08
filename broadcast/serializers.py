@@ -11,7 +11,6 @@ class MinimalUserSerializer(ModelSerializer):
     title = serializers.ChoiceField(choices=title_choices, source="profile.title")
     profile_image = serializers.ImageField(source="profile.profile_image")
 
-
     class Meta:
         model = User
         fields = ("id", "username", "email", "first_name", "last_name", "title", "profile_image")
@@ -31,7 +30,7 @@ class CommentSerializer(ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("text", "sender_id", "sender", "send_datetime",)  # "likes", "likes_count")
+        fields = ("pk", "text", "sender_id", "sender", "send_datetime",)  # "likes", "likes_count")
 
     # def get_likes_count(self, obj):
         # return obj.like_set.count()

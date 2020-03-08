@@ -13,6 +13,6 @@ comments_router.register(r'', CommentViewSet, basename="comments")
 
 urlpatterns = [
     path(r'broadcasts/', include(router.urls)),
-    path(r'broadcasts/<int:broadcast_id>/likes', include(likes_router.urls)),
-    path(r'broadcasts/<int:broadcast_id>/comments', include(comments_router.urls)),
+    path(r'broadcasts/<int:broadcast_id>/likes/', include(likes_router.urls)),
+    path(r'broadcasts/<int:broadcast_id>/comments/', include(comments_router.urls)),
 ]
