@@ -162,12 +162,21 @@ class ProfileEditionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         print(f"yes {validated_data}")
         title = validated_data.get("title")
-        user_data = validated_data.pop("user")
-        first_name = user_data.get('first_name')
-        last_name = user_data.get('last_name')
+        profile_image = validated_data.get("profile_image")
+        first_name = None
+        last_name = None
+
+        if "user" in validated_data:
+            user_data = validated_data.pop("user")
+            first_name = user_data.get('first_name')
+            last_name = user_data.get('last_name')
         user = instance.user
 
-        instance.title = title
+        if title:
+            instance.title = title
+
+        if profile_image:
+            instance.profile_image = profile_image
 
         if first_name:
             user.first_name = first_name
