@@ -26,7 +26,6 @@ class TextMessage(models.Model):
 
         if self.receiver_id is None and self.group_id is not None:
             async_to_sync(channel_layer.group_send)(f"group-chat-{self.group_id}", {"type": "websocket.send"})
-            async_to_sync(channel_layer.group_send)(f"group-chat-{self.group_id}", {"type": "websocket.send"})
         return super().save(force_insert=False, force_update=False, using=None, update_fields=None)
 
 
