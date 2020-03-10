@@ -34,3 +34,4 @@ class ConnectionHistory(models.Model):
     receiver = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="receiver_histories")
     group = models.ForeignKey("account.Group", null=True, on_delete=models.SET_NULL)
     connected = models.BooleanField(default=False)
+    channel_name = models.CharField(max_length=400, null=True, blank=True)

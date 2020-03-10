@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
-from messaging.models import TextMessage, ConnectionHistory
+from messaging.models import TextMessage
 from account.models import Group
 from messaging.serializers import TextMessageSerializer, GroupTextMessageSerializer
 from rest_framework.mixins import ListModelMixin
@@ -65,8 +65,7 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
 
             sender = User.objects.get(pk=sender)
             receiver = User.objects.get(pk=receiver)
-            if ConnectionHistory.objects.filter(sender_id=sender, receiver_id=receiver, connected=True).count() == 0:
-                send_push_notification_to_receiver(message, sender, receiver)
+            send_push_notification_to_receiver(message, sender, receiver)
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -87,7 +86,7 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
 
             sender = User.objects.get(pk=sender)
             group = Group.objects.get(pk=group)
-            # if ConnectionHistory.objects.filter(sender_id=sender, receiver_id=receiver, connected=True).count() == 0:
+
             send_push_notification_to_group(message, sender, group)
             return Response(serializer.data)
         else:
