@@ -32,12 +32,6 @@ class ChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_add)(
             f"chat-{self.sender_id}-{self.receiver_id}", self.channel_name)
         print(f"bababaababab: {self.sender_id} - {self.receiver_id} --- {self.channel_name}")
-        history = ConnectionHistory.objects.filter(sender_id=self.sender_id, receiver_id=self.receiver_id)
-        if history.count() > 1:
-            history.update(connected=True)
-        else:
-            ConnectionHistory.objects.update_or_create(sender_id=self.sender_id, receiver_id=self.receiver_id,
-                                                       connected=True)
         self.accept()
 
     def disconnect(self, close_code):
@@ -45,12 +39,6 @@ class ChatConsumer(WebsocketConsumer):
         #     f"chat-{self.receiver_id}-{self.sender_id}", self.channel_name)
         # async_to_sync(self.channel_layer.group_add)(
         #     f"chat-{self.sender_id}-{self.receiver_id}", self.channel_name)
-        history = ConnectionHistory.objects.filter(sender_id=self.sender_id, receiver_id=self.receiver_id)
-        if history.count() > 1:
-            history.update(connected=False)
-        else:
-            ConnectionHistory.objects.update_or_create(sender_id=self.sender_id, receiver_id=self.receiver_id,
-                                                       connected=False)
         print(f"fulya")
 
     def receive(self, text_data=None, bytes_data=None):
@@ -98,13 +86,9 @@ class GroupChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_add)(
             f"group-chat-{self.group_id}", self.channel_name)
         print(f"mamamamaba: {self.group_id} --- {self.channel_name}")
-        ConnectionHistory.objects.update_or_create(receiver_id=self.receiver_id, group_id=self.group_id,
-                                                   connected=True)
         self.accept()
 
     def disconnect(self, close_code):
-        ConnectionHistory.objects.update_or_create(receiver_id=self.receiver_id, group_id=self.group_id,
-                                                   connected=False)
         print(f"fulya")
 
     def receive(self, text_data=None, bytes_data=None):
