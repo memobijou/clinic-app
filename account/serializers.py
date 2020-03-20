@@ -1,3 +1,5 @@
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 from rest_framework import serializers
 from account.models import Profile, AccountAuthorization
 from subject_area.models import SubjectArea
@@ -39,9 +41,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     #     source="subject_area.pk", allow_null=True, label="Fachrichtung (subject_area_id)",
     #     choices=lazy(get_subject_area_choices, tuple)())
     total_badges = serializers.SerializerMethodField()
+    messaging_badges = serializers.SerializerMethodField()
 
     def get_total_badges(self, instance):
         return instance.get_total_badges()
+
+    def get_messaging_badges(self, instance : Profile):
+        return instance.user.user_chat_push_histories.aggregate(
+            total=Coalesce(Sum("unread_notifications"), 0)).get("total")
 
     class Meta:
         model = Profile

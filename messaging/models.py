@@ -35,3 +35,11 @@ class ConnectionHistory(models.Model):
     group = models.ForeignKey("account.Group", null=True, on_delete=models.SET_NULL)
     connected = models.BooleanField(default=False)
     channel_name = models.CharField(max_length=400, null=True, blank=True)
+
+
+class ChatPushHistory(models.Model):
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="user_chat_push_histories")
+    participant = models.ForeignKey(User, null=True, on_delete=models.SET_NULL,
+                                    related_name="participant_chat_push_histories")
+    group = models.ForeignKey("account.Group", null=True, on_delete=models.SET_NULL)
+    unread_notifications = models.IntegerField(default=0, blank=True)

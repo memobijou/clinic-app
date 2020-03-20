@@ -1,11 +1,12 @@
 from django.db.models import Q, Subquery, OuterRef
+from django.db.models.functions import Coalesce
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
-from messaging.models import TextMessage
+from messaging.models import TextMessage, ChatPushHistory
 from account.models import Group
-from messaging.serializers import TextMessageSerializer, GroupTextMessageSerializer
+from messaging.serializers import TextMessageSerializer, GroupTextMessageSerializer, ReceiverTextMessageSerializer
 from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth.models import User
@@ -29,10 +30,19 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
 
     def get_queryset(self):
         self.filter_by_users()
-        if self.kwargs.get("receiver"):
-            user = get_object_or_404(User, pk=self.kwargs.get("receiver"))
-            user.profile.messaging_badges = 0
-            user.profile.save()
+        # if self.kwargs.get("receiver"):
+        #     user = get_object_or_404(User, pk=self.kwargs.get("receiver"))
+        #     user.profile.messaging_badges = 0
+        #     user.profile.save()
+        pagenum = self.request.query_params.get('page', 1)
+        if pagenum == 1:
+            receiver_id = self.kwargs.get("receiver")
+            sender_id = self.kwargs.get("sender")
+
+            if receiver_id and sender_id:
+                ChatPushHistory.objects.filter(
+                    user_id=receiver_id, participant_id=sender_id
+                ).update(unread_notifications=0)
         return self.queryset
 
     def filter_by_users(self):
@@ -46,7 +56,6 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
         elif receiver_pk not in ["", None]:
             self.queryset = self.queryset.filter(Q(receiver__pk=receiver_pk) | Q(sender__pk=receiver_pk)).order_by(
                 "receiver", "sender", "created_datetime").distinct("receiver", "sender")
-
         else:
             self.queryset = TextMessage.objects.none()
 
@@ -94,11 +103,19 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
 
 
 class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
-    serializer_class = TextMessageSerializer
+    serializer_class = ReceiverTextMessageSerializer
     queryset = TextMessage.objects.all()
 
     def get_queryset(self):
         self.filter_by_users()
+        subquery_push_history = ChatPushHistory.objects.filter(
+            Q(
+                Q(user_id=OuterRef("receiver_id"), participant_id=OuterRef("sender_id"), group_id=None) |
+                Q(user_id=self.kwargs.get("receiver"), participant_id=None, group_id=OuterRef("group_id"))
+            )
+        ).values("unread_notifications")[:1]
+        self.queryset = self.queryset.annotate(unread_notifications=Coalesce(Subquery(subquery_push_history), 0))
+        print(f"banana {type(self.queryset.first().group_id)}")
         return self.queryset
 
     def filter_by_users(self):
@@ -112,21 +129,11 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
 
     @action(detail=False, methods=["GET"], url_path="latest-sender")
     def latest_sender(self, request, receiver=None):
-        if receiver not in ["", None]:
-            # self.queryset = self.queryset.filter(Q(receiver__pk=receiver) | Q(sender__pk=receiver)).order_by(
-            #    "receiver", "sender", "created_datetime").distinct("receiver", "sender")
-            # new subquery test
-            # subquery = TextMessage.objects.filter(
-            #     Q(Q(sender__pk=OuterRef("sender"), receiver__pk=OuterRef("receiver")) |
-            #       Q(sender__pk=OuterRef("receiver"), receiver__pk=OuterRef("sender")))
-            # ).values("pk")[:1]
-            #
-            # self.queryset = self.queryset.filter(
-            #     Q(receiver__pk=receiver) | Q(sender__pk=receiver) | Q(group__pk=receiver)
-            # ).annotate(
-            #     latest_message_pk=Subquery(subquery)).order_by("latest_message_pk", "created_datetime").distinct(
-            #     "latest_message_pk")
+        self.queryset = self.get_queryset()  # not called in custom action
 
+        print(f"apple: {self.queryset.first().unread_notifications}")
+
+        if receiver not in ["", None]:
             subquery = TextMessage.objects.filter(
                 Q(Q(sender__pk=OuterRef("sender"), receiver__pk=OuterRef("receiver")) |
                   Q(sender__pk=OuterRef("receiver"), receiver__pk=OuterRef("sender"))
@@ -148,15 +155,7 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
                 pk=Subquery(group_subquery)
             ).values_list("pk", flat=True)
 
-            print(f"apple: {TextMessage.objects.all().exclude(group_id__exact=None)}")
-
-            print(latest_messages)
-            print(latest_group_messages)
-
             self.queryset = self.queryset.filter(Q(Q(pk__in=latest_messages) | Q(pk__in=latest_group_messages)))
-
-            print(self.queryset)
-
         else:
             self.queryset = TextMessage.objects.none()
         page = self.paginate_queryset(self.queryset)
@@ -171,6 +170,17 @@ class GroupTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
 
     def get_queryset(self):
         self.filter_by_group()
+
+        pagenum = self.request.query_params.get('page', 1)
+        if pagenum == 1:
+            group_id = self.kwargs.get("group")
+            user_id = self.kwargs.get("user")
+
+            if group_id:
+                ChatPushHistory.objects.filter(
+                    user_id=user_id, group_id=group_id
+                ).update(unread_notifications=0)
+
         return self.queryset
 
     def filter_by_group(self):
