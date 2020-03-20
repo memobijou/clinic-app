@@ -12,5 +12,5 @@ group_messages_router.register(r"", GroupTextMessageViewSet, basename="group_mes
 urlpatterns = [
     path(r'messaging/<int:receiver>/<int:sender>/', include(router.urls)),
     path(r'messaging/<int:receiver>/', include(receiver_router.urls)),
-    path(r'messaging/groups/<int:group>/messages', include(group_messages_router.urls)),
+    path(r'messaging/groups/<int:group>/<int:user>/messages', include(group_messages_router.urls)),
 ]
