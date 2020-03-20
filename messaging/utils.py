@@ -69,7 +69,7 @@ def send_push_notification_to_group(message, sender, group: Group):
                     registration_id=registration_id, message_title=f"{sender}",
                     message_body=message,
                     sound="default",
-                    data_message={"category": "messaging", "sender": sender.id, "receiver": receiver.id,
+                    data_message={"category": "messaging-group", "sender": sender.id, "receiver": receiver.id,
                                   "group": group.id},
                     badge=receiver.profile.get_total_badges())
                 print(f"he: {r}")
