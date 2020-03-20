@@ -34,8 +34,8 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
         #     user = get_object_or_404(User, pk=self.kwargs.get("receiver"))
         #     user.profile.messaging_badges = 0
         #     user.profile.save()
-        pagenum = self.request.query_params.get('page', 1)
-        if pagenum == 1:
+        pagenum = self.request.query_params.get('page', "1")
+        if pagenum == "1":
             receiver_id = self.kwargs.get("receiver")
             sender_id = self.kwargs.get("sender")
 
@@ -171,8 +171,8 @@ class GroupTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
     def get_queryset(self):
         self.filter_by_group()
 
-        pagenum = self.request.query_params.get('page', 1)
-        if pagenum == 1:
+        pagenum = self.request.query_params.get('page', "1")
+        if pagenum == "1":
             group_id = self.kwargs.get("group")
             user_id = self.kwargs.get("user")
 
