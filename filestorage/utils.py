@@ -18,11 +18,12 @@ def send_push_notifications(users, title, message, category):
                 registration_ids.append(user.profile.device_token)
                 push_user_ids.append(user.id)
 
-        Profile.objects.filter(user_id__in=push_user_ids).update(filestorage_badges=F("filestorage_badges") + 1)
+        # Profile.objects.filter(user_id__in=push_user_ids).update(filestorage_badges=F("filestorage_badges") + 1)
 
         for user in User.objects.filter(id__in=push_user_ids):
-            if user.profile.device_token is not None:
-                badges_totals[user.profile.device_token] = user.profile.get_total_badges()
+            user_profile = user.profile
+            if user_profile.device_token is not None:
+                badges_totals[user_profile.device_token] = user_profile.get_total_badges()
 
         if len(registration_ids) > 0:
             try:

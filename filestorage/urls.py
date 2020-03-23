@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework import routers
-from filestorage.serializers import FileViewSet, FileUploadCreateView, FileUploadUpdateView
+from filestorage.viewsets import FileViewSet, FileUploadCreateView, FileUploadUpdateView
 from filestorage.views import FileDirectoryView, DownloadView, DownloadSubscribeAnnouncement, \
     FilestorageSubscribeAnnouncement, DeleteFileView
 from django.urls import include

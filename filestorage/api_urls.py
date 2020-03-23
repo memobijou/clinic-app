@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework import routers
-from filestorage.serializers import UserDirectoryViewSet
+from filestorage.viewsets import UserDirectoryViewSet
 from django.urls import include
 
 

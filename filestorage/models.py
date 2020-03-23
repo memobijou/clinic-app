@@ -1,8 +1,8 @@
 from django.db import models
 from decimal import Decimal
+from django.contrib.auth.models import User
 
 
-# Create your models here.
 class FileDirectory(models.Model):
     name = models.CharField(max_length=200, null=True, verbose_name="Ordner")
     type = models.CharField(choices=(("download", "download"), ("filestorage", "filestorage")), max_length=200,
@@ -24,9 +24,16 @@ class File(models.Model):
     parent_directory = models.ForeignKey("filestorage.FileDirectory", null=True, verbose_name="Ordnerstruktur",
                                          on_delete=models.SET_NULL, related_name="files")
     version = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Version", default=1.0)
+    user_histories = models.ManyToManyField(to=User, through="filestorage.FileUserHistory")
 
     @property
     def version_with_point(self):
         if self.version:
             rounded_version = round(Decimal(self.version), 2)
             return str(rounded_version).replace(",", ".")
+
+
+class FileUserHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    file = models.ForeignKey(File, on_delete=models.CASCADE, null=True)
+    unread_notifications = models.IntegerField(default=0, blank=True)

@@ -42,13 +42,17 @@ class ProfileSerializer(serializers.ModelSerializer):
     #     choices=lazy(get_subject_area_choices, tuple)())
     total_badges = serializers.SerializerMethodField()
     messaging_badges = serializers.SerializerMethodField()
+    filestorage_badges = serializers.SerializerMethodField()
 
     def get_total_badges(self, instance):
         return instance.get_total_badges()
 
-    def get_messaging_badges(self, instance : Profile):
+    def get_messaging_badges(self, instance: Profile):
         return instance.user.user_chat_push_histories.aggregate(
             total=Coalesce(Sum("unread_notifications"), 0)).get("total")
+
+    def get_filestorage_badges(self, instance: Profile):
+        return instance.user.fileuserhistory_set.aggregate(total=Coalesce(Sum("unread_notifications"), 0)).get("total")
 
     class Meta:
         model = Profile

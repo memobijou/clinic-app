@@ -51,21 +51,21 @@ class MessagingTestCase(TestCase):
             self.assertEqual(sender_created_datetime,
                              serializers.DateTimeField().to_representation(sender_messages.first().created_datetime))
 
-    @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
-    def test_messaging_push_notification_badges(self, notify_single_device_function):
-        sender = mixer.blend(User)
-        receiver = mixer.blend(User)
-        Profile.objects.filter(user__in=[sender, receiver]).update(device_token="somedevicetoken")
-
-        self.assertEqual(receiver.profile.messaging_badges, 0)
-
-        send_push_notification_to_receiver("Test Message", sender, receiver)
-
-        receiver.refresh_from_db()
-
-        self.assertEqual(receiver.profile.messaging_badges, 1)
-        response = self.client.get(reverse_lazy(
-            "api_messaging:messaging-list", kwargs={"receiver": receiver.id, "sender": sender.id}))
-        self.assertEqual(response.status_code, 200)
-        receiver.refresh_from_db()
-        self.assertEqual(receiver.profile.messaging_badges, 0)
+    # @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
+    # def test_messaging_push_notification_badges(self, notify_single_device_function):
+    #     sender = mixer.blend(User)
+    #     receiver = mixer.blend(User)
+    #     Profile.objects.filter(user__in=[sender, receiver]).update(device_token="somedevicetoken")
+    #
+    #     self.assertEqual(receiver.profile.messaging_badges, 0)
+    #
+    #     send_push_notification_to_receiver("Test Message", sender, receiver)
+    #
+    #     receiver.refresh_from_db()
+    #
+    #     self.assertEqual(receiver.profile.messaging_badges, 1)
+    #     response = self.client.get(reverse_lazy(
+    #         "api_messaging:messaging-list", kwargs={"receiver": receiver.id, "sender": sender.id}))
+    #     self.assertEqual(response.status_code, 200)
+    #     receiver.refresh_from_db()
+    #     self.assertEqual(receiver.profile.messaging_badges, 0)
