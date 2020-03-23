@@ -1,20 +1,16 @@
-from rest_framework import viewsets
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.response import Response
-from rest_framework import status, serializers
+from django.db.models import Q, F, Sum
+from django.db.models.functions import Coalesce
+from rest_framework import serializers
 from django.urls import reverse
-from rest_framework.viewsets import GenericViewSet
 from filestorage.utils import send_push_notifications
 from filestorage.models import File, FileDirectory
-from django.shortcuts import get_object_or_404
-from abc import ABCMeta, abstractmethod
 from decimal import Decimal
-from rest_framework import mixins
 from django.contrib.auth.models import User
+from filestorage.models import FileUserHistory
+from django.db import transaction
 
 
+@transaction.atomic
 def send_file_messages_through_firebase(file, is_new=True):
     if file.parent_directory.announcement is True:
         if is_new is True:
@@ -23,9 +19,20 @@ def send_file_messages_through_firebase(file, is_new=True):
         else:
             title = f"Update vorhanden in {file.parent_directory.name}"
             message = f"{file.file.name} jetzt auf Version {file.version_with_point}"
+
         send_push_notifications(User.objects.all(), title, message, "filestorage")
-        print(message)
-        print(title)
+        users_without_history = User.objects.filter(~Q(fileuserhistory__file=file)).distinct()
+        bulk_instances = []
+        for user in users_without_history:
+            bulk_instances.append(FileUserHistory(user=user, file=file))
+        # print(getattr(FileUserHistory.objects.filter(file=file).first(), "unread_notifications", "0"))
+
+        FileUserHistory.objects.bulk_create(bulk_instances)
+        FileUserHistory.objects.filter(file=file).update(
+            unread_notifications=F("unread_notifications") + 1)
+
+        # print(getattr(FileUserHistory.objects.filter(file=file).first(), "unread_notifications", "0"))
+        # print(getattr(FileUserHistory.objects.filter(file=file).first(), "user", "NO USER !!"))
 
 
 class FileSerializerBase(serializers.ModelSerializer):
@@ -60,100 +67,15 @@ class FileUpdateSerializer(FileSerializerBase):
         return value
 
 
-class IFileUploadView(APIView, metaclass=ABCMeta):
-    parser_classes = (MultiPartParser, FormParser)
-    queryset = File.objects.all()
-
-    @abstractmethod
-    def post(self, request, *args, **kwargs):
-        pass
-
-
-class FileUploadCreateView(IFileUploadView):
-    directory = None
-
-    def post(self, request, *args, **kwargs):
-        self.directory = get_object_or_404(FileDirectory, pk=self.kwargs.get("directory_pk"))
-        file_serializer = FileSerializer(data=request.data)
-
-        if file_serializer.is_valid():
-            print(f"hehe: {self.directory.pk}")
-            print(f"haha: {request.FILES}")
-            file_serializer.save(parent_directory=self.directory, file=request.FILES.get("file"))
-            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class FileUploadUpdateView(IFileUploadView):
-    file = None
-
-    def post(self, request, *args, **kwargs):
-        self.file = get_object_or_404(File, pk=self.kwargs.get("file_pk"))
-        origin_file = self.file.file
-        data = request.data
-        version = self.request.POST.get("version")
-        name = self.request.POST.get("name")
-
-        if not version:
-            self.file.version += Decimal(0.01)
-
-        file_serializer = FileUpdateSerializer(data=data, instance=self.file)
-
-        if file_serializer.is_valid():
-            origin_file.delete()
-            version = request.POST.get("version")
-
-            if version:
-                self.file.version = version
-            self.file.file = request.FILES.get("file")
-
-            if name:
-                self.file.file.name = name
-
-            self.file.save()
-            send_file_messages_through_firebase(self.file, is_new=False)
-            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class FileView(APIView):
-    queryset = File.objects.all()
-
-    def get_object(self, pk):
-        print("123")
-        return get_object_or_404(File, pk=pk)
-
-    def delete(self, request, pk, format=None):
-        print(f"456: {pk}")
-        file = get_object_or_404(File, pk=self.kwargs.get("pk"))
-        file.delete()
-        print(f"???: {file.pk}")
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-# ViewSets define the view behavior.
-class FileViewSet(viewsets.ModelViewSet):
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
-    pagination_class = PageNumberPagination
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset
-
-    def delete(self, request, pk, format=None):
-        print(f"456: {pk}")
-        file = get_object_or_404(File, pk=self.kwargs.get("pk"))
-        file.delete()
-        print(f"???: {file.pk}")
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 class FileDirectorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FileDirectory
+        fields = ("pk", "name", "type", "files", "child_directories", "parent", "unread_notifications",)
+
     files = FileSerializer(many=True)
     child_directories = serializers.SerializerMethodField()
+    parent = serializers.SerializerMethodField()
+    unread_notifications = serializers.IntegerField(read_only=True)
 
     def get_child_directories(self, value):
         child_directories_queryset = value.child_directories.values("name", "pk")
@@ -161,6 +83,7 @@ class FileDirectorySerializer(serializers.ModelSerializer):
             request = self.context.get("request")
             user_id = self.context.get("user_id")
             print(f"heyyy: {request}")
+
             if user_id:
                 url = reverse("api_filestorage:directories-detail", kwargs={"pk": child_directory.get("pk"),
                                                                             "user_id": user_id})
@@ -170,17 +93,31 @@ class FileDirectorySerializer(serializers.ModelSerializer):
                 child_directory["link"] = request.build_absolute_uri(url)
             else:
                 child_directory["link"] = url
-        result = [child_directories_queryset]
+
+            directory_hierarchy = [child_directory.get('pk')]
+            self.get_directory_hierarchy(directory_hierarchy, directory_hierarchy)
+            child_directory["unread_notifications"] = FileUserHistory.objects.filter(
+                user_id=user_id, file__parent_directory_id__in=directory_hierarchy).aggregate(total=Coalesce(
+                    Sum("unread_notifications"), 0)).get("total")
+            print(f'flutter: {directory_hierarchy}')
+        result = child_directories_queryset
         return result
 
-    parent = serializers.SerializerMethodField()
+    def get_directory_hierarchy(self, directories, directory_hierarchy):
+        new_directories = []
+        for directory in FileDirectory.objects.filter(parent_id__in=directories):
+            new_directories.append(directory.id)
+            directory_hierarchy.append(directory.id)
+        if len(new_directories) == 0:
+            return
+        self.get_directory_hierarchy(new_directories, directory_hierarchy)
 
     def get_parent(self, value):
         if value.parent:
             request = self.context.get("request")
             user_id = self.context.get("user_id")
             url = reverse("api_filestorage:directories-detail", kwargs={"pk": value.parent.pk, "user_id": user_id})
-            parent_dict = {"name": value.name, "pk": value.id}
+            parent_dict = {"name": value.parent.name, "pk": value.parent.id}
             if request:
                 parent_dict["link"] = request.build_absolute_uri(url)
             else:
@@ -188,43 +125,5 @@ class FileDirectorySerializer(serializers.ModelSerializer):
             result = parent_dict
             return result
 
-    class Meta:
-        model = FileDirectory
-        fields = ("pk", "name", "type", "files", "child_directories", "parent", )
-
     def save(self, **kwargs):
         super().save(**kwargs)
-
-
-# ViewSets define the view behavior.
-class UserDirectoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    queryset = FileDirectory.objects.all()
-    serializer_class = FileDirectorySerializer
-    pagination_class = PageNumberPagination
-
-    def get_serializer_context(self):
-        return {"request": self.request, "user_id": self.kwargs.get("user_id")}
-
-    def get_queryset(self):
-        self.queryset = super().get_queryset()
-
-        if not self.kwargs.get("pk"):
-            self.queryset = self.queryset.filter(parent__isnull=True)
-        self.filter_by_name()
-        self.filter_by_name_exact()
-
-        if self.kwargs.get("user_id"):
-            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
-            user.profile.filestorage_badges = 0
-            user.profile.save()
-        return self.queryset
-
-    def filter_by_name(self):
-        name = self.request.GET.get("name")
-        if name is not None:
-            self.queryset = self.queryset.filter(name__icontains=name)
-
-    def filter_by_name_exact(self):
-        name = self.request.GET.get("name_exact")
-        if name is not None:
-            self.queryset = self.queryset.filter(name__iexact=name)
