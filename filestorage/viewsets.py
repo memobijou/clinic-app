@@ -41,6 +41,7 @@ class UserDirectoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, vie
         if directory_id:
             FileUserHistory.objects.filter(user_id=user_id, file__parent_directory_id=directory_id).distinct().update(
              unread_notifications=0)
+
         return self.queryset
 
     def filter_by_name(self):

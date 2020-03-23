@@ -75,7 +75,25 @@ class FileDirectorySerializer(serializers.ModelSerializer):
     files = FileSerializer(many=True)
     child_directories = serializers.SerializerMethodField()
     parent = serializers.SerializerMethodField()
-    unread_notifications = serializers.IntegerField(read_only=True)
+    unread_notifications = serializers.SerializerMethodField()
+
+    def get_unread_notifications(self, instance):
+        user_id = self.context.get("user_id")
+        directory_hierarchy = [instance.pk]
+        self.get_directory_hierarchy(directory_hierarchy, directory_hierarchy)
+        print(f'flutter: {directory_hierarchy}')
+        return FileUserHistory.objects.filter(
+            user_id=user_id, file__parent_directory_id__in=directory_hierarchy).aggregate(total=Coalesce(
+                Sum("unread_notifications"), 0)).get("total")
+
+    def get_directory_hierarchy(self, directories, directory_hierarchy):
+        new_directories = []
+        for directory in FileDirectory.objects.filter(parent_id__in=directories):
+            new_directories.append(directory.id)
+            directory_hierarchy.append(directory.id)
+        if len(new_directories) == 0:
+            return
+        self.get_directory_hierarchy(new_directories, directory_hierarchy)
 
     def get_child_directories(self, value):
         child_directories_queryset = value.child_directories.values("name", "pk")
@@ -93,24 +111,8 @@ class FileDirectorySerializer(serializers.ModelSerializer):
                 child_directory["link"] = request.build_absolute_uri(url)
             else:
                 child_directory["link"] = url
-
-            directory_hierarchy = [child_directory.get('pk')]
-            self.get_directory_hierarchy(directory_hierarchy, directory_hierarchy)
-            child_directory["unread_notifications"] = FileUserHistory.objects.filter(
-                user_id=user_id, file__parent_directory_id__in=directory_hierarchy).aggregate(total=Coalesce(
-                    Sum("unread_notifications"), 0)).get("total")
-            print(f'flutter: {directory_hierarchy}')
         result = child_directories_queryset
         return result
-
-    def get_directory_hierarchy(self, directories, directory_hierarchy):
-        new_directories = []
-        for directory in FileDirectory.objects.filter(parent_id__in=directories):
-            new_directories.append(directory.id)
-            directory_hierarchy.append(directory.id)
-        if len(new_directories) == 0:
-            return
-        self.get_directory_hierarchy(new_directories, directory_hierarchy)
 
     def get_parent(self, value):
         if value.parent:

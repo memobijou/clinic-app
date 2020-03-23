@@ -121,7 +121,7 @@ class FilestorageTestCase(TestCase):
 
         response_user_1_json = json.loads(response_user_1.content)
 
-        self.assertEqual(response_user_1_json.get("child_directories")[0].get("unread_notifications"), 3)
+        self.assertEqual(response_user_1_json.get("unread_notifications"), 3)
 
         response_user_1 = self.client.get(
             reverse_lazy("api_filestorage:directories-detail",
@@ -129,7 +129,7 @@ class FilestorageTestCase(TestCase):
 
         response_user_1_json = json.loads(response_user_1.content)
         print(f"bam: {response_user_1_json}")
-        self.assertEqual(response_user_1_json.get("child_directories")[0].get("unread_notifications"), 2)
+        self.assertEqual(response_user_1_json.get("unread_notifications"), 2)
 
         response_user_1 = self.client.get(
             reverse_lazy("api_filestorage:directories-detail",
@@ -137,7 +137,7 @@ class FilestorageTestCase(TestCase):
 
         response_user_1_json = json.loads(response_user_1.content)
 
-        self.assertEqual(response_user_1_json.get("child_directories")[0].get("unread_notifications"), 2)
+        self.assertEqual(response_user_1_json.get("unread_notifications"), 2)
 
         account_response_user_1 = self.client.get(
             reverse_lazy("api_account:user-detail", kwargs={"pk": self.session_user.pk}))
@@ -151,7 +151,7 @@ class FilestorageTestCase(TestCase):
 
         response_user_1_json = json.loads(response_user_1.content)
         print(f"bam: {response_user_1_json}")
-        self.assertEqual(response_user_1_json.get("child_directories")[0].get("unread_notifications"), 1)
+        self.assertEqual(response_user_1_json.get("unread_notifications"), 1)
 
         response_user_1 = self.client.get(
             reverse_lazy("api_filestorage:directories-detail",
@@ -159,7 +159,7 @@ class FilestorageTestCase(TestCase):
 
         response_user_1_json = json.loads(response_user_1.content)
         print(f"bam: {response_user_1_json}")
-        self.assertEqual(response_user_1_json.get("child_directories")[0].get("unread_notifications"), 1)
+        self.assertEqual(response_user_1_json.get("unread_notifications"), 1)
 
         response_user_1 = self.client.get(
             reverse_lazy("api_filestorage:directories-detail",
@@ -167,7 +167,7 @@ class FilestorageTestCase(TestCase):
 
         response_user_1_json = json.loads(response_user_1.content)
         print(f"bam: {response_user_1_json}")
-        self.assertEqual(response_user_1_json.get("child_directories")[0].get("unread_notifications"), 1)
+        self.assertEqual(response_user_1_json.get("unread_notifications"), 1)
 
         account_response_user_1 = self.client.get(
             reverse_lazy("api_account:user-detail", kwargs={"pk": self.session_user.pk}))
