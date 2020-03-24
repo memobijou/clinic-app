@@ -240,7 +240,7 @@ def serve_upload_files(request, pk):
                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
 
         key = f'{settings.MEDIA_URL}' + filestorage_upload_to_path + "/" + file.filename()
-
+        print(f"?????: {key}")
         response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
         f = response['Body']
         response = HttpResponse(f.read(), content_type='application/force-download')
