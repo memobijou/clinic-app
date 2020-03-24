@@ -11,6 +11,10 @@ from django.urls import reverse_lazy
 from abc import ABCMeta, abstractmethod
 from django.shortcuts import get_object_or_404
 import json
+import os
+import boto3
+from django.conf import settings
+from filestorage.models import filestorage_upload_to_path
 
 
 class FileDirectoryBaseView(LoginRequiredMixin, View, metaclass=ABCMeta):
@@ -230,23 +234,35 @@ class DeleteFileView(LoginRequiredMixin, View):
 
 @login_required
 def serve_upload_files(request, pk):
-    import os.path
-    import mimetypes
-    mimetypes.init()
+    file = File.objects.get(pk=pk)
+    if hasattr(settings, "AWS_ACCESS_KEY_ID"):
+        s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                          aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
 
-    try:
-        file_pk = pk
-        file_path = File.objects.get(pk=file_pk).file.path
-        fsock = open(file_path, "rb")
-        # file = fsock.read()
-        # fsock = open(file_path,"r").read()
-        file_name = os.path.basename(file_path)
-        file_size = os.path.getsize(file_path)
-        mime_type_guess = mimetypes.guess_type(file_name)
-        response = None
-        if mime_type_guess is not None:
-            response = HttpResponse(fsock)
-            response['Content-Disposition'] = 'attachment; filename=' + file_name
-    except IOError:
-        response = HttpResponseNotFound()
-    return response
+        key = f'{settings.get("MEDIA_URL")}' + filestorage_upload_to_path + "/" + file.filename()
+
+        response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
+        f = response['Body']
+        response = HttpResponse(f.read(), content_type='application/force-download')
+        filename = key.split("/")[len(key.split("/"))-1]
+        response['Content-Disposition'] = f'attachment; filename=\"{filename}\"'
+        return response
+    else:
+        import mimetypes
+        mimetypes.init()
+
+        try:
+            file_path = file.file.path
+            fsock = open(file_path, "rb")
+            # file = fsock.read()
+            # fsock = open(file_path,"r").read()
+            file_name = os.path.basename(file_path)
+            file_size = os.path.getsize(file_path)
+            mime_type_guess = mimetypes.guess_type(file_name)
+            response = None
+            if mime_type_guess is not None:
+                response = HttpResponse(fsock)
+                response['Content-Disposition'] = 'attachment; filename=' + file_name
+        except IOError:
+            response = HttpResponseNotFound()
+        return response
