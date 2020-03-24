@@ -46,7 +46,7 @@ class FileSerializerBase(serializers.ModelSerializer):
     def get_file(self, instance):
         request = self.context.get("request")
         file_url = f'{str(request.scheme)}://{str(request.get_host())}' \
-            f'{reverse_lazy("api_filestorage:files", kwargs={"pk": 69})}'
+            f'{reverse_lazy("api_filestorage:files", kwargs={"pk": instance.pk})}'
         return file_url
 
     class Meta:

@@ -27,7 +27,7 @@ class UserDirectoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, vie
     pagination_class = PageNumberPagination
 
     def get_serializer_context(self):
-        return {"request": self.request, "user_id": self.kwargs.get("user_id")}
+        return {"request": self.request, "user_id": self.kwargs.get("user_id"), "pk": self.kwargs.get("pk")}
 
     def get_queryset(self):
         self.queryset = super().get_queryset()
