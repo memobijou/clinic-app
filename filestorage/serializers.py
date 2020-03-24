@@ -99,7 +99,8 @@ class FileDirectorySerializer(serializers.ModelSerializer):
             new_directories.append(directory.id)
             directory_hierarchy.append(directory.id)
         if len(new_directories) == 0:
-            return self.get_directory_hierarchy(new_directories, directory_hierarchy)
+            return
+        self.get_directory_hierarchy(new_directories, directory_hierarchy)
 
     def get_child_directories(self, value):
         child_directories_queryset = value.child_directories.values("name", "pk")
