@@ -239,7 +239,7 @@ def serve_upload_files(request, pk):
         s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
 
-        key = file.file.path
+        key = os.path.join(file.file.storage.location, file.file.name)
         print(f"?????: {key}")
         response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
         f = response['Body']
