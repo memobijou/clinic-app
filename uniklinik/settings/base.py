@@ -184,4 +184,3 @@ CHANNEL_LAYERS = {
     },
 }
 
-SECURE_SSL_REDIRECT = True
