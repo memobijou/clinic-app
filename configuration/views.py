@@ -122,6 +122,8 @@ def logo_view(request):
         latest = max(objs, key=lambda x: x['LastModified'])
         key = latest["Key"]
         print(f"blablabla: {key}")
+        import sys
+        sys.stdout.flush()
         response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
         f = response['Body']
         response = HttpResponse(f.read(), content_type='application/force-download')
