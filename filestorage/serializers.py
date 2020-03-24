@@ -39,8 +39,8 @@ class FileSerializerBase(serializers.ModelSerializer):
     type = serializers.StringRelatedField()
     filename = serializers.SerializerMethodField()
 
-    def get_filename(self, instance):
-        return instance.file.name
+    def get_filename(self, instance: File):
+        return instance.filename()
 
     class Meta:
         model = File
