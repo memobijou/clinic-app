@@ -1,7 +1,7 @@
 from django.db.models import Q, F, Sum
 from django.db.models.functions import Coalesce
 from rest_framework import serializers
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from filestorage.utils import send_push_notifications
 from filestorage.models import File, FileDirectory
 from decimal import Decimal
@@ -38,9 +38,16 @@ def send_file_messages_through_firebase(file, is_new=True):
 class FileSerializerBase(serializers.ModelSerializer):
     type = serializers.StringRelatedField()
     filename = serializers.SerializerMethodField()
+    file = serializers.SerializerMethodField()
 
     def get_filename(self, instance: File):
         return instance.filename()
+
+    def get_file(self, instance):
+        request = self.context.get("request")
+        file_url = f'{str(request.scheme)}://{str(request.get_host())}' \
+            f'{reverse_lazy("api_filestorage:files", kwargs={"pk": 69})}'
+        return file_url
 
     class Meta:
         model = File
@@ -92,8 +99,7 @@ class FileDirectorySerializer(serializers.ModelSerializer):
             new_directories.append(directory.id)
             directory_hierarchy.append(directory.id)
         if len(new_directories) == 0:
-            return
-        self.get_directory_hierarchy(new_directories, directory_hierarchy)
+            return self.get_directory_hierarchy(new_directories, directory_hierarchy)
 
     def get_child_directories(self, value):
         child_directories_queryset = value.child_directories.values("name", "pk")
