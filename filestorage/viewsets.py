@@ -9,10 +9,16 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from filestorage.models import FileDirectory, FileUserHistory, File
 from filestorage.serializers import FileDirectorySerializer, FileSerializer, FileUpdateSerializer, \
     send_file_messages_through_firebase
+from django.http import HttpResponse, HttpResponseNotFound
+from filestorage.models import FileDirectory, File
+from abc import ABCMeta, abstractmethod
+from django.shortcuts import get_object_or_404
+import os
+import boto3
+from django.conf import settings
 
 
 class UserDirectoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -143,3 +149,41 @@ class FileView(APIView):
         file.delete()
         print(f"???: {file.pk}")
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ServeFileView(APIView):
+    def get(self, request, pk, user_id=None, format=None):
+        file = File.objects.get(pk=pk)
+        if hasattr(settings, "AWS_ACCESS_KEY_ID"):
+            s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                              aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+
+            key = os.path.join(file.file.storage.location, file.file.name)
+            print(f"?????: {key}")
+            response = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
+            f = response['Body']
+            response = HttpResponse(f.read(), content_type='application/force-download')
+            filename = key.split("/")[len(key.split("/")) - 1]
+            response['Content-Disposition'] = f'attachment; filename=\"{filename}\"'
+            return response
+        else:
+            import mimetypes
+            mimetypes.init()
+
+            try:
+                file_path = file.file.path
+                print(f"wer ist das: {file_path}")
+                print(f"wer ist das: {file.file.name}")
+                fsock = open(file_path, "rb")
+                # file = fsock.read()
+                # fsock = open(file_path,"r").read()
+                file_name = os.path.basename(file_path)
+                file_size = os.path.getsize(file_path)
+                mime_type_guess = mimetypes.guess_type(file_name)
+                response = None
+                if mime_type_guess is not None:
+                    response = HttpResponse(fsock)
+                    response['Content-Disposition'] = 'attachment; filename=' + file_name
+            except IOError:
+                response = HttpResponseNotFound()
+            return response
