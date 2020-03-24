@@ -51,6 +51,7 @@ class FileSerializerBase(serializers.ModelSerializer):
             scheme = "http"
         file_url = f'{str(scheme)}://{str(request.get_host())}' \
             f'{reverse_lazy("api_filestorage:files", kwargs={"pk": instance.pk})}'
+        return str(request.build_absolute_uri())
         return file_url
 
     class Meta:
