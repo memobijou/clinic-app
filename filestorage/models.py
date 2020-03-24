@@ -1,6 +1,10 @@
 from django.db import models
 from decimal import Decimal
 from django.contrib.auth.models import User
+import os
+
+
+filestorage_upload_to_path = "filestorage"
 
 
 class FileDirectory(models.Model):
@@ -20,7 +24,7 @@ class File(models.Model):
     class Meta:
         ordering = ("-pk", )
 
-    file = models.FileField(null=True, verbose_name="Datei")
+    file = models.FileField(null=True, verbose_name="Datei", upload_to=filestorage_upload_to_path)
     parent_directory = models.ForeignKey("filestorage.FileDirectory", null=True, verbose_name="Ordnerstruktur",
                                          on_delete=models.SET_NULL, related_name="files")
     version = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Version", default=1.0)
@@ -31,6 +35,9 @@ class File(models.Model):
         if self.version:
             rounded_version = round(Decimal(self.version), 2)
             return str(rounded_version).replace(",", ".")
+
+    def filename(self):
+        return os.path.basename(self.file.name)
 
 
 class FileUserHistory(models.Model):
