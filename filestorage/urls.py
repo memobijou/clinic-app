@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework import routers
 from filestorage.viewsets import FileViewSet, FileUploadCreateView, FileUploadUpdateView
 from filestorage.views import FileDirectoryView, DownloadView, DownloadSubscribeAnnouncement, \
-    FilestorageSubscribeAnnouncement, DeleteFileView
+    FilestorageSubscribeAnnouncement, DeleteFileView, serve_upload_files
 from django.urls import include
 from filestorage.views import FileView
 
@@ -25,6 +25,7 @@ urlpatterns = [
     path(r'subscribe-filestorage/<int:pk>/<int:redirect_directory_pk>/', FilestorageSubscribeAnnouncement.as_view(),
          name="subscribe_filestorage"),
     path(r'<int:directory_pk>/delete', DeleteFileView.as_view(), name="delete_files"),
-    path(r'delete/', DeleteFileView.as_view(), name="delete_files")
+    path(r'delete/', DeleteFileView.as_view(), name="delete_files"),
+    path(r'serve_file/<int:pk>/', serve_upload_files, name="serve_file")
 
 ]

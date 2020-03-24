@@ -1,5 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q, F
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -225,3 +226,27 @@ class DeleteFileView(LoginRequiredMixin, View):
         response = HttpResponse(json.dumps(context), content_type='application/json')
         response.status_code = 200
         return response
+
+
+@login_required
+def serve_upload_files(request, pk):
+    import os.path
+    import mimetypes
+    mimetypes.init()
+
+    try:
+        file_pk = pk
+        file_path = File.objects.get(pk=file_pk).file.path
+        fsock = open(file_path, "rb")
+        # file = fsock.read()
+        # fsock = open(file_path,"r").read()
+        file_name = os.path.basename(file_path)
+        file_size = os.path.getsize(file_path)
+        mime_type_guess = mimetypes.guess_type(file_name)
+        response = None
+        if mime_type_guess is not None:
+            response = HttpResponse(fsock)
+            response['Content-Disposition'] = 'attachment; filename=' + file_name
+    except IOError:
+        response = HttpResponseNotFound()
+    return response
