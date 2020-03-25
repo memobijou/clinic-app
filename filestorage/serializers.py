@@ -66,8 +66,11 @@ class FileSerializerBase(serializers.ModelSerializer):
             scheme = "https"
         else:
             scheme = "http"
-        file_url = f'{str(scheme)}://{str(request.get_host())}' \
-            f'{reverse_lazy("api_filestorage:files", kwargs={"pk": instance.pk, "user_id": user_id})}'
+        if user_id:
+            reverse_url = reverse_lazy("api_filestorage:files", kwargs={"pk": instance.pk, "user_id": user_id})
+        else:
+            reverse_url = reverse_lazy("api_filestorage:files", kwargs={"pk": instance.pk})
+        file_url = f'{str(scheme)}://{str(request.get_host())}{reverse_url}'
         return file_url
 
     def save(self, **kwargs):

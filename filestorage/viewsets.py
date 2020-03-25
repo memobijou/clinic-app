@@ -66,6 +66,9 @@ class FileViewSet(viewsets.ModelViewSet):
     serializer_class = FileSerializer
     pagination_class = PageNumberPagination
 
+    def get_serializer_context(self):
+        return {"request": self.request, "pk": self.kwargs.get("pk")}
+
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset
@@ -90,9 +93,12 @@ class IFileUploadView(APIView, metaclass=ABCMeta):
 class FileUploadCreateView(IFileUploadView):
     directory = None
 
+    def get_serializer_context(self):
+        return {"request": self.request, "pk": self.kwargs.get("pk")}
+
     def post(self, request, *args, **kwargs):
         self.directory = get_object_or_404(FileDirectory, pk=self.kwargs.get("directory_pk"))
-        file_serializer = FileSerializer(data=request.data)
+        file_serializer = FileSerializer(data=request.data, context=self.get_serializer_context())
 
         if file_serializer.is_valid():
             print(f"hehe: {self.directory.pk}")
@@ -106,6 +112,9 @@ class FileUploadCreateView(IFileUploadView):
 class FileUploadUpdateView(IFileUploadView):
     file = None
 
+    def get_serializer_context(self):
+        return {"request": self.request, "pk": self.kwargs.get("pk")}
+
     def post(self, request, *args, **kwargs):
         self.file = get_object_or_404(File, pk=self.kwargs.get("file_pk"))
         origin_file = self.file.file
@@ -116,7 +125,7 @@ class FileUploadUpdateView(IFileUploadView):
         if not version:
             self.file.version += Decimal(0.01)
 
-        file_serializer = FileUpdateSerializer(data=data, instance=self.file)
+        file_serializer = FileUpdateSerializer(data=data, instance=self.file, context=self.get_serializer_context())
 
         if file_serializer.is_valid():
             origin_file.delete()
