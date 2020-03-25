@@ -44,9 +44,9 @@ class UserDirectoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, vie
             user.profile.filestorage_badges = 0
             user.profile.save()
 
-        if directory_id:
-            FileUserHistory.objects.filter(user_id=user_id, file__parent_directory_id=directory_id).distinct().update(
-             unread_notifications=0)
+        # if directory_id:
+        #     FileUserHistory.objects.filter(user_id=user_id, file__parent_directory_id=directory_id).distinct().update(
+        #      unread_notifications=0)
 
         return self.queryset
 
@@ -154,6 +154,10 @@ class FileView(APIView):
 class ServeFileView(APIView):
     def get(self, request, pk, user_id=None, format=None):
         file = File.objects.get(pk=pk)
+
+        if pk and user_id:
+            file.fileuserhistory_set.filter(user_id=user_id).update(unread_notifications=0)
+
         if hasattr(settings, "AWS_ACCESS_KEY_ID"):
             s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                               aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
