@@ -79,6 +79,7 @@ class Profile(models.Model):
     phonebook_badges = models.IntegerField(default=0, blank=True)
     filestorage_badges = models.IntegerField(default=0, blank=True)
     task_badges = models.IntegerField(default=0, blank=True)
+    is_android = models.BooleanField(default=False)
 
     def get_total_badges(self):
         return self.appointment_badges + self.messaging_badges + self.duty_roster_badges + self.phonebook_badges \

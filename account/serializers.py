@@ -57,8 +57,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ("title", "is_admin", "mentor", "device_token", "subject_area", "subject_area_id", "profile_image",
-                  "appointment_badges", "task_badges", "total_badges", "filestorage_badges", "messaging_badges",)
-        read_only_fields = ('is_admin',)
+                  "appointment_badges", "task_badges", "total_badges", "filestorage_badges", "messaging_badges",
+                  "is_android")
+        read_only_fields = ('is_admin', "is_android",)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -153,7 +154,7 @@ class SubjectAreaAssignmentSerializer(serializers.ModelSerializer):
 class DeviceTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ("device_token", )
+        fields = ("device_token", "is_android",)
 
 
 class AuthorizationSerializer(serializers.ModelSerializer):

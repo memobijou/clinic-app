@@ -16,6 +16,12 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     pagination_class = PageNumberPagination
 
+    def get_serializer_class(self):
+        print(f"??? {self.action}")
+        if self.action == "device_token_assignment":
+            return DeviceTokenSerializer
+        return super().get_serializer_class()
+
     def get_queryset(self):
         print(self.request.POST)
         self.filter_by_pk()
