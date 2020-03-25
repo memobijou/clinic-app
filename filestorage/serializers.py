@@ -39,6 +39,21 @@ class FileSerializerBase(serializers.ModelSerializer):
     type = serializers.StringRelatedField()
     filename = serializers.SerializerMethodField()
     file = serializers.SerializerMethodField()
+    is_unread = serializers.SerializerMethodField()
+
+    class Meta:
+        model = File
+        fields = ("file", "parent_directory", "type", "pk", "version", "filename", "is_unread",)
+
+    def get_is_unread(self, instance: File):
+        user_id = self.context.get("user_id")
+        total = instance.fileuserhistory_set.filter(user_id=user_id).aggregate(
+            total=Coalesce(Sum("unread_notifications"), 0)).get("total")
+
+        if total > 0:
+            return True
+        else:
+            return False
 
     def get_filename(self, instance: File):
         return instance.filename()
@@ -46,6 +61,7 @@ class FileSerializerBase(serializers.ModelSerializer):
     def get_file(self, instance):
         request = self.context.get("request")
         user_id = self.context.get("user_id")
+
         if request.is_secure():
             scheme = "https"
         else:
@@ -53,10 +69,6 @@ class FileSerializerBase(serializers.ModelSerializer):
         file_url = f'{str(scheme)}://{str(request.get_host())}' \
             f'{reverse_lazy("api_filestorage:files", kwargs={"pk": instance.pk, "user_id": user_id})}'
         return file_url
-
-    class Meta:
-        model = File
-        fields = ("file", "parent_directory", "type", "pk", "version", "filename")
 
     def save(self, **kwargs):
         instance = super().save(**kwargs)
