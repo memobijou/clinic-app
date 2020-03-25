@@ -45,12 +45,13 @@ class FileSerializerBase(serializers.ModelSerializer):
 
     def get_file(self, instance):
         request = self.context.get("request")
+        user_id = self.context.get("user_id")
         if request.is_secure():
             scheme = "https"
         else:
             scheme = "http"
         file_url = f'{str(scheme)}://{str(request.get_host())}' \
-            f'{reverse_lazy("api_filestorage:files", kwargs={"pk": instance.pk})}'
+            f'{reverse_lazy("api_filestorage:files", kwargs={"pk": instance.pk, "user_id": user_id})}'
         return file_url
 
     class Meta:
