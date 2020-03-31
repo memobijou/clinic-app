@@ -79,6 +79,8 @@ class Profile(models.Model):
     phonebook_badges = models.IntegerField(default=0, blank=True)
     filestorage_badges = models.IntegerField(default=0, blank=True)
     task_badges = models.IntegerField(default=0, blank=True)
+    broadcast_badges = models.IntegerField(default=0, blank=True)
+    proposal_badges = models.IntegerField(default=0, blank=True)
     is_android = models.BooleanField(default=False)
 
     def get_total_badges(self):

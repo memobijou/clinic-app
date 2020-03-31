@@ -11,7 +11,6 @@ import os
 from pyfcm import FCMNotification
 from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError
 from django.contrib.auth.models import User
-from account.models import title_choices
 
 
 class BasicUserSerializer(serializers.HyperlinkedModelSerializer):
@@ -58,7 +57,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ("title", "is_admin", "mentor", "device_token", "subject_area", "subject_area_id", "profile_image",
                   "appointment_badges", "task_badges", "total_badges", "filestorage_badges", "messaging_badges",
-                  "is_android")
+                  "broadcast_badges", "is_android")
         read_only_fields = ('is_admin', "is_android",)
 
 
