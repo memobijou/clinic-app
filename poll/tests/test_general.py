@@ -37,12 +37,28 @@ class ProposalTestCase(TestCase):
         poll_response = self.client.post(reverse_lazy("poll:list"), data=data)
         return poll_response
 
+    def create_poll_with_options(self):
+        self.create_poll()
+        poll_instance = Poll.objects.last()
+        poll_id = poll_instance.id
+        title = poll_instance.title
+
+        response = self.client.post(
+            reverse_lazy("poll:edit", kwargs={"pk": poll_id}),
+            data={"option": "Option 1", "title": title})
+        self.assertEqual(response.status_code, 302)
+
+        response = self.client.post(
+            reverse_lazy(
+                "poll:edit", kwargs={"pk": poll_id}), data={"option": "Option 2", "title": title, "open": True})
+        self.assertEqual(response.status_code, 302)
+
     @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
     @mock.patch('pyfcm.FCMNotification.notify_multiple_devices', return_value={})
     def test_unpublished_poll_not_listed_in_rest_api(self, x, y):
         self.assertEqual(Poll.objects.count(), 0)
         self.create_poll()
-        poll_instance = Poll.objects.first()
+        poll_instance = Poll.objects.last()
         poll_api_response = self.client.get(
             reverse_lazy("api_poll:poll-detail", kwargs={"user_id": self.session_user.id, "id": poll_instance.id}))
         self.assertEqual(poll_api_response.status_code, 404)
@@ -51,7 +67,7 @@ class ProposalTestCase(TestCase):
     @mock.patch('pyfcm.FCMNotification.notify_multiple_devices', return_value={})
     def test_published_poll_listed_in_rest_api(self, x, y):
         self.create_poll()
-        poll_instance = Poll.objects.first()
+        poll_instance = Poll.objects.last()
         poll_instance.open = True
         poll_instance.save()
         poll_api_response = self.client.get(
@@ -60,7 +76,7 @@ class ProposalTestCase(TestCase):
 
     def test_poll_publishment_without_option_not_possibile(self):
         self.create_poll()
-        poll_instance = Poll.objects.first()
+        poll_instance = Poll.objects.last()
         poll_id = poll_instance.id
         title = poll_instance.title
 
@@ -84,9 +100,22 @@ class ProposalTestCase(TestCase):
 
     def test_poll_edition_title_required(self):
         self.create_poll()
-        poll_id = Poll.objects.first().id
+        poll_id = Poll.objects.last().id
         response = self.client.post(reverse_lazy("poll:edit", kwargs={"pk": poll_id}), data={})
         self.assertEqual(response.status_code, 200)  # error form
 
     def test_option_cannot_be_deletetd_if_published(self):
-        pass
+        self.create_poll_with_options()
+        poll_instance = Poll.objects.last()
+        option_instance = poll_instance.option_set.first()
+        response = self.client.post(
+            reverse_lazy("poll:delete-option", kwargs={"pk": poll_instance.pk, "option_pk": option_instance.pk}))
+        self.assertEqual(response.status_code, 403)
+
+    @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
+    @mock.patch('pyfcm.FCMNotification.notify_multiple_devices', return_value={})
+    def test_poll_badges(self, x, y):
+        self.assertEqual(self.session_user.profile.poll_badges, 0)
+        self.create_poll_with_options()
+        self.session_user.refresh_from_db()
+        self.assertEqual(self.session_user.profile.poll_badges, 1)
