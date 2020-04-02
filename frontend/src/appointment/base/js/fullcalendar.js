@@ -39,7 +39,6 @@ $(document).ready(function(){
                                   color: "#428bca",    // an option!
                                   textColor: 'white',  // an option!
                                   data: {
-                                      is_conference: true
                                   }
                                 }
 
@@ -47,14 +46,17 @@ $(document).ready(function(){
                           eventRender: function (event, element, view) {
                                 element.find(".fc-title").remove();
                                 element.find(".fc-time").remove();
+
                                 var promoter_name = event.promoter_name || "";
                                 var start_date = moment(event.start_date, "YYYY-MM-DD hh:mm").toDate();
 
                                 var start_minutes = parseInt(start_date.getMinutes());
+
                                 if(start_date.getMinutes() < 10){
                                     start_minutes = "0" + start_date.getMinutes()
                                 }
                                 var start_hours = parseInt(start_date.getHours());
+
                                 if(start_date.getHours() < 10){
                                     start_hours = "0" + start_date.getHours()
                                 }
@@ -76,8 +78,8 @@ $(document).ready(function(){
                                 }
 
                                 var end_time = end_hours + ":" + end_minutes;
-                                var date = start_time + "-" + end_time + " Uhr";
 
+                                var date = start_time + "-" + end_time + " Uhr";
 
 
                                 $(element).css("margin-top", "5px");
@@ -91,6 +93,7 @@ $(document).ready(function(){
                                 }
 
                                 var title = "<b>" + event.title + "</b>";
+
                                 if(event.promoter_name != null && event.promoter_name != ""){
                                     title += "<br/>" + event.promoter_name
                                 }

@@ -3,6 +3,10 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveMode
 from django.db.transaction import atomic
 from broadcast.models import Broadcast, Like, Comment, Attachement
 from broadcast.serializers import BroadcastSerializer, LikeSerializer, CommentSerializer
+from uniklinik.utils import send_push_notifications
+from django.contrib.auth.models import User
+from account.models import Profile
+from django.db.models import F
 
 
 class BroadcastViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, DestroyModelMixin, GenericViewSet):
@@ -18,6 +22,14 @@ class BroadcastViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, Des
             a.file.save(f.name, f.file, True)
             instance.attachement_set.add(a)
         instance.save()
+
+        def update_badge_method(push_user_ids):
+            Profile.objects.filter(user_id__in=push_user_ids).update(broadcast_badges=F("broadcast_badges") + 1)
+
+        send_push_notifications(
+            User.objects.exclude(id=instance.sender_id), f'Neue Nachricht von {instance.sender}',
+            instance.text, "broadcast", update_badge_method
+        )
 
     @atomic
     def perform_destroy(self, instance):
@@ -43,6 +55,14 @@ class LikeViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, ListM
         instance.broadcast_id = self.kwargs.get("broadcast_id")
         instance.save()
 
+        def update_badge_method(empty_users):
+            pass
+
+        send_push_notifications(
+            User.objects.filter(id=instance.broadcast.sender_id), f'{instance.user} hat deinen Beitrag geliket',
+            "", "broadcast-comment", update_badge_method
+        )
+
 
 class CommentViewSet(ListModelMixin, RetrieveModelMixin,  CreateModelMixin,  GenericViewSet, DestroyModelMixin):
     serializer_class = CommentSerializer
@@ -57,3 +77,11 @@ class CommentViewSet(ListModelMixin, RetrieveModelMixin,  CreateModelMixin,  Gen
         instance = serializer.save()
         instance.broadcast_id = self.kwargs.get("broadcast_id")
         instance.save()
+
+        def update_badge_method(empty_users):
+            pass
+
+        send_push_notifications(
+            User.objects.filter(id=instance.broadcast.sender_id), f'{instance.sender} hat deinen Beitrag kommentiert',
+            instance.text, "broadcast-comment", update_badge_method
+        )

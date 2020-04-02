@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 # Create your views here.
 from poll.forms import PollForm, PollUpdateForm, OptionForm
 from poll.models import Poll, Option
+from django.core.exceptions import PermissionDenied
 
 
 class PollListView(LoginRequiredMixin, generic.CreateView):
@@ -46,3 +47,9 @@ class OptionDeleteView(LoginRequiredMixin, generic.DeleteView):
 
     def get_success_url(self):
         return reverse_lazy("poll:edit", kwargs={"pk": self.kwargs.get("pk")})
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.poll.open is True:
+            raise PermissionDenied
+        return super().delete(request, *args, **kwargs)

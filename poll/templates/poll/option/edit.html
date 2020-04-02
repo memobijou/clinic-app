@@ -67,9 +67,13 @@
                 </header>
                 <section class="panel-body" style="display:none;">
                     <div class="text-center">
-                        <form method="POST" action="{% url 'poll:delete-option' pk=object.poll_id option_pk=object.pk %}">{% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Option {{ object.title }} löschen</button>
-                        </form>
+                        {% if not object.poll.open %}
+                            <form method="POST" action="{% url 'poll:delete-option' pk=object.poll_id option_pk=object.pk %}">{% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Option {{ object.title }} löschen</button>
+                            </form>
+                        {% else %}
+                            <p class="help-block">Eine Option kann nicht gelöscht werden, solange sie veröffentlicht ist.</p>
+                        {% endif %}
                     </div>
                 </section>
             </section>

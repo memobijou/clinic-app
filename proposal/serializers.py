@@ -12,8 +12,9 @@ class ProposalSerializer(serializers.ModelSerializer):
         model = Proposal
         fields = ("pk", "user", "first_name", "last_name", "start_date", "end_date", "confirmed", "type", "title")
         extra_kwargs = {
-            'user': {'write_only': True},
-            'confirmed': {"read_only": True}
+            'user': {'write_only': True, "allow_null": False, "required": True},
+            'confirmed': {"read_only": True},
+            'type': {"allow_null": False, "required": True}
         }
 
 

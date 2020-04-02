@@ -110,7 +110,6 @@
 {% block js %}
     <script>
         var api_url = "{% url "appointment:appointment-calendar" %}";
-        var edit_infobox_action_url = "{% url 'appointment:edit_infobox' pk=0 %}";
         var edit_conference_action_url = "{% url 'appointment:edit_conference' pk=0 %}";
         var delete_url = "{% url 'appointment:delete' %}";
         var csrf_token = "{{ csrf_token }}";

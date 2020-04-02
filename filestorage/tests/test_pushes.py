@@ -59,14 +59,17 @@ class FilestorageTestCase(TestCase):
     @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
     @mock.patch('pyfcm.FCMNotification.notify_multiple_devices', return_value={})
     def test_hierarchy_pushes(self, x, y):
-        parent_id = self.file.parent_directory_id
-        amount_directories = 5
+        parent = self.file.parent_directory
+        amount_directories = 20
+        new_directory = None
+
         for i in range(amount_directories):
-            new_directory = mixer.blend(FileDirectory, parent_id=parent_id, announcement=True)
-            new_file = mixer.blend(File, parent_directory_id=new_directory.id)
-            parent_id = new_directory.id
+            new_directory = mixer.blend(FileDirectory, parent=parent, announcement=True)
+            new_file = mixer.blend(File, parent_directory=new_directory)
+            parent = new_directory
             send_file_messages_through_firebase(new_file, is_new=False)
 
+        # User 1
         account_response_user_1 = self.client.get(
             reverse_lazy("api_account:user-detail",
                          kwargs={"pk": self.session_user.pk}))
@@ -74,6 +77,7 @@ class FilestorageTestCase(TestCase):
         self.assertEqual(json.loads(account_response_user_1.content).get("profile").get("filestorage_badges"),
                          amount_directories)
 
+        # User 2
         account_response_user_2 = self.client.get(
             reverse_lazy("api_account:user-detail",
                          kwargs={"pk": self.second_user.pk}))
@@ -81,11 +85,15 @@ class FilestorageTestCase(TestCase):
         self.assertEqual(json.loads(account_response_user_2.content).get("profile").get("filestorage_badges"),
                          amount_directories)
 
+        # User 1
+
         response_user_1 = self.client.get(
             reverse_lazy("api_filestorage:directories-detail",
-                         kwargs={"user_id": self.session_user.pk, "pk": 8}))
+                         kwargs={"user_id": self.session_user.pk, "pk": new_directory.pk-3}))
 
         self.assertEqual(response_user_1.status_code, 200)
+
+        print(f'{json.loads(response_user_1.content).get("files")}')
 
         self.client.get(reverse_lazy("api_filestorage:files",
                                      kwargs={"user_id": self.session_user.pk,
@@ -96,6 +104,8 @@ class FilestorageTestCase(TestCase):
 
         self.assertEqual(json.loads(account_response_user_1.content).get("profile").get("filestorage_badges"),
                          amount_directories-1)
+
+        # User 2
 
         account_response_user_2 = self.client.get(
             reverse_lazy("api_account:user-detail", kwargs={"pk": self.second_user.pk}))
@@ -116,7 +126,7 @@ class FilestorageTestCase(TestCase):
             send_file_messages_through_firebase(new_file, is_new=False)
 
         print(f"brrrruuuuh: {new_directory.pk}")
-
+        # Hierarchy 1
         response_user_1 = self.client.get(
             reverse_lazy("api_filestorage:directories-detail",
                          kwargs={"user_id": self.session_user.pk, "pk": new_directory.pk-3}))
@@ -133,16 +143,31 @@ class FilestorageTestCase(TestCase):
 
         response_user_1 = self.client.get(
             reverse_lazy("api_filestorage:directories-detail",
-                         kwargs={"user_id": self.session_user.pk, "pk": new_directory.pk-2}))
+                         kwargs={"user_id": self.session_user.pk, "pk": new_directory.pk-3}))
 
         response_user_1_json = json.loads(response_user_1.content)
         print(f"bam: {response_user_1_json}")
         self.assertEqual(response_user_1_json.get("unread_notifications"), 3)
 
+        # Hierarchy 2
         response_user_1 = self.client.get(
             reverse_lazy("api_filestorage:directories-detail",
-                         kwargs={"user_id": self.session_user.pk, "pk": new_directory.pk-3}))
+                         kwargs={"user_id": self.session_user.pk, "pk": new_directory.pk-2}))
 
         response_user_1_json = json.loads(response_user_1.content)
 
         self.assertEqual(response_user_1_json.get("unread_notifications"), 3)
+
+        response_get_file = self.client.get(
+            reverse_lazy("api_filestorage:files", kwargs={"user_id": self.session_user.pk,
+                         "pk": response_user_1_json.get("files")[0].get("pk")}))
+
+        self.assertEqual(response_get_file.status_code, 200)
+
+        response_user_1 = self.client.get(
+            reverse_lazy("api_filestorage:directories-detail",
+                         kwargs={"user_id": self.session_user.pk, "pk": new_directory.pk-2}))
+
+        response_user_1_json = json.loads(response_user_1.content)
+
+        self.assertEqual(response_user_1_json.get("unread_notifications"), 2)

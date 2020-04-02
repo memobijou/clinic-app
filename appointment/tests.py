@@ -20,22 +20,21 @@ class AppointmentTestCase(TestCase):
     def test_conference_creation(self):
         appointments_count = Appointment.objects.count()
         with mixer.ctx(commit=False):
-            appointment = mixer.blend(Appointment, is_conference=True, start_date="2019-03-01T01:23",
+            appointment = mixer.blend(Appointment, start_date="2019-03-01T01:23",
                                       end_date="2019-03-01T03:23")
             data = appointment.__dict__
         response = self.client.post(reverse_lazy("appointment:new_conference"), data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(appointments_count+1, Appointment.objects.count())
-        self.assertTrue(Appointment.objects.first().is_conference)
 
     def test_conference_edition(self):
-        appointment = mixer.blend(Appointment, is_conference=True, start_date="2019-03-01T01:23",
+        appointment = mixer.blend(Appointment, start_date="2019-03-01T01:23",
                                   end_date="2019-03-01T03:23")
         topic = appointment.topic
 
         with mixer.ctx(commit=False):
             data = mixer.blend(
-                Appointment, is_conference=True, start_date="2019-04-01T01:23", end_date="2019-04-03T03:23").__dict__
+                Appointment, start_date="2019-04-01T01:23", end_date="2019-04-03T03:23").__dict__
 
         groups = mixer.cycle(5).blend(Group)
         data["groups"] = [group.pk for group in groups]
@@ -48,7 +47,7 @@ class AppointmentTestCase(TestCase):
         self.assertNotEqual(appointment.topic, topic)
 
     def test_conference_deletion(self):
-        appointment = mixer.blend(Appointment, is_conference=True, start_date="2019-03-01T01:23",
+        appointment = mixer.blend(Appointment, start_date="2019-03-01T01:23",
                                   end_date="2019-03-01T03:23")
         response = self.client.post(reverse_lazy("appointment:delete") + f"?item={appointment.pk}")
         self.assertEqual(Appointment.objects.count(), 0)
