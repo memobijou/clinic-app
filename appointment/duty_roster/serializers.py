@@ -3,6 +3,10 @@ from rest_framework.pagination import PageNumberPagination
 from appointment.models import DutyRoster
 from datetime import datetime
 from django.utils.translation import ugettext as _
+from account.models import Profile
+from uniklinik.utils import send_push_notifications
+from django.db.models import F
+from django.contrib.auth.models import User
 
 
 class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
@@ -35,6 +39,26 @@ class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
             duty_rosters.delete()
         data["calendar_week_date"] = date
         return data
+
+    def create(self, validated_data):
+        print(f"come one mannnnn  {validated_data}")
+
+        def update_badge_method(push_user_ids):
+            Profile.objects.filter(user_id__in=push_user_ids).update(
+                duty_roster_badges=F("duty_roster_badges") + 1)
+
+        month = validated_data.get('calendar_week_date').month
+
+        if len(str(month)) == 1:
+            month = "0" + str(month)
+
+        message = f"{month}.{validated_data.get('calendar_week_date').year}"
+
+        print(message)
+
+        send_push_notifications(User.objects.all(), f"Neuer Dienstplan verfügbar", message, "duty-roster",
+                                update_badge_method)
+        return super().create(validated_data)
 
 
 # ViewSets define the view behavior.

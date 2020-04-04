@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from phonebook.forms import PhoneBookForm
 from phonebook.models import PhoneBook
 from rest_framework.authtoken.models import Token
+from unittest import mock
 
 
 class PhoneBookTestCase(TestCase):
@@ -13,6 +14,9 @@ class PhoneBookTestCase(TestCase):
         self.client.force_login(self.session_user)
         self.token = Token.objects.create(user=self.session_user).key
         self.client.defaults['HTTP_AUTHORIZATION'] = 'Token ' + self.token
+        profile = self.session_user.profile
+        profile.device_token = "somedevicetoken"
+        profile.save()
 
     def test_phone_book_creation(self):
         phone_books_count = PhoneBook.objects.count()
@@ -47,3 +51,21 @@ class PhoneBookTestCase(TestCase):
         if form.is_valid() is True:
             instance = form.save()
             return instance
+
+    @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
+    @mock.patch('pyfcm.FCMNotification.notify_multiple_devices', return_value={})
+    def test_phonebook_badges(self, x, y):
+        with mixer.ctx(commit=False):
+            data = mixer.blend(PhoneBook, title=mixer.RANDOM, phone_number=mixer.RANDOM).__dict__
+
+        response = self.client.post(reverse_lazy("phonebook:create"), data=data)
+        self.assertEqual(response.status_code, 302)
+        self.session_user.profile.refresh_from_db()
+        self.assertEqual(self.session_user.profile.phonebook_badges, 1)
+
+        with mixer.ctx(commit=False):
+            data = mixer.blend(PhoneBook, first_name=mixer.RANDOM, last_name=mixer.RANDOM).__dict__
+        response = self.client.post(reverse_lazy("phonebook:create"), data=data)
+        self.assertEqual(response.status_code, 302)
+        self.session_user.profile.refresh_from_db()
+        self.assertEqual(self.session_user.profile.phonebook_badges, 2)

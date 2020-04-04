@@ -15,6 +15,9 @@ class AccomplishmentTestCase(TestCase):
         self.client.force_login(self.session_user)
         self.token = Token.objects.create(user=self.session_user).key
         self.client.defaults['HTTP_AUTHORIZATION'] = 'Token ' + self.token
+        profile = self.session_user.profile
+        profile.device_token = "somedevicetoken"
+        profile.save()
 
     def test_accomplishment_creation(self):
         accomplishments_count = Accomplishment.objects.count()
@@ -239,3 +242,26 @@ class AccomplishmentTestCase(TestCase):
                          kwargs={"user_id": user_id, "accomplishment_id": accomplishment_id}))
         json_response = json.loads(response.content)
         return response, json_response
+
+    def test_accomplishment_badges(self):
+        self.assertEqual(self.session_user.profile.accomplishment_badges, 0)
+        subject_area = mixer.blend(SubjectArea)
+        categories = [instance for instance in mixer.cycle(2).blend(Category)]
+
+        category_ids = [category.id for category in categories]
+
+        subject_area.category_set.add(categories[0])
+        subject_area.category_set.add(categories[1])
+
+        profile = self.session_user.profile
+        profile.subject_area = subject_area
+        profile.save()
+
+        with mixer.ctx(commit=False):
+            data = mixer.blend(Accomplishment, name=mixer.RANDOM, full_score=100).__dict__
+            data = {**data, "categories": category_ids}
+
+        response = self.client.post(reverse_lazy("accomplishment:list"), data)
+        self.assertEqual(response.status_code, 302)
+        self.session_user.profile.refresh_from_db()
+        self.assertEqual(self.session_user.profile.accomplishment_badges, 1)
