@@ -82,12 +82,13 @@ class Profile(models.Model):
     broadcast_badges = models.IntegerField(default=0, blank=True)
     proposal_badges = models.IntegerField(default=0, blank=True)
     poll_badges = models.IntegerField(default=0, blank=True)
+    accomplishment_badges = models.IntegerField(default=0, blank=True)
     is_android = models.BooleanField(default=False)
 
     def get_total_badges(self):
         return self.appointment_badges + self.messaging_badges + self.duty_roster_badges + self.phonebook_badges \
                + self.filestorage_badges + self.task_badges + self.broadcast_badges + self.proposal_badges \
-               + self.poll_badges
+               + self.poll_badges + self.accomplishment_badges
 
     @property
     def mentor_name(self):

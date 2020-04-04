@@ -13,6 +13,7 @@ from pyfcm.errors import AuthenticationError, FCMServerError, InvalidDataError, 
 import os
 from uniklinik.forms import BootstrapModelFormMixin
 from account.models import Profile
+from uniklinik.utils import send_push_notifications
 
 
 class ConferenceFormMixin(BootstrapModelFormMixin):
@@ -58,9 +59,9 @@ class AppointmentView(LoginRequiredMixin, View):
 
     def get_edit_conference_form(self):
         if self.request.method == "POST":
-            self.edit_conference_form = ConferenceFormMixin(prefix="conference_edit", data=self.request.POST)
+            self.edit_conference_form = ConferenceFormMixin(prefix="edit", data=self.request.POST)
         else:
-            self.edit_conference_form = ConferenceFormMixin(prefix="conference_edit")
+            self.edit_conference_form = ConferenceFormMixin(prefix="edit")
         return self.edit_conference_form
 
     def get_context(self):
@@ -70,45 +71,6 @@ class AppointmentView(LoginRequiredMixin, View):
 def get_users_from_groups(groups):
     users = User.objects.filter(groups_list__in=groups).distinct()
     return users
-
-
-def send_push_notifications(users, title, message, category):
-    if os.environ.get("firebase_token"):
-        push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
-        registration_ids = []
-        badges_totals = {}
-        users = users.prefetch_related("profile")
-        push_user_ids = []
-
-        for user in users:
-            if user.profile.device_token is not None:
-                registration_ids.append(user.profile.device_token)
-                push_user_ids.append(user.id)
-
-        Profile.objects.filter(user_id__in=push_user_ids).update(appointment_badges=F("appointment_badges") + 1)
-
-        for user in User.objects.filter(id__in=push_user_ids):
-            if user.profile.device_token is not None:
-                badges_totals[user.profile.device_token] = user.profile.get_total_badges()
-
-        if len(registration_ids) > 0:
-            try:
-                if len(message) > 20:
-                    message = message[:20] + "..."
-
-                for registration_id in registration_ids:
-                    push_service.notify_single_device(
-                        registration_id=registration_id, message_title=title, message_body=message, sound="default",
-                        data_message={"category": category}, badge=badges_totals.get(registration_id)
-                    )
-
-                # silent push
-                push_service.notify_multiple_devices(
-                    registration_ids=registration_ids,
-                    data_message={"category": category}, content_available=True
-                )
-            except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
-                print(e)
 
 
 class ConferenceView(LoginRequiredMixin, View):
@@ -133,7 +95,11 @@ class ConferenceView(LoginRequiredMixin, View):
             instance.promoter = request.user
             instance.save()
             users = get_users_from_groups(instance.groups.all())
-            send_push_notifications(users, instance.topic, instance.description, "conference")
+
+            def update_badge_method(push_user_ids):
+                Profile.objects.filter(user_id__in=push_user_ids).update(appointment_badges=F("appointment_badges") + 1)
+
+            send_push_notifications(users, instance.topic, instance.description, "appointment", update_badge_method)
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
         else:
             return render(request, "appointment/appointment.html", self.get_context())
@@ -157,17 +123,21 @@ class ConferenceUpdateView(LoginRequiredMixin, View):
 
     def get_edit_conference_form(self):
         if self.request.method == "POST":
-            self.edit_conference_form = ConferenceFormMixin(prefix="conference_edit", data=self.request.POST,
-                                                            instance=self.object)
+            self.edit_conference_form = ConferenceFormMixin(prefix="edit", data=self.request.POST, instance=self.object)
         else:
-            self.edit_conference_form = ConferenceFormMixin(prefix="conference_edit", instance=self.object)
+            self.edit_conference_form = ConferenceFormMixin(prefix="edit", instance=self.object)
         return self.edit_conference_form
 
     def post(self, request, *args, **kwargs):
         if self.edit_conference_form.is_valid() is True:
             self.edit_conference_form.save()
             users = get_users_from_groups(self.object.groups.all())
-            send_push_notifications(users, self.object.topic, self.object.description, "conference")
+
+            def update_badge_method(push_user_ids):
+                Profile.objects.filter(user_id__in=push_user_ids).update(appointment_badges=F("appointment_badges") + 1)
+
+            send_push_notifications(users, self.object.topic, self.object.description, "appointment",
+                                    update_badge_method)
             return HttpResponseRedirect(reverse_lazy("appointment:planning"))
         else:
             return render(request, "appointment/appointment.html", {"edit_conference_form": self.edit_conference_form,

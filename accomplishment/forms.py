@@ -4,6 +4,9 @@ from uniklinik.forms import BootstrapModelFormMixin
 from django.db import transaction
 from django import forms
 from django.contrib.auth.models import User
+from uniklinik.utils import send_push_notifications
+from account.models import Profile
+from django.db.models import F
 
 
 class AccomplishmentFormMixin(BootstrapModelFormMixin):
@@ -34,8 +37,8 @@ class AccomplishmentFormMixin(BootstrapModelFormMixin):
         subject_areas = SubjectArea.objects.filter(id__in=self.instance.categories.values_list("subject_area__id",
                                                                                                flat=True).distinct())
         users = User.objects.filter(profile__subject_area__in=subject_areas).distinct()
-
-        # Das muss zu Fachrichtungen gemacht werden statt zu Gruppen
+        print(f"????????!!!!!!!????? {users}")
+        # Das muss zu Fachrichtungen gemacht werden statt zu Gruppen ???
         if is_new_object is False:
             existing_users = UserAccomplishment.objects.filter(
                 user__in=users, accomplishment=self.instance).values_list("user__pk", flat=True).distinct()
@@ -43,4 +46,13 @@ class AccomplishmentFormMixin(BootstrapModelFormMixin):
 
         UserAccomplishment.objects.bulk_create(
            [UserAccomplishment(user=user, accomplishment=instance, score=0) for user in users])
+
+        if is_new_object is True:
+            print("going inside !")
+
+            def update_badge_method(push_user_ids):
+                Profile.objects.filter(user_id__in=push_user_ids).update(
+                    accomplishment_badges=F("accomplishment_badges") + 1)
+            print(f"what the: {users}")
+            send_push_notifications(users, "Neue Leistung", self.instance.name, "accomplishment", update_badge_method)
         return instance
