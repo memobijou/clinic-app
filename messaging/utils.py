@@ -19,25 +19,34 @@ def send_push_notification_to_receiver(message, sender, receiver):
             chat_push_history.unread_notifications += 1
             chat_push_history.save()
 
+            registration_id = receiver.profile.device_token
+
+            data_message = {
+                "click_action": "FLUTTER_NOTIFICATION_CLICK",
+                "id": "1",
+                "status": "done",
+                "category": "messaging",
+                "sender": sender.id, "receiver": receiver.id
+            }
+
+            extra_notification_kwargs = {
+                "options": {
+                    "mutableContent": True,
+                    "contentAvailable": True,
+                    "apnsPushType": "background"
+                },
+                "apnsPushType": "background"
+            }
+
             if len(message) > 20:
                 message = message[:20] + "..."
 
-            registration_id = receiver.profile.device_token
+            push_service.notify_single_device(
+                registration_id=registration_id, message_title=sender, message_body=message, sound="default",
+                data_message=data_message, badge=receiver.get_total_badges(), low_priority=False,
+                extra_notification_kwargs=extra_notification_kwargs, content_available=True
+            )
 
-            r = push_service.notify_single_device(
-                registration_id=registration_id, message_title=f"{sender}",
-                message_body=message,
-                sound="default", data_message={"category": "messaging", "sender": sender.id, "receiver": receiver.id},
-                badge=receiver.profile.get_total_badges())
-            print(f"he: {r}")
-            print("success chat")
-
-            # silent push
-            # push_service.notify_single_device(
-            #     registration_id=registration_id,
-            #     data_message={"category": "messaging", "sender": sender.id, "receiver": receiver.id},
-            #     content_available=True
-            # )
         except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
             print(e)
 
@@ -61,20 +70,31 @@ def send_push_notification_to_group(message, sender, group: Group):
 
                 registration_id = receiver.profile.device_token
 
-                r = push_service.notify_single_device(
-                    registration_id=registration_id, message_title=f"{sender}",
-                    message_body=message,
-                    sound="default",
-                    data_message={"category": "messaging-group", "sender": sender.id, "receiver": receiver.id,
-                                  "group": group.id},
-                    badge=receiver.profile.get_total_badges())
-                print(f"he: {r}")
-                print("success chat")
-            # silent push
-            # push_service.notify_single_device(
-            #     registration_id=registration_id,
-            #     data_message={"category": "messaging", "sender": sender.id, "receiver": receiver.id},
-            #     content_available=True
-            # )
+                data_message = {
+                    "click_action": "FLUTTER_NOTIFICATION_CLICK",
+                    "id": "1",
+                    "status": "done",
+                    "category": "messaging-group",
+                    "sender": sender.id, "receiver": receiver.id, "group": group.id
+                }
+
+                extra_notification_kwargs = {
+                    "options": {
+                        "mutableContent": True,
+                        "contentAvailable": True,
+                        "apnsPushType": "background"
+                    },
+                    "apnsPushType": "background"
+                }
+
+                if len(message) > 20:
+                    message = message[:20] + "..."
+
+                push_service.notify_single_device(
+                    registration_id=registration_id, message_title=sender, message_body=message, sound="default",
+                    data_message=data_message, badge=receiver.get_total_badges(), low_priority=False,
+                    extra_notification_kwargs=extra_notification_kwargs, content_available=True
+                )
+
         except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
             print(e)

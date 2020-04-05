@@ -14,6 +14,7 @@ from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from messaging.utils import send_push_notification_to_receiver, send_push_notification_to_group
 from django.db.transaction import atomic
+from uniklinik.utils import send_push_notifications
 
 
 text_message_page_size = 20
@@ -74,6 +75,7 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
 
             sender = User.objects.get(pk=sender)
             receiver = User.objects.get(pk=receiver)
+
             send_push_notification_to_receiver(message, sender, receiver)
             return Response(serializer.data)
         else:
