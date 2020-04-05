@@ -27,6 +27,21 @@ def send_push_notifications(users, title, message, category, update_badge_method
             if user.profile.device_token is not None:
                 badges_totals[user.profile.device_token] = user.profile.get_total_badges()
 
+        data_message = {
+            "click_action": "FLUTTER_NOTIFICATION_CLICK",
+            "id": "1",
+            "status": "done",
+            "category": category
+        }
+
+        extra_notification_kwargs = {
+            "options": {
+                "mutableContent": True,
+                "contentAvailable": True,
+                "apnsPushType": "background"
+            }
+        }
+
         if len(registration_ids) > 0:
             try:
                 if len(message) > 20:
@@ -35,13 +50,15 @@ def send_push_notifications(users, title, message, category, update_badge_method
                 for registration_id in registration_ids:
                     push_service.notify_single_device(
                         registration_id=registration_id, message_title=title, message_body=message, sound="default",
-                        data_message={"category": category}, badge=badges_totals.get(registration_id)
+                        data_message=data_message, badge=badges_totals.get(registration_id), low_priority=False,
+                        extra_notification_kwargs=extra_notification_kwargs
                     )
 
                 # silent push
                 push_service.notify_multiple_devices(
                     registration_ids=registration_ids,
-                    data_message={"category": category}, content_available=True
+                    data_message=data_message, content_available=True, click_action="FLUTTER_NOTIFICATION_CLICK",
+                    low_priority=False, extra_notification_kwargs=extra_notification_kwargs
                 )
             except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
                 print(e)
