@@ -23,7 +23,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appointment
-        fields = ('pk', 'topic', 'description', 'start_date', 'end_date', "place", "promoter", "is_conference",
+        fields = ('pk', 'topic', 'description', 'start_date', 'end_date', "place", "promoter",
                   "groups", "title", "start", "end",)
 
 
