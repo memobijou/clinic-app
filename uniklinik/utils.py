@@ -51,14 +51,14 @@ def send_push_notifications(users, title, message, category, update_badge_method
                     push_service.notify_single_device(
                         registration_id=registration_id, message_title=title, message_body=message, sound="default",
                         data_message=data_message, badge=badges_totals.get(registration_id), low_priority=False,
-                        extra_notification_kwargs=extra_notification_kwargs
+                        extra_notification_kwargs=extra_notification_kwargs, content_available=True
                     )
 
                 # silent push
-                push_service.notify_multiple_devices(
-                    registration_ids=registration_ids,
-                    data_message=data_message, content_available=True, click_action="FLUTTER_NOTIFICATION_CLICK",
-                    low_priority=False, extra_notification_kwargs=extra_notification_kwargs
-                )
+                # push_service.notify_multiple_devices(
+                #     registration_ids=registration_ids,
+                #     data_message=data_message, content_available=True, click_action="FLUTTER_NOTIFICATION_CLICK",
+                #     low_priority=False, extra_notification_kwargs=extra_notification_kwargs
+                # )
             except (AuthenticationError, FCMServerError, InvalidDataError, InternalPackageError) as e:
                 print(e)
