@@ -1,4 +1,4 @@
-from django.db.models import Q, Subquery, OuterRef
+from django.db.models import Q, Subquery, OuterRef, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -108,13 +108,22 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
 
     def get_queryset(self):
         self.filter_by_users()
+        receiver = self.kwargs.get("receiver")
         subquery_push_history = ChatPushHistory.objects.filter(
             Q(
                 Q(user_id=OuterRef("receiver_id"), participant_id=OuterRef("sender_id"), group_id=None) |
                 Q(user_id=self.kwargs.get("receiver"), participant_id=None, group_id=OuterRef("group_id"))
             )
         ).values("unread_notifications")[:1]
-        self.queryset = self.queryset.annotate(unread_notifications=Coalesce(Subquery(subquery_push_history), 0))
+        self.queryset = self.queryset.annotate(unread_notifications=Case(
+                When(
+                    receiver_id=receiver,
+                    then=Coalesce(Subquery(subquery_push_history), 0)
+                ),
+                default=Value(0),
+                output_field=IntegerField()
+            )
+        )
         print(f"banana {type(self.queryset.first().group_id)}")
         return self.queryset
 
@@ -142,7 +151,7 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
 
             latest_messages = self.queryset.values("sender", "receiver").exclude(
                 group__isnull=False, receiver__isnull=True).filter(
-                Q(Q(receiver_id=receiver) | Q(sender_id=receiver))).annotate(
+                    Q(Q(receiver_id=receiver) | Q(sender_id=receiver))).annotate(
                 pk=Subquery(subquery)).values_list("pk", flat=True)
 
             group_subquery = TextMessage.objects.filter(group_id=OuterRef("group_id")).order_by(
