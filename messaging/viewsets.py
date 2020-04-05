@@ -155,7 +155,8 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
                 pk=Subquery(group_subquery)
             ).values_list("pk", flat=True)
 
-            self.queryset = self.queryset.filter(Q(Q(pk__in=latest_messages) | Q(pk__in=latest_group_messages)))
+            self.queryset = self.queryset.filter(
+                Q(Q(pk__in=latest_messages) | Q(pk__in=latest_group_messages))).distinct()
         else:
             self.queryset = TextMessage.objects.none()
         page = self.paginate_queryset(self.queryset)

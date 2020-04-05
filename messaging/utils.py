@@ -14,7 +14,6 @@ def send_push_notification_to_receiver(message, sender, receiver):
     if os.environ.get("firebase_token"):
         push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
         try:
-            Profile.objects.filter(user=receiver).update(messaging_badges=F("messaging_badges") + 1)
             chat_push_history, created = ChatPushHistory.objects.update_or_create(user=receiver, participant=sender)
 
             chat_push_history.unread_notifications += 1
@@ -50,9 +49,6 @@ def send_push_notification_to_group(message, sender, group: Group):
         push_service = FCMNotification(api_key=os.environ.get("firebase_token"))
         try:
             receivers = group.users.exclude(id=sender.id)
-            Profile.objects.filter(user__in=receivers).update(
-                messaging_badges=F("messaging_badges") + 1
-            )
 
             for receiver in receivers:
                 chat_push_history, created = ChatPushHistory.objects.update_or_create(user=receiver, group=group)
