@@ -57,7 +57,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ("title", "is_admin", "mentor", "device_token", "subject_area", "subject_area_id", "profile_image",
                   "appointment_badges", "task_badges", "total_badges", "filestorage_badges", "messaging_badges",
-                  "broadcast_badges", "is_android")
+                  "broadcast_badges", "duty_roster_badges", "phonebook_badges", "proposal_badges", "poll_badges",
+                  "accomplishment_badges", "is_android")
         read_only_fields = ('is_admin', "is_android",)
 
 
