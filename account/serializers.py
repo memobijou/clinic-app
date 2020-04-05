@@ -47,11 +47,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         return instance.get_total_badges()
 
     def get_messaging_badges(self, instance: Profile):
-        return instance.user.user_chat_push_histories.aggregate(
-            total=Coalesce(Sum("unread_notifications"), 0)).get("total")
+        return instance.get_messaging_badges()
 
     def get_filestorage_badges(self, instance: Profile):
-        return instance.user.fileuserhistory_set.aggregate(total=Coalesce(Sum("unread_notifications"), 0)).get("total")
+        return instance.get_filestorage_badges()
 
     class Meta:
         model = Profile

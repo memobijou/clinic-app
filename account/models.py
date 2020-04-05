@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, UserManager
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 from django.db.models.signals import post_save, m2m_changed, pre_save
 from django.dispatch import receiver
 from pyfcm import FCMNotification
@@ -86,9 +88,16 @@ class Profile(models.Model):
     is_android = models.BooleanField(default=False)
 
     def get_total_badges(self):
-        return self.appointment_badges + self.messaging_badges + self.duty_roster_badges + self.phonebook_badges \
-               + self.filestorage_badges + self.task_badges + self.broadcast_badges + self.proposal_badges \
+        return self.appointment_badges + self.get_messaging_badges() + self.duty_roster_badges + self.phonebook_badges \
+               + self.get_filestorage_badges() + self.task_badges + self.broadcast_badges + self.proposal_badges \
                + self.poll_badges + self.accomplishment_badges
+
+    def get_messaging_badges(self):
+        return self.user.user_chat_push_histories.aggregate(
+            total=Coalesce(Sum("unread_notifications"), 0)).get("total")
+
+    def get_filestorage_badges(self):
+        return self.user.fileuserhistory_set.aggregate(total=Coalesce(Sum("unread_notifications"), 0)).get("total")
 
     @property
     def mentor_name(self):
