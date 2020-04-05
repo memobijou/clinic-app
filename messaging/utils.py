@@ -43,7 +43,7 @@ def send_push_notification_to_receiver(message, sender, receiver):
 
             push_service.notify_single_device(
                 registration_id=registration_id, message_title=sender, message_body=message, sound="default",
-                data_message=data_message, badge=receiver.get_total_badges(), low_priority=False,
+                data_message=data_message, badge=receiver.profile.get_total_badges(), low_priority=False,
                 extra_notification_kwargs=extra_notification_kwargs, content_available=True
             )
 
@@ -92,7 +92,7 @@ def send_push_notification_to_group(message, sender, group: Group):
 
                 push_service.notify_single_device(
                     registration_id=registration_id, message_title=sender, message_body=message, sound="default",
-                    data_message=data_message, badge=receiver.get_total_badges(), low_priority=False,
+                    data_message=data_message, badge=receiver.profile.get_total_badges(), low_priority=False,
                     extra_notification_kwargs=extra_notification_kwargs, content_available=True
                 )
 
