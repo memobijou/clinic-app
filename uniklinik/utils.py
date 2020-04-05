@@ -39,7 +39,8 @@ def send_push_notifications(users, title, message, category, update_badge_method
                 "mutableContent": True,
                 "contentAvailable": True,
                 "apnsPushType": "background"
-            }
+            },
+            "apnsPushType": "background"
         }
 
         if len(registration_ids) > 0:
