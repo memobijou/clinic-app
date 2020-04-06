@@ -62,7 +62,7 @@ def send_push_notifications(users, title, message, category, update_badge_method
                         )
                         push_service.notify_single_device(
                             registration_id=registration_id, data_message=data_message,
-                            badge=badges_totals.get(registration_id), low_priority=False,
+                            low_priority=False,
                             extra_notification_kwargs=extra_notification_kwargs, content_available=True
                         )
                     else:
