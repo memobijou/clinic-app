@@ -16,8 +16,11 @@ class BroadcastViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, Des
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        if self.kwargs.get("user_id"):
-            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
+
+        user_id = self.request.query_params.get("user_id")
+
+        if user_id:
+            user = get_object_or_404(User, pk=user_id)
             profile = user.profile
             profile.broadcast_badges = 0
             profile.save()
