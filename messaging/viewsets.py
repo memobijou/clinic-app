@@ -85,7 +85,7 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
         group = receiver
         message = request.data.get("message")
         data = {"message": message, "sender_id": sender, "group_id": receiver}
-        print(f"brown: {data}")
+
         if sender in [None, ""]:
             return Response({"error": "Um eine Nachricht zu versenden muss ein Versender angegeben werden"})
 
@@ -125,7 +125,6 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
                 output_field=IntegerField()
             )
         )
-        print(f"banana {type(self.queryset.first().group_id)}")
         return self.queryset
 
     def filter_by_users(self):
@@ -141,7 +140,6 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
     def latest_sender(self, request, receiver=None):
         self.queryset = self.get_queryset()  # not called in custom action
 
-        print(f"apple: {self.queryset.first().unread_notifications}")
 
         if receiver not in ["", None]:
             subquery = TextMessage.objects.filter(
