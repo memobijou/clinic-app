@@ -25,6 +25,10 @@ class PollViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     def get_queryset(self):
         # if self.kwargs.get("user_id"):
             # self.queryset = self.queryset.filter(users__id=self.kwargs.get("user_id")).distinct()
+        if self.kwargs.get("user_id"):
+            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
+            user.profile.poll_badges = 0
+            user.profile.save()
         return self.queryset.filter(open=True)
 
     @transaction.atomic

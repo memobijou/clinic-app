@@ -7,11 +7,20 @@ from uniklinik.utils import send_push_notifications
 from django.contrib.auth.models import User
 from account.models import Profile
 from django.db.models import F
+from django.shortcuts import get_object_or_404
 
 
 class BroadcastViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, DestroyModelMixin, GenericViewSet):
     serializer_class = BroadcastSerializer
     queryset = Broadcast.objects.all()
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if self.kwargs.get("user_id"):
+            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
+            user.profile.broadcast_badges = 0
+            user.profile.save()
+        return context
 
     @atomic
     def perform_create(self, serializer):
@@ -60,7 +69,7 @@ class LikeViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, ListM
 
         send_push_notifications(
             User.objects.filter(id=instance.broadcast.sender_id), f'{instance.user} hat deinen Beitrag geliket',
-            "", "broadcast-comment", update_badge_method
+            "", "broadcast-like", update_badge_method
         )
 
 
