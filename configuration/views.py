@@ -79,12 +79,6 @@ def configuration_view(request):
                 company_title = form.cleaned_data.get("company_title")
                 config = {"company_title": company_title, "theme": form.cleaned_data.get("theme_color")}
                 if hasattr(settings, "AWS_ACCESS_KEY_ID"):
-                    mapper_url = os.environ.get("mapper_url") + "/api/v1/mandators/submission/"
-                    host_url = os.environ.get("host_url")
-                    requests.post(mapper_url, data={"url": host_url, "logo_url": host_url + str(logo_url),
-                                                    "company_title": form.cleaned_data.get("company_title"),
-                                                    "theme": form.cleaned_data.get("theme_color")})
-
                     s3 = boto3.resource('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                                         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
                     bucket = s3.Bucket(settings.AWS_STORAGE_BUCKET_NAME)
@@ -97,6 +91,12 @@ def configuration_view(request):
                         os.mkdir(path)
                     with open(path + "config.json", "w") as f:
                         json.dump(config, f, indent=4, ensure_ascii=False)
+                mapper_url = os.environ.get("mapper_url") + "/api/v1/mandators/submission/"
+                host_url = os.environ.get("host_url")
+                response = requests.post(mapper_url, data={"url": host_url, "logo_url": host_url + str(logo_url),
+                                                           "company_title": form.cleaned_data.get("company_title"),
+                                                           "theme": form.cleaned_data.get("theme_color")})
+                print(response.content)
                 return HttpResponseRedirect(reverse_lazy("config:config"))
     else:
         form = ConfigForm()
