@@ -18,8 +18,9 @@ class BroadcastViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, Des
         context = super().get_serializer_context()
         if self.kwargs.get("user_id"):
             user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
-            user.profile.broadcast_badges = 0
-            user.profile.save()
+            profile = user.profile
+            profile.broadcast_badges = 0
+            profile.save()
         return context
 
     @atomic

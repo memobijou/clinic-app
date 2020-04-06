@@ -12,8 +12,9 @@ class ProposalViewset(GenericViewSet, ListModelMixin, CreateModelMixin):
     def get_queryset(self):
         if self.kwargs.get("user_id"):
             user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
-            user.profile.proposal_badges = 0
-            user.profile.save()
+            profile = user.profile
+            profile.proposal_badges = 0
+            profile.save()
         return Proposal.objects.filter(user_id=self.kwargs.get("user_id"))
 
 

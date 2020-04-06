@@ -7,6 +7,7 @@ from account.models import Profile
 from uniklinik.utils import send_push_notifications
 from django.db.models import F
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 
 
 class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
@@ -68,4 +69,9 @@ class DutyRosterViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
+        if self.kwargs.get("user_id"):
+            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
+            profile = user.profile
+            profile.duty_roster_badges = 0
+            profile.save()
         return super().get_queryset()
