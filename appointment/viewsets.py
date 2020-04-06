@@ -60,7 +60,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         return self.queryset
 
     def filter_groups_by_user_id(self):
-        user_id = self.request.GET.get("user_id")
+        user_id = self.kwargs.get("user_id")
         if user_id is not None:
             self.queryset = self.queryset.filter(groups__users__pk=user_id)
         return self.queryset
