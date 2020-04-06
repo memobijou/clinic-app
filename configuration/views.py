@@ -97,7 +97,7 @@ def configuration_view(request):
                                                            "company_title": form.cleaned_data.get("company_title"),
                                                            "theme": form.cleaned_data.get("theme_color")})
                 print(response.content)
-                raise ValueError(response.status_code)
+                raise ValueError(response.text)
                 return HttpResponseRedirect(reverse_lazy("config:config"))
     else:
         form = ConfigForm()
