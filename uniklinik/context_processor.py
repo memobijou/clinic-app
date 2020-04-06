@@ -25,7 +25,9 @@ def settings_context(request):
                 config = json.load(f)
         except OSError as e:
             config = {}
+
     token = None
+
     if request.user.is_authenticated:
         token = Token.objects.filter(user=request.user).first()
         if token:
