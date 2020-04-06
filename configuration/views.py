@@ -93,11 +93,9 @@ def configuration_view(request):
                         json.dump(config, f, indent=4, ensure_ascii=False)
                 mapper_url = os.environ.get("mapper_url") + "/api/v1/mandators/submission/"
                 host_url = os.environ.get("host_url")
-                response = requests.post(mapper_url, data={"url": host_url, "logo_url": host_url + str(logo_url),
+                requests.post(mapper_url, data={"url": host_url, "logo_url": host_url + str(logo_url),
                                                            "company_title": form.cleaned_data.get("company_title"),
                                                            "theme": form.cleaned_data.get("theme_color")})
-                print(response.content)
-                raise ValueError(response.text)
                 return HttpResponseRedirect(reverse_lazy("config:config"))
     else:
         form = ConfigForm()
