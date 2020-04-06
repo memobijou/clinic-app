@@ -4,6 +4,8 @@ from phonebook.serializers import PhoneBookSerializer, CategorySerializer
 from rest_framework import mixins
 from django.db.models import Q
 from rest_framework import pagination
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 
 
 class CustomPagination(pagination.PageNumberPagination):
@@ -25,6 +27,14 @@ class PhoneBookViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewset
         category_id = self.request.GET.get("category_id")
         if category_id:
             self.queryset = self.queryset.filter(category_id=category_id)
+
+        user_id = self.request.query_params.get("user_id")
+
+        if user_id:
+            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
+            user.profile.phonebook_badges = 0
+            user.profile.save()
+
         return self.queryset
 
 
