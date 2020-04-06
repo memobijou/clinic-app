@@ -31,7 +31,7 @@ class PhoneBookViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewset
         user_id = self.request.query_params.get("user_id")
 
         if user_id:
-            user = get_object_or_404(User, pk=self.kwargs.get("user_id"))
+            user = get_object_or_404(User, pk=user_id)
             profile = user.profile
             profile.phonebook_badges = 0
             profile.save()
