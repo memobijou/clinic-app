@@ -46,9 +46,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         return self.queryset
 
     def filter(self):
-        self.filter_by_group_name()
-        self.filter_by_group_pks()
-        self.filter_groups_by_user_id()
+        self.queryset = self.filter_groups_by_user_id()
 
         start_datetime = self.request.GET.get("start")
         end_datetime = self.request.GET.get("end")
@@ -61,22 +59,11 @@ class AppointmentViewSet(viewsets.ModelViewSet):
                 start_date__range=(start_date, end_date), end_date__range=(start_date, end_date))
         return self.queryset
 
-    def filter_by_group_name(self):
-        group_name = self.request.GET.get("group_name")
-        print(group_name)
-        if group_name is not None:
-            self.queryset = self.queryset.filter(groups__name__iexact=group_name)
-
-    def filter_by_group_pks(self):
-        group_pks = self.request.GET.getlist("group_pk")
-        print(f"hey sammy: {group_pks}")
-        if len(group_pks) > 0:
-            self.queryset = self.queryset.filter(groups__pk__in=group_pks)
-
     def filter_groups_by_user_id(self):
         user_id = self.request.GET.get("user_id")
         if user_id is not None:
             self.queryset = self.queryset.filter(groups__users__pk=user_id)
+        return self.queryset
 
     # @method_decorator(cache_page(60*60*2))
     @action(detail=False, name="calendar")
