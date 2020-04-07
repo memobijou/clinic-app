@@ -1,7 +1,8 @@
 from django.db import models
+from django.db.models import Sum
 from django.urls import reverse_lazy
 # Create your models here.
-from accomplishment.models import UserAccomplishment
+from accomplishment.models import UserAccomplishment, Accomplishment
 from django.contrib.auth.models import User
 
 
@@ -87,5 +88,20 @@ class Category(models.Model):
             score_sum += score
         if full_score_sum > 0 and score_sum > 0:
             return int(score_sum/full_score_sum*100)
+        else:
+            return 0
+
+    def get_user_accomplishment_percentage_for_category(self, user_id):
+        user_score_sum = 0
+        full_score_sum = Accomplishment.objects.filter(categories=self).distinct().aggregate(
+            total=Sum("full_score")).get("total", 0)
+
+        for user_accomplishement in UserAccomplishment.objects.filter(
+                user_id=user_id, accomplishment__categories=self).distinct():
+            score = user_accomplishement.score
+            user_score_sum += score
+
+        if full_score_sum > 0 and user_score_sum > 0:
+            return int((user_score_sum/full_score_sum)*100)
         else:
             return 0
