@@ -1,10 +1,32 @@
 from django.db.models import OuterRef, Subquery
 from django.db.models.functions import Coalesce
 from rest_framework import serializers
-
-from account.group.serializers import GroupSerializer
-from account.serializers import UserSerializer
+from django.contrib.auth.models import User
+from account.models import Profile, Group
 from messaging.models import TextMessage, ChatPushHistory
+
+
+# ID, first_name, last_name, username, profile_image
+# Group nur pk, name schicken
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ("pk", "title", )
+
+
+class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('pk', 'username', 'first_name', 'last_name', "profile",)
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ("pk", "name", "color",)
 
 
 class TextMessageSerializer(serializers.ModelSerializer):
