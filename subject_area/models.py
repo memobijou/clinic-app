@@ -25,7 +25,10 @@ class SubjectArea(models.Model):
                 full_score_sum += accomplishment.full_score
                 for user_accomplishment in accomplishment.user_accomplishments.filter(user_id=user_id):
                     score_sum += user_accomplishment.score
-        print(f"yes: : : {score_sum} - {full_score_sum}")
+
+        if score_sum is None or full_score_sum is None:
+            return 0
+
         if score_sum > 0 and full_score_sum > 0:
             return f"{score_sum}/{full_score_sum}"
         else:
@@ -41,6 +44,10 @@ class SubjectArea(models.Model):
                 for user_accomplishment in accomplishment.user_accomplishments.filter(user_id=user_id):
                     score_sum += user_accomplishment.score
         print(f"yes: : : {score_sum} - {full_score_sum}")
+
+        if score_sum is None or full_score_sum is None:
+            return 0
+
         if score_sum > 0 and full_score_sum > 0:
             return int((score_sum/full_score_sum)*100)
         else:
@@ -66,6 +73,10 @@ class Category(models.Model):
                 user_id=user_id, accomplishment__categories=self).distinct():
             score = user_accomplishement.score
             score_sum += score
+
+        if full_score_sum is None or score_sum is None:
+            return 0
+
         if full_score_sum > 0 and score_sum > 0:
             return int(score_sum/full_score_sum*100)
         else:
@@ -86,6 +97,10 @@ class Category(models.Model):
                 user_id=user_id, accomplishment__categories=self).distinct():
             score = user_accomplishement.score
             score_sum += score
+
+        if full_score_sum is None or score_sum is None:
+            return 0
+
         if full_score_sum > 0 and score_sum > 0:
             return int(score_sum/full_score_sum*100)
         else:
@@ -100,6 +115,9 @@ class Category(models.Model):
                 user_id=user_id, accomplishment__categories=self).distinct():
             score = user_accomplishement.score
             user_score_sum += score
+
+        if full_score_sum is None or user_score_sum is None:
+            return 0
 
         if full_score_sum > 0 and user_score_sum > 0:
             return int((user_score_sum/full_score_sum)*100)
