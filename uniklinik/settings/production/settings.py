@@ -29,3 +29,26 @@ DEFAULT_FILE_STORAGE = 'uniklinik.settings.storage_backends.MediaStorage'  # <--
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 SECURE_SSL_REDIRECT = True
+
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             # "hosts": [os.environ.get('REDIS_URL', ("localhost", 6379))],
+#             "hosts": [os.environ.get('REDIS_URL', ("172.19.0.4", 6379))],
+#         },
+#     },
+# }
+
+
+# Channels Specific
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        },
+        "symmetric_encryption_keys": [SECRET_KEY],
+    },
+}

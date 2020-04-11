@@ -12,7 +12,7 @@ from messaging.models import TextMessage, ChatPushHistory
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ("pk", "title", )
+        fields = ("pk", "title", "profile_image",)
 
 
 class UserSerializer(serializers.ModelSerializer):
