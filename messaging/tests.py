@@ -18,7 +18,9 @@ class MessagingTestCase(TestCase):
         self.token = Token.objects.create(user=self.session_user).key
         self.client.defaults['HTTP_AUTHORIZATION'] = 'Token ' + self.token
 
-    def test_message_sending_rest_api(self):
+    @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
+    @mock.patch('pyfcm.FCMNotification.notify_multiple_devices', return_value={})
+    def test_message_sending_rest_api(self, x, y):
         user_1 = mixer.blend(User)
         user_2 = mixer.blend(User)
         text_message = "Message"
@@ -29,7 +31,9 @@ class MessagingTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content).get("message"), text_message)
 
-    def test_latest_sender_message_rest_api(self):
+    @mock.patch('pyfcm.FCMNotification.notify_single_device', return_value={})
+    @mock.patch('pyfcm.FCMNotification.notify_multiple_devices', return_value={})
+    def test_latest_sender_message_rest_api(self, x, y):
         receiver = mixer.blend(User)
         senders = mixer.cycle(5).blend(User)
         for sender in senders:
