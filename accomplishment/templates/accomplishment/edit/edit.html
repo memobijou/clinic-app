@@ -83,25 +83,40 @@
                         <form method="POST">{% csrf_token %}
                             <br/>
                             <p>
-                                <label for="{{ form.name.id }}">{{ form.name.label }}
+                                <label for="{{ form.name.auto_id }}">{{ form.name.label }}
                                 </label>
                                 {{ form.name }}
                                 {{ form.name.errors }}
                                 <p class="help-block">*Um die Leistungen für die Nutzer auszublenden tragen Sie "SPERRE" für die Bezeichnung ein</p>
                             </p>
                             <p>
-                                <label for="{{ form.full_score.id }}">{{ form.full_score.label }}
+                                <label for="{{ form.full_score.auto_id }}">{{ form.full_score.label }}
                                 </label>
                                 {{ form.full_score }}
                                 {{ form.full_score.errors }}
                             </p>
-                            <div class="inline-checkboxes">
-                                <label for="{{ form.subject_areas.id }}">Fachrichtungen VERALTET</label>
-                                {{ form.subject_areas }}
-                                {{ form.subject_areas.errors }}
-                            </div>
-                            <div class="inline-checkboxes" style="padding-top:10px;">
-                                <label for="{{ form.categories.id }}">Kategorien</label>
+
+{#                            <div class="inline-checkboxes">#}
+{#                                <label for="{{ form.subject_areas.auto_id }}">Fachrichtungen VERALTET</label>#}
+{#                                {{ form.subject_areas }}#}
+{#                                {{ form.subject_areas.errors }}#}
+{#                            </div>#}
+
+                            <style>
+                                .checkbox li {
+                                    list-style:none;
+                                }
+                                .checkbox ul {
+                                    padding-left: 0;
+                                }
+
+                                .checkbox .parent-label {
+                                    padding-left: 0;
+                                }
+
+                            </style>
+                            <div class="checkbox" style="padding-top:10px;">
+                                <label class="parent-label" for="{{ form.categories.auto_id }}">Kategorien</label>
                                 {{ form.categories }}
                                 {{ form.categories.errors }}
                             </div>
