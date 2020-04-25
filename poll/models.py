@@ -39,6 +39,13 @@ class Option(models.Model):
         else:
             return int((user_options_count/all_user_options_count)*100)
 
+    def get_participants_count(self):
+        total = UserOption.objects.filter(option__poll=self.poll, selected=True).distinct().count()
+        useroptions_count = 0
+        for _ in self.useroption_set.filter(selected=True):
+            useroptions_count += 1
+        return f'{useroptions_count}/{total}'
+
 
 class UserOption(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)

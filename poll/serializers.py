@@ -41,11 +41,7 @@ class OptionSerializer(serializers.ModelSerializer):
         return 0
 
     def get_participants_count(self, instance: Option):
-        total = UserOption.objects.filter(option__poll=instance.poll, selected=True).distinct().count()
-        useroptions_count = 0
-        for _ in instance.useroption_set.filter(selected=True):
-            useroptions_count += 1
-        return f'{useroptions_count}/{total}'
+        return instance.get_participants_count()
 
 
 class PollSerializer(serializers.ModelSerializer):
