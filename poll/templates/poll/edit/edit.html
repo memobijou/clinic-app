@@ -90,16 +90,17 @@
                                  <div class="col-md-6" style="padding:0;">
                                      {{ option.title }} <a href="{% url 'poll:edit-option' pk=object.pk option_pk=option.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
                                  </div>
-                                 <div class="col-md-6" style="padding:0;">
-                                  <div class="progress">
-                                      {% with percentage=option.get_percentage %}
-                                      <div class="progress-bar" role="progressbar" aria-valuenow="{{ percentage }}"
-                                      aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage }}%">
-                                        <span class="sr-only-focusable">{{ percentage }}%</span>
+                                 <div class="col-md-5" style="padding:0;">
+                                      <div class="progress">
+                                          {% with percentage=option.get_percentage %}
+                                          <div class="progress-bar" role="progressbar" aria-valuenow="{{ percentage }}"
+                                          aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage }}%">
+                                            <span class="sr-only-focusable">{{ percentage }}%</span>
+                                          </div>
+                                          {% endwith %}
                                       </div>
-                                      {% endwith %}
-                                  </div>
                                  </div>
+                                 <div class="col-md-1 text-right" style="padding:0;">{{ option.get_participants_count }}</div>
                              </div>
                          {% endfor %}
                     </div>
