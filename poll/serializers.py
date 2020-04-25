@@ -1,15 +1,16 @@
 from rest_framework import serializers
 
-from poll.models import Poll, Option
+from poll.models import Poll, Option, UserOption
 
 
 class OptionSerializer(serializers.ModelSerializer):
     selected = serializers.SerializerMethodField()
     percentage = serializers.SerializerMethodField()
+    participants_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Option
-        fields = ("pk", "title", "selected", "percentage",)
+        fields = ("pk", "title", "selected", "percentage", "participants_count",)
 
     def get_selected(self, instance: Option):
         user_id = self.context.get("user_id")
@@ -38,6 +39,13 @@ class OptionSerializer(serializers.ModelSerializer):
             else:
                 return int((user_options_count/all_user_options_count)*100)
         return 0
+
+    def get_participants_count(self, instance: Option):
+        total = UserOption.objects.filter(option__poll=instance.poll, selected=True).distinct().count()
+        useroptions_count = 0
+        for _ in instance.useroption_set.filter(selected=True):
+            useroptions_count += 1
+        return f'{useroptions_count}/{total}'
 
 
 class PollSerializer(serializers.ModelSerializer):
