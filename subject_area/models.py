@@ -55,6 +55,9 @@ class SubjectArea(models.Model):
 
 
 class Category(models.Model):
+    class Meta:
+        ordering = ("id",)
+
     title = models.CharField(max_length=200, verbose_name="Bezeichnung")
     subject_area = models.ForeignKey("subject_area.SubjectArea", null=True, on_delete=models.SET_NULL)
 

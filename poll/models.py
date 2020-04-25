@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 
 
 class Poll(models.Model):
+    class Meta:
+        ordering = ("-pk",)
+
     title = models.CharField(max_length=200, null=True, blank=True, verbose_name="Bezeichnung")
     description = models.TextField(null=True, blank=True, verbose_name="Beschreibung")
     created_datetime = models.DateTimeField(null=True, auto_now=True)
