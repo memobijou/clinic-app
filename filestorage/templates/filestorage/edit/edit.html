@@ -37,7 +37,7 @@
                         <a href="#" class="fa fa-caret-down"></a>
                     </div>
 
-                    <h2 class="panel-title">{{ file.file.name }}</h2>
+                    <h2 class="panel-title">{{ file.filename }}</h2>
 
                 </header>
                 <div class="panel-body">
@@ -48,14 +48,14 @@
                         </form>
                         <br/>
                         <div class="text-center">
-                            <a href="{{ file.file.url }}">{{ file.file.name }}</a>
+                            <a href="{{ file.file.url }}">{{ file.filename }}</a>
                             <p><b>Version: </b>{{ file.version_with_point }}</p>
                             <p id="error_field" style="color:red;"></p>
                             <div class="col-md-4 col-md-offset-4" style="padding: 0 0 15px 0;">
                                 <input id="version" name="version" class="form-control" style="text-align:center;" placeholder="Version ändern"/>
                             </div>
                             <div class="col-md-12" style="padding:0;">
-                                <p><b>Dateiname: </b>{{ file.file.name }}</p>
+                                <p><b>Dateiname: </b>{{ file.filename }}</p>
                             </div>
                             <div class="col-md-4 col-md-offset-4" style="padding: 0 0 15px 0;">
                             <input id="file_name" name="name" class="form-control" style="text-align:center;" placeholder="Dateinamen ändern"/>
