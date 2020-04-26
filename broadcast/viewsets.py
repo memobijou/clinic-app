@@ -68,8 +68,8 @@ class LikeViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, ListM
         instance.broadcast_id = self.kwargs.get("broadcast_id")
         instance.save()
 
-        def update_badge_method(empty_users):
-            pass
+        def update_badge_method(push_user_ids):
+            Profile.objects.filter(user_id__in=push_user_ids).update(broadcast_badges=F("broadcast_badges") + 1)
 
         send_push_notifications(
             User.objects.filter(id=instance.broadcast.sender_id), f'{instance.user} gefällt dein Beitrag!',
@@ -91,8 +91,8 @@ class CommentViewSet(ListModelMixin, RetrieveModelMixin,  CreateModelMixin,  Gen
         instance.broadcast_id = self.kwargs.get("broadcast_id")
         instance.save()
 
-        def update_badge_method(empty_users):
-            pass
+        def update_badge_method(push_user_ids):
+            Profile.objects.filter(user_id__in=push_user_ids).update(broadcast_badges=F("broadcast_badges") + 1)
 
         send_push_notifications(
             User.objects.filter(id=instance.broadcast.sender_id), f'{instance.sender} hat deinen Beitrag kommentiert',

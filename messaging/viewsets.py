@@ -42,8 +42,7 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
 
             if receiver_id and sender_id:
                 ChatPushHistory.objects.filter(
-                    user_id=receiver_id, participant_id=sender_id
-                ).update(unread_notifications=0)
+                    user_id=receiver_id, participant_id=sender_id).update(unread_notifications=0)
         return self.queryset
 
     def filter_by_users(self):
@@ -194,9 +193,7 @@ class GroupTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
             user_id = self.kwargs.get("user")
 
             if group_id:
-                ChatPushHistory.objects.filter(
-                    user_id=user_id, group_id=group_id
-                ).update(unread_notifications=0)
+                ChatPushHistory.objects.filter(user_id=user_id, group_id=group_id).update(unread_notifications=0)
 
         return self.queryset
 
