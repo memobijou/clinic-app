@@ -73,7 +73,7 @@ class LikeViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, ListM
 
         send_push_notifications(
             User.objects.filter(id=instance.broadcast.sender_id), f'{instance.user} gefällt dein Beitrag!',
-            "", "broadcast-like", update_badge_method
+            f"{instance.broadcast.text}", "broadcast-like", update_badge_method
         )
 
 
