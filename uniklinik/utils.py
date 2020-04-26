@@ -50,8 +50,8 @@ def send_push_notifications(users, title, message, category, update_badge_method
 
         if len(registration_ids) > 0:
             try:
-                if len(message) > 20:
-                    message = message[:20] + "..."
+                # if len(message) > 20:
+                #     message = message[:20] + "..."
 
                 for registration_id in registration_ids:
                     if registration_id_profiles[registration_id].is_android is True:
