@@ -39,7 +39,19 @@
                                 {{ form.end_datetime }}
                                 {{ form.end_datetime.errors }}
                                 <br/>
-                                <div class="checkbox-wrapper">
+                                <style>
+                                    .custom-checkbox-wrapper li {
+                                        list-style: none;
+                                    }
+
+                                    .custom-checkbox-wrapper ul {
+                                        padding-left: 0;
+                                    }
+
+
+
+                                </style>
+                                <div class="custom-checkbox-wrapper">
                                     {{ form.groups.label }}
                                     {{ form.groups }}
                                     {{ form.groups.errors }}
@@ -50,7 +62,7 @@
                                 </button>
                                 <div id="user_checkboxes" style="display:none;">
                                     <br/>
-                                    <div class="checkbox-wrapper">
+                                    <div class="custom-checkbox-wrapper">
                                         {{ form.users }}
                                         {{ form.users.errors }}
                                     </div>
