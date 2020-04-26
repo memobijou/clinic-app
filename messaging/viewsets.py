@@ -35,6 +35,7 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
         #     user.profile.messaging_badges = 0
         #     user.profile.save()
         pagenum = self.request.query_params.get('page', "1")
+
         if pagenum == "1":
             receiver_id = self.kwargs.get("receiver")
             sender_id = self.kwargs.get("sender")
@@ -84,12 +85,14 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
     def group_sending(self, request, sender=None, receiver=None):
         group = receiver
         message = request.data.get("message")
-        data = {"message": message, "sender_id": sender, "group_id": receiver}
+        data = {"message": message, "sender_id": sender, "group_id": group}
 
         if sender in [None, ""]:
             return Response({"error": "Um eine Nachricht zu versenden muss ein Versender angegeben werden"})
 
         serializer = GroupTextMessageSerializer(data=data)
+
+        print(f"???: {sender} : {group}")
 
         if serializer.is_valid():
             serializer.save()
@@ -110,6 +113,7 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
     def get_queryset(self):
         self.filter_by_users()
         receiver = self.kwargs.get("receiver")
+        print(f'debug: {self.kwargs.get("receiver")} : {self.queryset.first().group_id}')
         subquery_push_history = ChatPushHistory.objects.filter(
             Q(
                 Q(user_id=OuterRef("receiver_id"), participant_id=OuterRef("sender_id"), group_id=None) |
@@ -121,8 +125,13 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
                     receiver_id=receiver,
                     then=Coalesce(Subquery(subquery_push_history), 0)
                 ),
+                When(
+                    group_id__isnull=False,
+                    then=Coalesce(Subquery(subquery_push_history), 0)
+                ),
                 default=Value(0),
-                output_field=IntegerField()
+                output_field=IntegerField(),
+
             )
         )
         return self.queryset
@@ -139,7 +148,6 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
     @action(detail=False, methods=["GET"], url_path="latest-sender")
     def latest_sender(self, request, receiver=None):
         self.queryset = self.get_queryset()  # not called in custom action
-
 
         if receiver not in ["", None]:
             subquery = TextMessage.objects.filter(
