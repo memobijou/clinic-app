@@ -21,6 +21,7 @@ $(document).ready(function(){
         headers: {},
        },
        lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
+       pageLength: 25,
        autoWidth: false,
        initComplete: function(settings, json) {
 	    const search = $(".dataTables_filter")
