@@ -20,21 +20,24 @@
                             <a href="#" class="fa fa-times"></a>
                         </div>
                         <h2 class="panel-title">{{ object.name }}</h2>
-                            <br/>
-                            {{ form.name }}
-                            {{ form.name.errors }}
-                            <br/>
                     </header>
                     <div class="panel-body">
-                        <div class="col-md-12" style="padding-bottom:25px;">
-                            {{ form.non_field_errors }}
+                        <div class="col-md-6" style="padding-bottom:15px;">
+                            <label for="{{ form.name.auto_id }}">{{ form.name.label }}</label>
+                            {{ form.name }}
+                            {{ form.name.errors }}
                         </div>
-                        <div class="col-md-12" style="padding-bottom:25px;">
-                            {{ form.users.label }}
+                        <style>
+                            .custom-checkbox-wrapper li {
+                                display: block;
+                            }
+                        </style>
+                        <div class="col-md-12 custom-checkbox-wrapper" style="padding-bottom:15px;">
+                            <label for="{{ form.users.auto_id }}">{{ form.users.label }}</label>
                             {{ form.users }}
                             {{ form.users.errors }}
                         </div>
-                        <div class="col-md-12" style="padding-bottom:25px;">
+                        <div class="col-md-12">
                             <div class="col-md-6" style="padding:0;">
                                 {{ form.type.label }}
                                 {{ form.type }}
@@ -44,6 +47,9 @@
                         <div class="col-md-12">
                             <div>
                                 <button class="btn btn-primary">Änderungen speichern</button>
+                            </div>
+                            <div class="col-md-12">
+                                {{ form.non_field_errors }}
                             </div>
                         </div>
                     </div>
@@ -66,7 +72,7 @@
                 {% with users=object.users.all %}
                     {% if users.count > 0 %}
                         {% for user in users %}
-                            {{ user }}
+                            {{ user }}<br/>
                         {% endfor %}
                     {% else %}
                          Dieser Gruppe sind keine Benutzer zugewiesen

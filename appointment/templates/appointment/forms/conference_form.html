@@ -44,15 +44,28 @@
                         </div>
 
                         <br/>
+                        <style>
+                            .custom-checkbox-wrapper li{
+                                display: block !important;
+                            }
+
+                            .custom-checkbox-wrapper ul{
+                                display: block !important;
+                                padding-left:0;
+                            }
+
+                        </style>
                         <div class="col-sm-12">
                             <div class="form-group">
                                 <label class="control-label">{{ conference_form.groups.label }}</label>
-                                {{ conference_form.groups }}
+                                <div class="custom-checkbox-wrapper">
+                                    {{ conference_form.groups }}
+                                </div>
                             </div>
                         </div>
 
 
-                        <div class="col-sm-12" style="padding-top:25px;">
+                        <div class="col-sm-12" style="padding-top:15px;">
                             <div class="form-group">
                                 <button class="btn btn-primary" type="submit">Speichern</button>
                             </div>
