@@ -1,4 +1,4 @@
-from _pydecimal import Decimal
+from decimal import Decimal
 from abc import ABCMeta, abstractmethod
 from django.db.models import Sum, Q
 from django.db.models.functions import Coalesce
