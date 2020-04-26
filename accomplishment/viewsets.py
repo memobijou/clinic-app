@@ -6,6 +6,9 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from accomplishment.models import UserAccomplishment
 from accomplishment.serializers import UserAccomplishmentSerializer
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 class AccomplishmentViewSet(viewsets.ModelViewSet):
@@ -26,6 +29,11 @@ class AccomplishmentViewSet(viewsets.ModelViewSet):
         # exclude stellt sicher das User die nicht mehr zur Fachrichtung gehören ausgeschloßen werden
         self.queryset = self.queryset.filter(user__pk=user_id).exclude(
             ~Q(user__in=F("accomplishment__categories__subject_area__profiles__user"))).distinct()
+
+        if user_id:
+            user = get_object_or_404(User, pk=user_id)
+            user.profile.accomplishment_badges = 0
+            user.profile.save()
         return self.queryset
 
     @transaction.atomic
