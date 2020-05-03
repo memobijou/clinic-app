@@ -26,7 +26,7 @@ class ProposalDatatables(DatatablesMixin):
         for search_value in search_values:
             if search_value != "" and search_value is not None:
                 self.queryset = self.queryset.filter(
-                    Q(Q(user__first_name__icontains=search_value) | Q(user_last_name__icontains=search_value))
+                    Q(Q(user__first_name__icontains=search_value) | Q(user__last_name__icontains=search_value))
                 ).distinct()
 
     def get_ordered_queryset(self):
