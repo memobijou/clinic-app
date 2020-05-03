@@ -69,8 +69,9 @@ $(document).ready(function(){
 	  responsive: true,
       columnDefs: [
         //{targets: 0, title: "", name: "calendar_week", orderable: false},
-        {targets: 0, title: "Monat", name: "calendar_week", orderable: false},
-        {targets: 1, title: "Dienstplan", name: "file"},
+        {targets: 0, title: "", name: "", orderable: false},
+        {targets: 1, title: "Monat", name: "calendar_week", orderable: false},
+        {targets: 2, title: "Dienstplan", name: "file"},
 
       ],
 
@@ -100,6 +101,54 @@ $(document).ready(function(){
         "order": [[1, 'asc']]
 	} )
 
+    let create_action_tag = function(){
+        let select_action = document.createElement("label")
+        let select_tag = document.createElement("select")
+        select_tag.className = "form-control input-sm"
+        select_tag.id = "select_action"
+        select_tag.style.minWidth = "160px"
+        select_action.appendChild(select_tag)
+        let option = document.createElement("option")
+        option.innerHTML = "---------"
+        option.value = ""
+        select_tag.appendChild(option)
+        option = document.createElement("option")
+        option.value = "deletion"
+        option.innerHTML = "Dienstpläne löschen"
+        select_tag.appendChild(option)
+        let action_btn = document.createElement("button")
+        action_btn.className = "btn btn-primary btn-sm"
+        action_btn.id = "peform_action_btn"
+        action_btn.innerHTML = "Ausführen"
+        let input_group = document.createElement("div")
+        input_group.className = "input-group"
+        let input_group_btn = document.createElement("div")
+        input_group_btn.className = "input-group-btn"
+        input_group_btn.appendChild(action_btn)
+        input_group.appendChild(select_tag)
+        input_group.appendChild(input_group_btn)
+        select_action.appendChild(input_group)
+        select_action.style.paddingTop = "5px"
+        return select_action
+    }
+
+    let select_action = create_action_tag()
+
+
+    $("#datatable-default_length").parent().append(select_action);
+
+    $("#select_action").on("change", function(){
+        if(this.value == ""){
+            $("#peform_action_btn").attr("disabled", "")
+        }else{
+            $("#peform_action_btn").removeAttr("disabled", "")
+        }
+        $("#action_form").attr("action", actions[this.value])
+    })
+
+    if($("#select_action option:selected").val() == ""){
+        $("#peform_action_btn").attr("disabled", "")
+    }
 
 
 

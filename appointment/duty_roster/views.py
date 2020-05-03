@@ -4,6 +4,8 @@ from django.views import View
 from appointment.duty_roster.forms import DutyRosterForm
 from datetime import datetime
 from appointment.models import DutyRoster
+from django.http.response import HttpResponseRedirect
+from django.urls import reverse_lazy
 
 
 class DutyRosterView(LoginRequiredMixin, View):
@@ -33,3 +35,11 @@ class DutyRosterView(LoginRequiredMixin, View):
         )
         if duty_roster.count() > 0:
             return duty_roster.first()
+
+
+class DutyRosterDeleteView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        items = request.POST.getlist("item")
+        print(f"abc abc: {items}")
+        DutyRoster.objects.filter(pk__in=items).delete()
+        return HttpResponseRedirect(reverse_lazy("appointment:duty_roster_list"))

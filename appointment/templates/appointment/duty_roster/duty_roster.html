@@ -44,15 +44,18 @@
         </div>
     </section>
     <section class="panel">
-        <div class="panel-body">
-            <div class="col-md-12">
-                <table class="table table-bordered table-striped table-hover" id="datatable-default">
-                    <tbody></tbody>
-                </table>
+        <form method="POST" id="action_form">{% csrf_token %}
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <table class="table table-bordered table-striped table-hover" id="datatable-default">
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        </form>
     </section>
     <script>
+        var actions = {deletion: "{% url 'appointment:duty_roster_delete' %}"}
         window.CSRF_TOKEN = "{{ csrf_token }}";
     </script>
 {% endblock %}

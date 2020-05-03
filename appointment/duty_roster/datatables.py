@@ -34,8 +34,9 @@ class DutyRosterDatatables(DatatablesMixin):
 
     def get_data(self, page):
         data = {"results": [[
-                     #f'<p><a>Bearbeiten</a></p>',
-                     f'{date(query.calendar_week_date, "F")} {query.calendar_week_date.year}', self.get_pdf(query)]
+            f'<p style="margin:0;padding:0;"><input type="checkbox" style="cursor:pointer;" '
+            f'name="item" value={query.pk}></p>',
+            f'{date(query.calendar_week_date, "F")} {query.calendar_week_date.year}', self.get_pdf(query)]
             for query in page if query.file and query.calendar_week_date
         ],
                 "records_total": self.queryset.count()}
