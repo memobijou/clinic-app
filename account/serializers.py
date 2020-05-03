@@ -183,8 +183,7 @@ class ProfileEditionSerializer(serializers.ModelSerializer):
             last_name = user_data.get('last_name')
         user = instance.user
 
-        if title:
-            instance.title = title
+        instance.title = title
 
         if profile_image:
             instance.profile_image = profile_image
