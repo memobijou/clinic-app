@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 
 
 class Proposal(models.Model):
+    class Meta:
+        ordering = ("-pk",)
+
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     start_date = models.DateField(null=True, blank=True, verbose_name="Startdatum")
     end_date = models.DateField(null=True, blank=True, verbose_name="Enddatum")
