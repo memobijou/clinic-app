@@ -20,13 +20,15 @@
             <h2 class="panel-title">Anträge Übersicht</h2>
         </header>
 
-        <div class="panel-body">
-            <div class="col-md-12">
-                <table class="table table-bordered table-striped table-hover" id="datatable-default">
-                    <tbody></tbody>
-                </table>
+        <form method="POST" id="action_form">{% csrf_token %}
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <table class="table table-bordered table-striped table-hover" id="datatable-default">
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        </form>
     </section>
 <!-- end: page -->
 {% endblock %}

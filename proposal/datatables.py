@@ -62,7 +62,8 @@ class ProposalDatatables(DatatablesMixin):
                 confirmation = "?"
 
             data["results"].append([
-                f'<a href="{reverse_lazy("proposal:edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
+                f'<a href="{reverse_lazy("proposal:edit", kwargs={"pk": query.pk})}">Bearbeiten</a>'
+                f'<br/><input type="checkbox" name="item" style="cursor:pointer;" value="{query.pk}"/>',
                 # f'<a href="{reverse_lazy("poll:edit", kwargs={"pk": query.pk})}">Bearbeiten</a>',
                 query.user.first_name, query.user.last_name, title, query.start_date, query.end_date,
                 confirmation])

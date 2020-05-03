@@ -4,6 +4,7 @@ from proposal.forms import TypeForm, ProposalForm
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
 from proposal.models import Type, Proposal
+from django.http.response import HttpResponseRedirect
 
 
 class TypeListView(LoginRequiredMixin, generic.CreateView):
@@ -40,3 +41,11 @@ class ProposalUpdateView(LoginRequiredMixin, generic.UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("proposal:edit", kwargs={"pk": self.object.pk})
+
+
+class ProposalDeleteView(LoginRequiredMixin, generic.DeleteView):
+    def post(self, request, *args, **kwargs):
+        items = request.POST.getlist("item")
+        print(f"?????!!! {items}")
+        Proposal.objects.filter(pk__in=items).delete()
+        return HttpResponseRedirect(reverse_lazy("proposal:list"))
