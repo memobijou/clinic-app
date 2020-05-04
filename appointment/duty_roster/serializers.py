@@ -57,10 +57,10 @@ class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
 
         print(message)
 
+        create_response = super().create(validated_data)
         send_push_notifications(User.objects.all(), f"Neuer Dienstplan verfügbar", message, "duty-roster",
                                 update_badge_method)
-        return super().create(validated_data)
-
+        return create_response
 
 # ViewSets define the view behavior.
 class DutyRosterViewSet(viewsets.ModelViewSet):
