@@ -1,7 +1,12 @@
 from rest_framework import serializers
-from account.group.serializers import GroupSerializer
 from appointment.models import Appointment
 from account.models import Group
+
+
+class GroupSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Group
+        fields = ("pk", 'name', "color", )
 
 
 # Serializers define the API representation.
