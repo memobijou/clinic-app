@@ -32,6 +32,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 SECURE_SSL_REDIRECT = True
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # because of Too many requests error
 
 # CHANNEL_LAYERS = {
 #     "default": {
