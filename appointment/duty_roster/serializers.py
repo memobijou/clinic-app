@@ -62,6 +62,7 @@ class DutyRosterSerializer(serializers.HyperlinkedModelSerializer):
                                 update_badge_method)
         return create_response
 
+
 # ViewSets define the view behavior.
 class DutyRosterViewSet(viewsets.ModelViewSet):
     queryset = DutyRoster.objects.all()
