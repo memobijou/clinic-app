@@ -4,8 +4,15 @@ from django.db.models.functions import Lower
 from account.models import Group
 from rest_framework import serializers, viewsets
 from django.urls import reverse_lazy
-from account.serializers import UserSerializer
 from uniklinik.mixins import DatatablesMixin
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('pk', 'username', 'first_name', 'last_name',)
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
