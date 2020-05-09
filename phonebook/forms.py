@@ -27,7 +27,7 @@ class PhoneBookForm(BootstrapModelFormMixin):
             Profile.objects.filter(user_id__in=push_user_ids).update(
                 phonebook_badges=F("phonebook_badges") + 1)
 
-        send_push_notifications(User.objects.all(), f"Neuer Kontakt", message, "phonebook", update_badge_method)
+        # send_push_notifications(User.objects.all(), f"Neuer Kontakt", message, "phonebook", update_badge_method)
         return super().save(commit)
 
 
