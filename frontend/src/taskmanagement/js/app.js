@@ -15,7 +15,6 @@ $(document).ready(function(){
         {targets: 1, title: "Aufgabe", name: "name"},
         {targets: 2, title: "Beschreibung", name: "description"},
         {targets: 3, title: "Gruppen", name: "groups", orderable: false},
-        {targets: 4, title: "Benutzer", name: "users", orderable: false},
       ],
 
        // Mit ajax funktioniert muss nur angepasst werden auf REST API

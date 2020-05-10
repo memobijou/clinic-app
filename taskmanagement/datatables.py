@@ -56,7 +56,6 @@ class TaskDatatables(DatatablesMixin):
                 query.name,
                 query.description,
                 self.get_groups(query),
-                self.get_users(query)
             ])
         data = {"results": results,
                 "records_total": self.queryset.count()}
