@@ -26,7 +26,7 @@ class BasicProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ("is_admin", "user", "title", )
+        fields = ("is_admin", "user", "title", "profile_image",)
 
 
 # def get_subject_area_choices():
