@@ -1,7 +1,7 @@
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from django.db.models.functions import Lower
-from account.models import Group
+from account.models import Group, Profile
 from rest_framework import serializers, viewsets
 from django.urls import reverse_lazy
 from uniklinik.mixins import DatatablesMixin
@@ -9,10 +9,18 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ("title", "profile_image",)
+
+
 class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+
     class Meta:
         model = User
-        fields = ('pk', 'username', 'first_name', 'last_name',)
+        fields = ('pk', 'username', 'first_name', 'last_name', "profile",)
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
