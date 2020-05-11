@@ -129,14 +129,12 @@ class GroupDatatables(DatatablesMixin):
                              f'name="item" value={query.pk}></p>',
                              f'<i class="fa fa-circle" style="color:{query.color};">'
                              f'</i>&nbsp;&nbsp;<span>{query.name}</span>',
-                             self.get_users(query)
+                             self.get_users_count(query)
                              ] for query in page],
                 "records_total": self.queryset.count()}
         return data
 
     @staticmethod
-    def get_users(query):
-        users = ""
-        for user in query.users.all():
-            users += f"<p>{str(user)}</p>"
-        return users
+    def get_users_count(query):
+        users_count = f"{query.users.count()}"
+        return users_count
