@@ -57,7 +57,7 @@
                                 {% else %}
                                     <span class="name">{{ request.user.username|default:"" }}</span>
                                 {% endif %}
-                                {% if request.user.is_superuser %}
+                                {% if request.user.is_superuser or request.user.profile.is_admin %}
                                     <span class="role">Administrator</span>
                                 {% endif %}
 							</div>
