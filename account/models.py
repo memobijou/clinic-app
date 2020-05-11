@@ -15,7 +15,8 @@ from django.utils.translation import gettext_lazy as _
 
 class CustomUserManager(UserManager):
     def get_queryset(self):
-        return super().get_queryset().filter(profile__removed=False)
+        # return super().get_queryset().filter(profile__removed=False)
+        return super().get_queryset()
 
 
 def get_name(self):
