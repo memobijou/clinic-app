@@ -242,9 +242,7 @@ class UserDeletionView(LoginRequiredMixin, generic.View):
     def dispatch(self, request, *args, **kwargs):
         if request.method == "POST":
             items = request.POST.getlist("item")
-            profiles = Profile.objects.filter(user_id__in=items, user__is_superuser=False)
-            print(f"he: {profiles}")
-            profiles.update(removed=True)
+            User.objects.filter(id__in=items, is_superuser=False).delete()
             return HttpResponseRedirect(reverse_lazy("account:user_list"))
 
 
