@@ -112,7 +112,7 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
     def get_queryset(self):
         self.filter_by_users()
         receiver = self.kwargs.get("receiver")
-        print(f'debug: {self.kwargs.get("receiver")} : {self.queryset.first().group_id}')
+
         subquery_push_history = ChatPushHistory.objects.filter(
             Q(
                 Q(user_id=OuterRef("receiver_id"), participant_id=OuterRef("sender_id"), group_id=None) |
@@ -146,6 +146,7 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
 
     @action(detail=False, methods=["GET"], url_path="latest-sender")
     def latest_sender(self, request, receiver=None):
+        print("latest-sender")
         self.queryset = self.get_queryset()  # not called in custom action
 
         if receiver not in ["", None]:
