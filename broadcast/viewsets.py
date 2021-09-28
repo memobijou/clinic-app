@@ -13,7 +13,8 @@ from django.shortcuts import get_object_or_404
 class BroadcastViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMixin, DestroyModelMixin, GenericViewSet):
     serializer_class = BroadcastSerializer
     # TODO Auf App Broadcasts ohne User abfangen bzw. Userdaten abspeichern, wenn Nutzer gelöscht wird
-    queryset = Broadcast.objects.exclude(like__user__isnull=True, sender__isnull=True)
+    #queryset = Broadcast.objects.exclude(like__user__isnull=True, sender__isnull=True)
+    queryset = Broadcast.objects.none()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
