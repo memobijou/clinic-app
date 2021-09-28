@@ -186,7 +186,7 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
 class GroupTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
     serializer_class = TextMessageSerializer
     # TODO: Wenn User gelöscht wird, entscheiden was mit User passiert. VORLÄUFIGE LÖSUNG
-    queryset = TextMessage.objects.exclude(Q(Q(sender__isnull=True) | Q(receiver__isnull=True)))
+    queryset = TextMessage.objects.exclude(sender__isnull=True)
 
     def get_queryset(self):
         self.filter_by_group()
