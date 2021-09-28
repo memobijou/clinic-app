@@ -25,7 +25,8 @@ class CustomPagination(PageNumberPagination):
 
 class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
     serializer_class = TextMessageSerializer
-    queryset = TextMessage.objects.all()
+    # TODO: Wenn User gelöscht wird, entscheiden was mit User passiert. VORLÄUFIGE LÖSUNG
+    queryset = TextMessage.objects.exclude(Q(Q(sender__isnull=True) | Q(receiver__isnull=True)))
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -107,7 +108,8 @@ class TextMessageViewset(viewsets.GenericViewSet, ListModelMixin):
 
 class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
     serializer_class = ReceiverTextMessageSerializer
-    queryset = TextMessage.objects.all()
+    # TODO: Wenn User gelöscht wird, entscheiden was mit User passiert. VORLÄUFIGE LÖSUNG
+    queryset = TextMessage.objects.exclude(Q(Q(sender__isnull=True) | Q(receiver__isnull=True)))
 
     def get_queryset(self):
         self.filter_by_users()
@@ -183,7 +185,8 @@ class ReceiverTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
 
 class GroupTextMessageViewSet(viewsets.GenericViewSet, ListModelMixin):
     serializer_class = TextMessageSerializer
-    queryset = TextMessage.objects.all()
+    # TODO: Wenn User gelöscht wird, entscheiden was mit User passiert. VORLÄUFIGE LÖSUNG
+    queryset = TextMessage.objects.exclude(Q(Q(sender__isnull=True) | Q(receiver__isnull=True)))
 
     def get_queryset(self):
         self.filter_by_group()
